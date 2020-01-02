@@ -1,0 +1,4 @@
+go-workspace/src/github.com/armPelionEdge/maestro/maestro/maestro wigwag/system/bin
+go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libgrease.so.1 wigwag/system/lib
+go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libtcmalloc_minimal.so.4 wigwag/system/lib
+go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libtcmalloc_minimal.so.4.2.6 wigwag/system/lib

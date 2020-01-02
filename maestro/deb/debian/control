@@ -1,0 +1,19 @@
+Source: maestro
+Section: utils
+Priority: optional
+Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+Build-Depends: debhelper (>=9), golang-go (>=2:1.9~), python (>=2.7),
+ autoconf (>=2.69), automake (>=1:1.15), libtool (>=2.4.6), git (>=1:2.7)
+Standards-Version: 3.9.6
+
+Package: maestro
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: systems management for Pelion Edge OS
+ Maestro is a replacement for a number of typical system utilities and
+ management programs, while providing cloud-connected systems
+ management. Maestro is designed specifically for cloud-connected
+ embedded Linux computers, with somewhat limited RAM and disk space,
+ where file systems are often flash - and would prefer less writing
+ over time.
