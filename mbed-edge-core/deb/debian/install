@@ -1,0 +1,2 @@
+/build/bin/edge-core /wigwag/mbed/
+debian/edge-core.logrotate /etc/logrotate.d/
