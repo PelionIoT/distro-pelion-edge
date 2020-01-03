@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+# export DH_VERBOSE = 1
+
+%:
+	dh $@ --builddirectory=build/
+
+override_dh_auto_build:
+	make build-all-examples
+
+override_dh_clean:
+	dh_testdir
+
+	rm -rf build
+
+	if [ -d build-debug ]; then \
+		rm -rf build-debug;     \
+	fi
+
+	if [ -f lib/docopt.c/docopt.pyc ]; then \
+		rm -f lib/docopt.c/docopt.pyc;     \
+	fi
+
+	if [ -f config/edge_examples_version_info.h ]; then \
+		rm -f config/edge_examples_version_info.h;     \
+	fi
+
+	dh_clean
+
+override_dh_auto_install:
+	echo Not needed in our case
+
+override_dh_installinit:
+	dh_installinit --name=mept-ble mept-ble.init

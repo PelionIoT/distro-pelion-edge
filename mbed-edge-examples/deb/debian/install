@@ -1,0 +1,10 @@
+build/bin/pt-example /wigwag/mbed
+build/bin/blept-example /wigwag/mbed
+build/bin/mqttpt-example /wigwag/mbed
+
+debian/blept-devices.json /wigwag/mbed
+mqttpt-example/mqttgw_sim/mqtt_ep.sh /wigwag/mbed
+mqttpt-example/mqttgw_sim/mqtt_gw.sh /wigwag/mbed
+
+debian/pt-example etc/logrotate.d
+debian/blept-example etc/logrotate.d
