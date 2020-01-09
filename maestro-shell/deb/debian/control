@@ -1,0 +1,13 @@
+Source: maestro-shell
+Section: utils
+Priority: optional
+Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+Build-Depends: debhelper (>=9), golang-go:native (>=2:1.7~), libc6
+Standards-Version: 3.9.6
+Homepage: https://github.com/armPelionEdge/maestro-shell
+
+Package: maestro-shell
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: shell access to maestro
+ An interactive shell for controlling maestro locally on deviceOS.
