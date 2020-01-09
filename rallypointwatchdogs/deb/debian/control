@@ -1,0 +1,12 @@
+Source: rallypointwatchdogs
+Section: utils
+Priority: optional
+Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+Build-Depends: debhelper (>=9), golang-go (>=2:1.9)
+Standards-Version: 3.9.6
+
+Package: rallypointwatchdogs
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: RallyPoint 100 & 200 watchdog plugins for maestro

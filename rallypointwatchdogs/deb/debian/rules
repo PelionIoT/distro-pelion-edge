@@ -1,0 +1,18 @@
+#!/usr/bin/make -f
+
+FILES := $(wildcard *)
+
+PACKAGE = github.com/armPelionEdge/rallypointwatchdogs
+GOPKGDIR = go-workspace/src/"$(PACKAGE)"
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	mkdir -p "$(GOPKGDIR)"
+	cp -r $(FILES) "$(GOPKGDIR)"/
+	export GOPATH=`pwd`/go-workspace; \
+	cd "$(GOPKGDIR)" && ./build.sh
+
+override_dh_auto_clean:
+	-rm -rf go-workspace
