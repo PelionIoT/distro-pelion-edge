@@ -1,0 +1,27 @@
+Source: mbed-edge-examples
+Section: devel
+Priority: optional
+Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9), cmake (>=3.5), python:native, libc6-dev, libglib2.0-dev, libmosquitto-dev, mosquitto-clients
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com/docs/device-management-edge/0.9/developer-guide/edge-development-and-examples.html#edge-example-repository
+
+Package: mbed-edge-examples
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: contains the Protocol Translator examples for the Edge.
+ The protocol translator (PT) is the most important component for connected devices because it:
+	1. Handles device connectivity to Pelion Device Management.
+	2. Maps device resources to LwM2M-compliant Objects and Resources.
+	3. Maps Device Management operations (read, write, and execute) into a connected device protocol.
+ The protocol translator acts as a bridge between Edge Core and the device.
+ Devices connect to Edge through protocols not known in advance, and therefore,
+ you need to handle the connecting and disconnecting.Neither the Edge Core API
+ nor the protocol translator API currently track the connected devices
+ or their lifetimes. Therefore, they do not automatically clean up disconnected
+ devices from their internal lists.
+ The role of the protocol translator is to bridge any arbitrary data format to
+ an LwM2M-compatible format. The protocol translator API provides an interface to
+ interact with Edge Core and expose Resources to Device Management. You need to
+ translate the incoming data from devices to Objects, Object Instances,
+ and Resources using this API.
