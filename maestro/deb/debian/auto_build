@@ -1,16 +1,23 @@
 #!/bin/sh
 
-export GOARCH=`echo $AR | awk -F '-' '{print $1}'`
-export GOPATH=`pwd`/go-workspace
+set -e
+
+export CC="${DEB_HOST_GNU_TYPE}"-gcc
+export CXX="${DEB_HOST_GNU_TYPE}"-g++
+export PKG_CONFIG="${DEB_HOST_GNU_TYPE}"-pkg-config
+
+export CONFIG_OPTIONS="--host=${DEB_HOST_GNU_TYPE}"
+
 export CGO_ENABLED=1
+export GOPATH=`pwd`/go-workspace
+
+eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
 RPATH=/wigwag/system/lib
 PACKAGE=github.com/armPelionEdge/maestro
 MAESTRODIR="$GOPATH"/src/"$PACKAGE"
 GREASEGODIR="$MAESTRODIR"/vendor/github.com/armPelionEdge/greasego
 GREASELIBDIR="$GREASEGODIR"/deps/src/greaseLib
-
-set -e
 
 rm -rf "$GOPATH"
 set -- *
