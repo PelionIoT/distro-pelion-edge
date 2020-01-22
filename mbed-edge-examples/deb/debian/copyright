@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: mbed-edge-examples
-Source: https://github.com/ARMmbed/mbed-edge-examples/tree/0.9.0
+Source: https://github.com/ARMmbed/mbed-edge-examples
 
 Files: *
 Copyright: 2018-2020 Travis McCollum <travs.mccollum@arm.com>
