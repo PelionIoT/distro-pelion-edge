@@ -1,17 +1,14 @@
 #!/usr/bin/make -f
 
-FILES := $(wildcard *)
-
-PACKAGE = github.com/armPelionEdge/devicedb
-GOPKGDIR = go-workspace/src/"$(PACKAGE)"
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/buildflags.mk
 
 %:
 	dh $@
 
 override_dh_auto_build:
-	mkdir -p $(GOPKGDIR)
-	cp -r $(FILES) $(GOPKGDIR)/
-	GOPATH=`pwd`/go-workspace go install $(PACKAGE)
+	./debian/auto_build
 
 override_dh_auto_clean:
 	-rm -rf go-workspace
+	-rm -f  devicedb
