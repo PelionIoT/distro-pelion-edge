@@ -1,0 +1,13 @@
+Source: mbed-devicejs-bridge
+Section: javascript
+Priority: optional
+Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/index.html
+
+Package: mbed-devicejs-bridge
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: bridging software, which exposes devices in deviceJS to mbed, and vice versa.
+ The mbed-devicejs-bridge software should be installed on all Arm mbed branded gateways.
