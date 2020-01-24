@@ -1,0 +1,13 @@
+Source: deviceoswd
+Section: utils
+Priority: optional
+Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9), dh-systemd, libtool, m4, automake
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/index.html
+
+Package: deviceoswd
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Pelion OS Edge watchdog
+ Watchdog daemon for edge
