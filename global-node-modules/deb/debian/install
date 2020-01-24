@@ -1,0 +1,15 @@
+edge-node-modules/package.json /wigwag/devicejs-core-modules
+
+edge-node-modules/DevStateManager          /wigwag/wigwag-core-modules
+edge-node-modules/LEDController            /wigwag/wigwag-core-modules
+edge-node-modules/RelayStatsSender         /wigwag/wigwag-core-modules
+edge-node-modules/VirtualDeviceDriver      /wigwag/wigwag-core-modules
+edge-node-modules/onsite-enterprise-server /wigwag/wigwag-core-modules
+edge-node-modules/relay-term               /wigwag/wigwag-core-modules
+
+edge-node-modules/rsmi               /wigwag/devicejs-core-modules
+edge-node-modules/zigbeeHA           /wigwag/devicejs-core-modules
+edge-node-modules/node_modules       /wigwag/devicejs-core-modules
+edge-node-modules/maestroRunner      /wigwag/devicejs-core-modules
+edge-node-modules/core-interfaces    /wigwag/devicejs-core-modules
+edge-node-modules/bluetoothlowenergy /wigwag/devicejs-core-modules
