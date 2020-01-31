@@ -1,0 +1,6 @@
+fog-core (0.8.0-1) unstable; urgency=medium
+
+  * Initial release for Debian.
+
+ -- Vasily Smirnov <vasilii.smirnov@globallogic.com>  Thu, 30 Jan 2020 18:45:03 +0200
+

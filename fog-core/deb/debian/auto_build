@@ -1,0 +1,27 @@
+#!/bin/sh
+
+set -e
+
+export CC=${DEB_HOST_GNU_TYPE}-gcc
+export CXX=${DEB_HOST_GNU_TYPE}-g++
+export PKG_CONFIG=${DEB_HOST_GNU_TYPE}-pkg-config
+
+export CONFIG_OPTIONS="--host=${DEB_HOST_GNU_TYPE}"
+
+export CGO_ENABLED=1
+export GOPATH=`pwd`/go-workspace
+
+eval `debian/goflags.guess ${DEB_HOST_ARCH}`
+
+package=github.com/armPelionEdge/fog-core
+fogcoredir=$GOPATH/src/$package
+bindir=$GOPATH/bin
+
+rm -rf "$GOPATH"
+set -- *
+mkdir -p "$fogcoredir"
+cp -r "$@" "$fogcoredir"
+
+mkdir "$bindir"
+cd    "$bindir"
+go build "$package"/cmd/fog
