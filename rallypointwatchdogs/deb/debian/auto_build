@@ -1,0 +1,23 @@
+#!/bin/sh
+
+set -e
+
+export CC=${DEB_HOST_GNU_TYPE}-gcc
+export CXX=${DEB_HOST_GNU_TYPE}-g++
+export PKG_CONFIG=${DEB_HOST_GNU_TYPE}-pkg-config
+
+export CGO_ENABLED=1
+export GOPATH=`pwd`/go-workspace
+
+eval `debian/goflags.guess ${DEB_HOST_ARCH}`
+
+package=github.com/armPelionEdge/rallypointwatchdogs
+pkgdir=$GOPATH/src/$package
+
+rm -rf "$GOPATH"
+set -- *
+mkdir -p "$pkgdir"
+cp -r "$@" "$pkgdir"/
+
+cd "$pkgdir"
+./build.sh
