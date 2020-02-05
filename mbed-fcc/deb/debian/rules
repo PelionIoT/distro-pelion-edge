@@ -1,0 +1,27 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+# export DH_VERBOSE = 1
+
+export CC=${DEB_HOST_GNU_TYPE}-gcc
+export CXX=${DEB_HOST_GNU_TYPE}-g++
+export PKG_CONFIG=${DEB_HOST_GNU_TYPE}-pkg-config
+
+%:
+	dh $@ --buildsystem=cmake --builddirectory=__Yocto_Generic_YoctoLinux_mbedtls/
+
+override_dh_auto_clean:
+	cd __Yocto_Generic_YoctoLinux_mbedtls/ && \
+	find ! \( -name 'CMakeLists.txt' -o -name 'autogen.cmake' \) -type f -exec rm -f {} \; && \
+	find -mindepth 1 -maxdepth 1 -type d -exec rm -r {} \;
+
+override_dh_auto_configure:
+	cd __Yocto_Generic_YoctoLinux_mbedtls/ && \
+	cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=../pal-platform/Toolchain/POKY-GLIBC/POKY-GLIBC.cmake -DEXTARNAL_DEFINE_FILE=../linux-config.cmake
+
+override_dh_auto_build:
+	cd __Yocto_Generic_YoctoLinux_mbedtls/ && \
+	make factory-configurator-client-example.elf
+
+override_dh_auto_install:
+	echo Not needed in our case

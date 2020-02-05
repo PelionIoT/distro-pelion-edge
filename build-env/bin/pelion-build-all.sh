@@ -19,6 +19,7 @@ PACKAGES=(
     'mbed-edge-core'
     'mbed-edge-core-devmode'
     'mbed-edge-examples'
+    'mbed-fcc'
     'pe-utils'
     'rallypointwatchdogs'
 )
