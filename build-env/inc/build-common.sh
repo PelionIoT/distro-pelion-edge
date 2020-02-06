@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT_DIR=$(cd "$(cd `dirname $0` && pwd)/../.."; pwd)
+ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
 
 # Default value of build options
 PELION_PACKAGE_INSTALL_DEPS=false
@@ -78,7 +78,7 @@ function pelion_env_validate() {
     done
 
     if [[ -v PELION_PACKAGE_CERTIFICATE_PATH ]]; then
-        if [ ! -f $PELION_PACKAGE_CERTIFICATE_PATH/mbed_cloud_dev_credentials.c ]; then
+        if [ ! -f "$PELION_PACKAGE_CERTIFICATE_PATH"/mbed_cloud_dev_credentials.c ]; then
             echo "Error: $PELION_PACKAGE_CERTIFICATE_PATH/mbed_cloud_dev_credentials.c does not exist."
             exit 1
         fi
@@ -96,8 +96,8 @@ function pelion_source_preparation() {
         PELION_COMPONENT_SOURCE_DIR=$PELION_SOURCE_DIR
     fi
 
-    if [ ! -d $PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME ]; then
-        git clone $PELION_COMPONENT_URL $PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME
+    if [ ! -d "$PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME" ]; then
+        git clone "$PELION_COMPONENT_URL" "$PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME"
 
         if [ $? -ne 0 ]; then
             echo "Error: can not clone $PELION_COMPONENT_URL."
@@ -105,8 +105,8 @@ function pelion_source_preparation() {
         fi
     fi
 
-    cd $PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME && git remote update && \
-    git checkout $PELION_COMPONENT_VERSION
+    cd "$PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME" && git remote update && \
+    git checkout "$PELION_COMPONENT_VERSION"
     if [ $? -ne 0 ]; then
         echo "Error: can not checkout to $PELION_COMPONENT_VERSION."
         exit 1
@@ -117,30 +117,30 @@ function pelion_generation_deb_source_packages() {
     PELION_PACKAGE_FOLDER_NAME="$PELION_PACKAGE_NAME"-"$PELION_PACKAGE_VERSION"
     PELION_PACKAGE_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_VERSION"
 
-    if [ ! -d $PELION_DEB_DEPLOY_DIR ]; then
-        mkdir -p $PELION_DEB_DEPLOY_DIR
+    if [ ! -d "$PELION_DEB_DEPLOY_DIR" ]; then
+        mkdir -p "$PELION_DEB_DEPLOY_DIR"
     fi
 
-    if [ ! -d $PELION_TMP_BUILD_DIR ]; then
-        mkdir -p $PELION_TMP_BUILD_DIR
+    if [ ! -d "$PELION_TMP_BUILD_DIR" ]; then
+        mkdir -p "$PELION_TMP_BUILD_DIR"
     else
-        rm -rf $PELION_TMP_BUILD_DIR/*
+        rm -rf "${PELION_TMP_BUILD_DIR:?}"/*
     fi
 
-    cp -r $PELION_SOURCE_DIR/$PELION_PACKAGE_NAME $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME
+    cp -r "$PELION_SOURCE_DIR/$PELION_PACKAGE_NAME" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
     $PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK
 
-    tar czf $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz -C $PELION_TMP_BUILD_DIR $PELION_PACKAGE_FOLDER_NAME
+    tar czf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR" "$PELION_PACKAGE_FOLDER_NAME"
     if [ $? -ne 0 ]; then
        echo "Error: can not archive $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME to $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz."
        exit 1
     fi
 
-    cp -r $PELION_PACKAGE_DIR/debian $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME
+    cp -r "$PELION_PACKAGE_DIR/debian" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
-    cd $PELION_DEB_DEPLOY_DIR && \
-    dpkg-source -b $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME
+    cd "$PELION_DEB_DEPLOY_DIR" && \
+    dpkg-source -b "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
     if [ $? -ne 0 ]; then
         echo "Error: can not generate deb source packages."
         exit 1
@@ -151,31 +151,31 @@ function pelion_building_deb_package() {
     PELION_PACKAGE_FOLDER_NAME="$PELION_PACKAGE_NAME"-"$PELION_PACKAGE_VERSION"
     PELION_PACKAGE_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_VERSION"
 
-    if [ ! -d $PELION_DEB_DEPLOY_DIR ]; then
-        mkdir -p $PELION_DEB_DEPLOY_DIR
+    if [ ! -d "$PELION_DEB_DEPLOY_DIR" ]; then
+        mkdir -p "$PELION_DEB_DEPLOY_DIR"
     fi
 
-    if [ ! -d $PELION_TMP_BUILD_DIR ]; then
-        mkdir -p $PELION_TMP_BUILD_DIR
+    if [ ! -d "$PELION_TMP_BUILD_DIR" ]; then
+        mkdir -p "$PELION_TMP_BUILD_DIR"
     else
-        rm -rf $PELION_TMP_BUILD_DIR/*
+        rm -rf "${PELION_TMP_BUILD_DIR:?}"/*
     fi
 
     if $PELION_PACKAGE_INSTALL_DEPS ; then
         sudo apt-get update && \
-        sudo apt-get build-dep -y -a $PELION_PACKAGE_TARGET_ARCH $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.dsc
+        sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.dsc"
     fi
 
-    if [ ! -f $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz ] ||
-       [ ! -f $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz ]; then
+    if [ ! -f "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" ] ||
+       [ ! -f "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz" ]; then
         echo "Error: $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz or $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz not found."
         exit 1
     fi
 
-    tar xf $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz -C $PELION_TMP_BUILD_DIR/
-    tar xf $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz -C $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME
+    tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR/"
+    tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz" -C "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
-    cd $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME
+    cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
     PELION_DPKG_BUILD_OPTIONS="--host-arch $PELION_PACKAGE_TARGET_ARCH -b -uc"
     if [[ -v PELION_PACKAGE_SKIP_DEPS_CHECKING ]]; then
@@ -188,5 +188,5 @@ function pelion_building_deb_package() {
         exit 1
     fi
 
-    mv $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1_$PELION_PACKAGE_TARGET_ARCH.deb $PELION_DEB_DEPLOY_DIR
+    mv "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1_$PELION_PACKAGE_TARGET_ARCH.deb" "$PELION_DEB_DEPLOY_DIR"
 }

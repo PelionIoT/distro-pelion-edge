@@ -9,7 +9,7 @@ export PKG_CONFIG="${DEB_HOST_GNU_TYPE}"-pkg-config
 export CONFIG_OPTIONS="--host=${DEB_HOST_GNU_TYPE}"
 
 export CGO_ENABLED=1
-export GOPATH=`pwd`/go-workspace
+export GOPATH="`pwd`/go-workspace"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 

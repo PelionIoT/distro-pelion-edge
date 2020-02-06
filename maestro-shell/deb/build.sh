@@ -3,13 +3,13 @@
 # Internal variables
 PELION_PACKAGE_NAME="maestro-shell"
 PELION_PACKAGE_VERSION="0.0.1" # The same value is in debian/control file
-PELION_PACKAGE_DIR=$(cd `dirname $0` && pwd)
+PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 PELION_COMPONENT_NAME="maestro-shell"
 PELION_COMPONENT_URL="git@github.com:armPelionEdge/maestro-shell.git"
 PELION_COMPONENT_VERSION="6453fba93557fc7c4593c48022cf88395bd23a57"
 
-source $PELION_PACKAGE_DIR/../../build-env/inc/build-common.sh
+source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function main() {
     pelion_parse_args "$@"
@@ -29,5 +29,5 @@ function main() {
 }
 
 # Entry point
-main $@
+main "$@"
 

@@ -3,18 +3,18 @@
 # Internal variables
 PELION_PACKAGE_NAME="mbed-edge-examples"
 PELION_PACKAGE_VERSION="0.0.1" # The same value is in debian/control file
-PELION_PACKAGE_DIR=$(cd `dirname $0` && pwd)
+PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 PELION_COMPONENT_NAME="mbed-edge-examples"
 PELION_COMPONENT_URL="https://github.com/ARMmbed/mbed-edge-examples.git"
 PELION_COMPONENT_VERSION="0.9.0"
 
-source $PELION_PACKAGE_DIR/../../build-env/inc/build-common.sh
+source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function pelion_mbed_edge_examples_source_preparation() {
     pelion_source_preparation $PELION_COMPONENT_NAME $PELION_COMPONENT_URL $PELION_COMPONENT_VERSION
 
-    cd $PELION_SOURCE_DIR/$PELION_COMPONENT_NAME
+    cd "$PELION_SOURCE_DIR/$PELION_COMPONENT_NAME"
     git submodule update --init --recursive
 }
 
@@ -36,4 +36,4 @@ function main() {
 }
 
 # Entry point
-main $@
+main "$@"
