@@ -131,6 +131,17 @@ function pelion_generation_deb_source_packages() {
 
     $PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK
 
+    if [[ -v PACKAGE_SOURCE_DIR ]]; then
+        for Component in "${PELION_TMP_BUILD_DIR:?}/${PELION_PACKAGE_FOLDER_NAME:?}/"*/
+        do
+            rm -rf "$Component/.git" \
+                   "$Component/.github"
+        done
+    else
+        rm -rf "${PELION_TMP_BUILD_DIR:?}/${PELION_PACKAGE_FOLDER_NAME:?}/.git" \
+               "${PELION_TMP_BUILD_DIR:?}/${PELION_PACKAGE_FOLDER_NAME:?}/.github"
+    fi
+
     tar czf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR" "$PELION_PACKAGE_FOLDER_NAME"
     if [ $? -ne 0 ]; then
        echo "Error: can not archive $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME to $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz."
