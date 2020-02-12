@@ -2,7 +2,7 @@ Source: global-node-modules
 Section: javascript
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
-Build-Depends: debhelper (>=9), nodejs:native, libssl1.0-dev, libstdc++6, npm:native, node-gyp:native
+Build-Depends: debhelper (>=9), nodejs:native, libssl1.0-dev, libstdc++6, libudev-dev, npm:native, node-gyp:native
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/index.html
 

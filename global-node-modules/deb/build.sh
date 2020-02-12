@@ -41,7 +41,7 @@ function pelion_global_node_modules_source_update_cb() {
 
     npm install --loglevel silly node-expat iconv bufferutil@3.0.5 --production --ignore-scripts >> npm-first.log 2>&1
     rm package-lock.json
-    npm install --loglevel silly install --production --ignore-scripts >> npm-second.log 2>&1
+    npm --loglevel silly install --production --ignore-scripts >> npm-second.log 2>&1
     rm package-lock.json
 }
 
