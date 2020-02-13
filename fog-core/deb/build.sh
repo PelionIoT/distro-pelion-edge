@@ -1,66 +1,33 @@
-#!/bin/sh
+#!/bin/bash
 
-package=fog-core
+# Internal variables
+PELION_PACKAGE_NAME="fog-core"
+PELION_PACKAGE_VERSION="0.0.1" # The same value is in debian/control file
+PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
-url=git@github.com:armPelionEdge/fog-core.git
-rev=5251afa5cfac4de73c25d2d38e9fd799f3f80f91
-rel=0.8.0
+PELION_COMPONENT_NAME="fog-core"
+PELION_COMPONENT_URL="git@github.com:armPelionEdge/fog-core.git"
+PELION_COMPONENT_VERSION="5251afa5cfac4de73c25d2d38e9fd799f3f80f91"
 
-debrev=1
+source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
-# All code below may potentially be shared between multiple packages.
-# Pay attention to debrev, it's not present in other versions of the
-# script.
+function main() {
+    pelion_parse_args "$@"
 
-set -e
-cd "${0%/*}"/../..
+    pelion_env_validate
 
-pkgoar=${package}_${rel}.orig.tar.gz
-pkgdar=${package}_${rel}-${debrev}.debian.tar.xz
-pkgdsc=${package}_${rel}-${debrev}.dsc
-pkgdir=${package}-${rel}
+    pelion_source_preparation $PELION_COMPONENT_NAME $PELION_COMPONENT_URL $PELION_COMPONENT_VERSION
+    echo "INFO: Source preparation done!"
 
-top=`pwd`
-srcdir=$top/$package/deb
-builddir=$top/build/$package
-deploydir=$top/build/deploy/deb
-repo=$builddir/repo
+    pelion_generation_deb_source_packages
+    echo "INFO: Generation debian source packages done!"
 
-if [ ! -d "$srcdir" ]; then
-    echo "$package build.sh: unexpected directory structure" >&2
-    exit 1
-fi
+    pelion_building_deb_package
+    echo "INFO: Building debian package done!"
 
-mkdir -p "$builddir"
-cd "$builddir"
+    echo "INFO: Done!"
+}
 
-# Download the code.
-if [ ! -d "$repo" ]; then
-    git clone "$url" "$repo"
-fi
+# Entry point
+main "$@"
 
-# Create a .orig tarball for dpkg-source.
-if [ ! -f "$pkgoar" ]; then
-    cd "$repo"
-    git checkout "$rev"
-    git archive --prefix="$pkgdir/" -o "$builddir/$pkgoar" HEAD
-    cd -
-fi
-
-# Extract the tarball and generate a debian source package.
-if [ ! -d "$pkgdir" ]; then
-    tar xf "$pkgoar"
-    cp -r "$srcdir/debian" "$pkgdir/debian"
-    dpkg-source -b "$pkgdir"
-fi
-
-# Build a binary package.
-cd "$pkgdir"
-debuild -b -us -uc
-cd -
-
-mkdir -p "$deploydir"
-cp *.deb "$deploydir/"
-cp "$pkgoar" "$deploydir/"
-cp "$pkgdar" "$deploydir/"
-cp "$pkgdsc" "$deploydir/"

@@ -1,62 +1,33 @@
-#!/bin/sh
+#!/bin/bash
 
-package=fog-proxy
+# Internal variables
+PELION_PACKAGE_NAME="fog-proxy"
+PELION_PACKAGE_VERSION="0.0.1" # The same value is in debian/control file
+PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
-url=git@github.com:armPelionEdge/fog-proxy.git
-rev=fe33b2bc2570da514326937597d84343bf4febe6
-rel=0.0
+PELION_COMPONENT_NAME="fog-proxy"
+PELION_COMPONENT_URL="git@github.com:armPelionEdge/fog-proxy.git"
+PELION_COMPONENT_VERSION="fe33b2bc2570da514326937597d84343bf4febe6"
 
-# All code below may potentially be shared between multiple packages.
+source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
-set -e
-cd "${0%/*}"/../..
+function main() {
+    pelion_parse_args "$@"
 
-pkgoar=${package}_${rel}.orig.tar.gz
-pkgdar=${package}_${rel}.debian.tar.xz
-pkgdsc=${package}_${rel}.dsc
-pkgdir=${package}-${rel}
+    pelion_env_validate
 
-top=`pwd`
-srcdir=$top/$package/deb
-builddir=$top/build/$package
-deploydir=$top/build/deploy/deb
-repo=$builddir/repo
+    pelion_source_preparation $PELION_COMPONENT_NAME $PELION_COMPONENT_URL $PELION_COMPONENT_VERSION
+    echo "INFO: Source preparation done!"
 
-if [ ! -d "$srcdir" ]; then
-    echo "$package build.sh: unexpected directory structure" >&2
-    exit 1
-fi
+    pelion_generation_deb_source_packages
+    echo "INFO: Generation debian source packages done!"
 
-mkdir -p "$builddir"
-cd "$builddir"
+    pelion_building_deb_package
+    echo "INFO: Building debian package done!"
 
-# Download the code.
-if [ ! -d "$repo" ]; then
-    git clone "$url" "$repo"
-fi
+    echo "INFO: Done!"
+}
 
-# Create a .orig tarball for dpkg-source.
-if [ ! -f "$pkgoar" ]; then
-    cd "$repo"
-    git checkout "$rev"
-    git archive --prefix="$pkgdir/" -o "$builddir/$pkgoar" HEAD
-    cd -
-fi
+# Entry point
+main "$@"
 
-# Extract the tarball and generate a debian source package.
-if [ ! -d "$pkgdir" ]; then
-    tar xf "$pkgoar"
-    cp -r "$srcdir/debian" "$pkgdir/debian"
-    dpkg-source -b "$pkgdir"
-fi
-
-# Build a binary package.
-cd "$pkgdir"
-debuild -b -us -uc
-cd -
-
-mkdir -p "$deploydir"
-cp *.deb "$deploydir/"
-cp "$pkgoar" "$deploydir/"
-cp "$pkgdar" "$deploydir/"
-cp "$pkgdsc" "$deploydir/"
