@@ -7,7 +7,7 @@ PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 PELION_COMPONENT_NAME="mbed-edge-examples"
 PELION_COMPONENT_URL="https://github.com/ARMmbed/mbed-edge-examples.git"
-PELION_COMPONENT_VERSION="0.9.0"
+PELION_COMPONENT_VERSION="0.10.0"
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
