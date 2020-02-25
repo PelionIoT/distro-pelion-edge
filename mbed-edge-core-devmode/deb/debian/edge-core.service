@@ -6,7 +6,7 @@ After=systemd-networkd-wait-online.service
 Restart=always
 RestartSec=5s
 WorkingDirectory=/userdata/mbed
-ExecStart=/wigwag/mbed/edge-core --http-port 9101
+ExecStart=/wigwag/mbed/edge-core --cbor-conf=/wigwag/etc/credentials.cbor --http-port 9101
 
 [Install]
 RequiredBy=network.target

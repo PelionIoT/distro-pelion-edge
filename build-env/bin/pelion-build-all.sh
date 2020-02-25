@@ -17,6 +17,7 @@ PACKAGES=(
     'maestro-shell'
     'mbed-devicejs-bridge'
     'mbed-edge-core'
+    'mbed-edge-core-devmode'
     'mbed-edge-examples'
     'pe-utils'
     'rallypointwatchdogs'

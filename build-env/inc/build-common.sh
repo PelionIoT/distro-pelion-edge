@@ -33,25 +33,12 @@ function pelion_parse_args() {
                 PELION_PACKAGE_TARGET_ARCH="${opt#*=}"
                 ;;
 
-              --cert_path=*)
-                if [[ ! -v PELION_PACKAGE_CERTIFICATE_PATH ]]; then
-                    echo "Error: --cert_path is invalid arg for $PELION_PACKAGE_NAME package."
-                    exit 1
-                fi
-                PELION_PACKAGE_CERTIFICATE_PATH="${opt#*=}"
-                ;;
-
             --help|-h)
                 echo "Usage: $0 [Options]"
                 echo ""
                 echo "Options:"
                 echo " --install           Install all dependencies needed by deb packet."
                 echo " --arch=<arch>       Set target architecture."
-
-                if [[ -v PELION_PACKAGE_CERTIFICATE_PATH ]]; then
-                    echo " --cert_path=<path>  Path to mbed_cloud_dev_credentials.c."
-                fi
-
                 echo " --help,-h           Print this message."
                 echo ""
 
@@ -62,11 +49,7 @@ function pelion_parse_args() {
                 done
                 echo ""
 
-                if [[ -v PELION_PACKAGE_CERTIFICATE_PATH ]]; then
-                    echo "Default mode: $0 --arch=$PELION_PACKAGE_TARGET_ARCH --cert_path=$PELION_PACKAGE_CERTIFICATE_PATH"
-                else
-                    echo "Default mode: $0 --arch=$PELION_PACKAGE_TARGET_ARCH"
-                fi
+                echo "Default mode: $0 --arch=$PELION_PACKAGE_TARGET_ARCH"
                 exit 0
                 ;;
         esac
@@ -84,13 +67,6 @@ function pelion_env_validate() {
             exit 1
         fi
     done
-
-    if [[ -v PELION_PACKAGE_CERTIFICATE_PATH ]]; then
-        if [ ! -f "$PELION_PACKAGE_CERTIFICATE_PATH"/mbed_cloud_dev_credentials.c ]; then
-            echo "Error: $PELION_PACKAGE_CERTIFICATE_PATH/mbed_cloud_dev_credentials.c does not exist."
-            exit 1
-        fi
-    fi
 }
 
 function pelion_source_preparation() {

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Internal variables
-PELION_PACKAGE_NAME="mbed-edge-core"
+PELION_PACKAGE_NAME="mbed-edge-core-devmode"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK=pelion_mbed_edge_core_source_preparation_cb
