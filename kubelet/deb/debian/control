@@ -1,0 +1,12 @@
+Source: kubelet
+Section: utils
+Priority: optional
+Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+Build-Depends: debhelper (>=9), golang-go:native (>=2:1.9~), libc6
+Standards-Version: 3.9.6
+
+Package: kubelet
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: talks to kubernetes service

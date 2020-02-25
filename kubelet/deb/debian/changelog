@@ -1,0 +1,6 @@
+kubelet (0.0.1) unstable; urgency=medium
+
+  * Initial release for Debian.
+
+ -- Vasily Smirnov <vasilii.smirnov@globallogic.com>  Mon, 24 Feb 2020 15:05:50 +0200
+

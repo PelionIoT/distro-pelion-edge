@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+
+export CC="${DEB_HOST_GNU_TYPE}"-gcc
+export CXX="${DEB_HOST_GNU_TYPE}"-g++
+export PKG_CONFIG="${DEB_HOST_GNU_TYPE}"-pkg-config
+
+export CGO_ENABLED=1
+export GOPATH="$(pwd)/go-workspace"
+
+eval "$(debian/goflags.guess $DEB_HOST_ARCH)"
+
+package=k8s.io/kubernetes
+packagedir=$GOPATH/src/$package
+
+rm -rf "$GOPATH"
+set -- *
+mkdir -p "$packagedir"
+cp -r "$@" "$packagedir"/
+
+go build -buildmode=pie "$package"/cmd/kubelet
