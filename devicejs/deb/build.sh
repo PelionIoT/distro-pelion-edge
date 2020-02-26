@@ -9,12 +9,8 @@ PELION_PACKAGE_SKIP_DEPS_CHECKING=true
 PELION_PACKAGE_SUPPORTED_ARCH=(amd64 arm64 armhf)
 PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK=pelion_devicejs_ng_origin_source_update_cb
 
-PELION_COMPONENT_NAME="devicejs-ng"
-PELION_COMPONENT_URL="https://github.com/armPelionEdge/devicejs-ng.git"
-PELION_COMPONENT_VERSION="master"
-
-PACKAGE_ROOT_DIR=$(cd "$PELION_PACKAGE_DIR/../.."; pwd)
-SOURCE_DIR=$PACKAGE_ROOT_DIR/build/downloads
+declare -A PELION_PACKAGE_COMPONENTS=(
+    ["https://github.com/armPelionEdge/devicejs-ng.git"]="master")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
@@ -23,22 +19,4 @@ function pelion_devicejs_ng_origin_source_update_cb() {
     npm install --production --ignore-scripts
 }
 
-function main() {
-    pelion_parse_args "$@"
-
-    pelion_env_validate
-
-    pelion_source_preparation $PELION_COMPONENT_NAME $PELION_COMPONENT_URL $PELION_COMPONENT_VERSION
-    echo "INFO: Source preparation done!"
-
-    pelion_generation_deb_source_packages
-    echo "INFO: Generation debian source packages done!"
-
-    pelion_building_deb_package
-    echo "INFO: Building debian package done!"
-
-    echo "INFO: Done!"
-}
-
-# Entry point
-main "$@"
+pelion_main "$@"

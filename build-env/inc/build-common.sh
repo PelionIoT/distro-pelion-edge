@@ -1,6 +1,12 @@
 #!/bin/bash
 
+set -e -u
+
 ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
+
+PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
+PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb
+PELION_TMP_BUILD_DIR=$ROOT_DIR/build/tmp-build/$PELION_PACKAGE_NAME
 
 # Default value of build options
 PELION_PACKAGE_INSTALL_DEPS=false
@@ -9,10 +15,6 @@ PELION_PACKAGE_TARGET_ARCH=amd64
 if [[ ! -v PELION_PACKAGE_SUPPORTED_ARCH ]]; then
     PELION_PACKAGE_SUPPORTED_ARCH=(amd64 arm64 armhf armel)
 fi
-
-PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
-PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb
-PELION_TMP_BUILD_DIR=$ROOT_DIR/build/tmp-build/$PELION_PACKAGE_NAME
 
 function pelion_parse_args() {
    for opt in "$@"; do
@@ -86,30 +88,26 @@ function pelion_env_validate() {
 }
 
 function pelion_source_preparation() {
-    PELION_COMPONENT_NAME=$1
-    PELION_COMPONENT_URL=$2
-    PELION_COMPONENT_VERSION=$3
+    for COMPONENT in "${!PELION_PACKAGE_COMPONENTS[@]}"; do
+        PACKAGE_COMPONENT_BASENAME=$(basename $COMPONENT)
+        PACKAGE_COMPONENT_FILENAME=${PACKAGE_COMPONENT_BASENAME%.*}
 
-    if [[ -v PACKAGE_SOURCE_DIR ]]; then
-        PELION_COMPONENT_SOURCE_DIR=$PACKAGE_SOURCE_DIR
-    else
-        PELION_COMPONENT_SOURCE_DIR=$PELION_SOURCE_DIR
-    fi
-
-    if [ ! -d "$PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME" ]; then
-        git clone "$PELION_COMPONENT_URL" "$PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME"
-
-        if [ $? -ne 0 ]; then
-            echo "Error: can not clone $PELION_COMPONENT_URL."
-            exit 1
+        if [ ! -d "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME" ]; then
+            git clone $COMPONENT "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME"
         fi
-    fi
 
-    cd "$PELION_COMPONENT_SOURCE_DIR/$PELION_COMPONENT_NAME" && git remote update && \
-    git checkout "$PELION_COMPONENT_VERSION"
-    if [ $? -ne 0 ]; then
-        echo "Error: can not checkout to $PELION_COMPONENT_VERSION."
-        exit 1
+        if [ ! ${PELION_PACKAGE_COMPONENTS[$COMPONENT]} ]; then
+            PELION_PACKAGE_COMPONENTS[$COMPONENT]=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+        fi
+
+        cd "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME"        && \
+        git remote update                                          && \
+        git checkout ${PELION_PACKAGE_COMPONENTS[$COMPONENT]}
+    done
+
+
+    if [ -v PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK ]; then
+        $PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK
     fi
 }
 
@@ -117,70 +115,51 @@ function pelion_generation_deb_source_packages() {
     PELION_PACKAGE_FOLDER_NAME="$PELION_PACKAGE_NAME"-"$PELION_PACKAGE_VERSION"
     PELION_PACKAGE_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_VERSION"
 
-    if [ ! -d "$PELION_DEB_DEPLOY_DIR" ]; then
-        mkdir -p "$PELION_DEB_DEPLOY_DIR"
-    fi
+    mkdir -p "$PELION_DEB_DEPLOY_DIR"
 
-    if [ ! -d "$PELION_TMP_BUILD_DIR" ]; then
-        mkdir -p "$PELION_TMP_BUILD_DIR"
-    else
-        rm -rf "${PELION_TMP_BUILD_DIR:?}"/*
-    fi
+    rm -rf "$PELION_TMP_BUILD_DIR"
+    mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
-    cp -r "$PELION_SOURCE_DIR/$PELION_PACKAGE_NAME" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
+    for COMPONENT in "${!PELION_PACKAGE_COMPONENTS[@]}"; do
+        PACKAGE_COMPONENT_BASENAME=$(basename $COMPONENT)
+        PACKAGE_COMPONENT_FILENAME=${PACKAGE_COMPONENT_BASENAME%.*}
 
-    $PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK
+        if [ ${#PELION_PACKAGE_COMPONENTS[@]} -gt 1 ]; then
+            cp -r "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/"
 
-    if [[ -v PACKAGE_SOURCE_DIR ]]; then
-        for Component in "${PELION_TMP_BUILD_DIR:?}/${PELION_PACKAGE_FOLDER_NAME:?}/"*/
-        do
-            rm -rf "$Component/.git" \
-                   "$Component/.github"
-        done
-    else
-        rm -rf "${PELION_TMP_BUILD_DIR:?}/${PELION_PACKAGE_FOLDER_NAME:?}/.git" \
-               "${PELION_TMP_BUILD_DIR:?}/${PELION_PACKAGE_FOLDER_NAME:?}/.github"
+            rm -rf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/$PACKAGE_COMPONENT_FILENAME/.git" \
+                   "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/$PACKAGE_COMPONENT_FILENAME/.github"
+        else
+            cp -r "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME/." "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/"
+
+            rm -rf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/.git" \
+                   "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/.github"
+        fi
+    done
+
+    if [ -v PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK ]; then
+        $PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK
     fi
 
     tar czf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR" "$PELION_PACKAGE_FOLDER_NAME"
-    if [ $? -ne 0 ]; then
-       echo "Error: can not archive $PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME to $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz."
-       exit 1
-    fi
-
     cp -r "$PELION_PACKAGE_DIR/debian" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
     cd "$PELION_DEB_DEPLOY_DIR" && \
     dpkg-source -b "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
-    if [ $? -ne 0 ]; then
-        echo "Error: can not generate deb source packages."
-        exit 1
-    fi
 }
 
 function pelion_building_deb_package() {
     PELION_PACKAGE_FOLDER_NAME="$PELION_PACKAGE_NAME"-"$PELION_PACKAGE_VERSION"
     PELION_PACKAGE_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_VERSION"
 
-    if [ ! -d "$PELION_DEB_DEPLOY_DIR" ]; then
-        mkdir -p "$PELION_DEB_DEPLOY_DIR"
-    fi
+    mkdir -p "$PELION_DEB_DEPLOY_DIR"
 
-    if [ ! -d "$PELION_TMP_BUILD_DIR" ]; then
-        mkdir -p "$PELION_TMP_BUILD_DIR"
-    else
-        rm -rf "${PELION_TMP_BUILD_DIR:?}"/*
-    fi
+    rm -rf "$PELION_TMP_BUILD_DIR"
+    mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
-    if $PELION_PACKAGE_INSTALL_DEPS ; then
+    if $PELION_PACKAGE_INSTALL_DEPS; then
         sudo apt-get update && \
         sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.dsc"
-    fi
-
-    if [ ! -f "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" ] ||
-       [ ! -f "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.debian.tar.xz" ]; then
-        echo "Error: $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz or $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.debian.tar.xz not found."
-        exit 1
     fi
 
     tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR/"
@@ -194,10 +173,23 @@ function pelion_building_deb_package() {
     fi
 
     dpkg-buildpackage $PELION_DPKG_BUILD_OPTIONS
-    if [ $? -ne 0 ]; then
-        echo "Error: can not build deb packet."
-        exit 1
-    fi
 
     mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR"
+}
+
+function pelion_main() {
+    pelion_parse_args "$@"
+
+    pelion_env_validate
+
+    pelion_source_preparation
+    echo "INFO: Source preparation done!"
+
+    pelion_generation_deb_source_packages
+    echo "INFO: Generation debian source packages done!"
+
+    pelion_building_deb_package
+    echo "INFO: Building debian package done!"
+
+    echo "INFO: Done!"
 }
