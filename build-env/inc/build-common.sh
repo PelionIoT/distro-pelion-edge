@@ -174,17 +174,17 @@ function pelion_building_deb_package() {
 
     if $PELION_PACKAGE_INSTALL_DEPS ; then
         sudo apt-get update && \
-        sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.dsc"
+        sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.dsc"
     fi
 
     if [ ! -f "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" ] ||
-       [ ! -f "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz" ]; then
-        echo "Error: $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz or $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz not found."
+       [ ! -f "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.debian.tar.xz" ]; then
+        echo "Error: $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz or $PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.debian.tar.xz not found."
         exit 1
     fi
 
     tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR/"
-    tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1.debian.tar.xz" -C "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
+    tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ARCHIVE_NAME.debian.tar.xz" -C "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
@@ -199,5 +199,5 @@ function pelion_building_deb_package() {
         exit 1
     fi
 
-    mv "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_ARCHIVE_NAME-1_$PELION_PACKAGE_TARGET_ARCH.deb" "$PELION_DEB_DEPLOY_DIR"
+    mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR"
 }

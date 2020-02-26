@@ -1,4 +1,4 @@
-fog-core (0.0.1-1) unstable; urgency=medium
+fog-core (0.0.1) unstable; urgency=medium
 
   * Initial release for Debian.
 
