@@ -5,8 +5,6 @@ Source: https://github.com/armPelionEdge/edge-node-modules
 Files: *
 Copyright: 2019-2020 Travis McCollum <travs.mccollum@arm.com>
 License: Apache-2.0
-
-License: Apache-2.0
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
@@ -21,8 +19,3 @@ License: Apache-2.0
  .
  On Debian systems, the complete text of the Apache version 2.0 license
  can be found in "/usr/share/common-licenses/Apache-2.0".
-
-# Please also look if there are files or directories which have a
-# different copyright/license attached and list them here.
-# Please avoid picking licenses with terms that are more restrictive than the
-# packaged work, as it may make Debian's contributions unacceptable upstream.
