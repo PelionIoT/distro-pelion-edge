@@ -11,3 +11,6 @@ override_dh_auto_build:
 
 override_dh_auto_clean:
 	-rm -rf go-workspace
+
+override_dh_installlogrotate:
+	dh_installlogrotate --name=maestro-runtime maestro-runtime.logrotate

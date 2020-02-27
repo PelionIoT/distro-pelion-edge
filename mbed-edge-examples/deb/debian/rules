@@ -30,3 +30,7 @@ override_dh_clean:
 
 override_dh_auto_install:
 	echo Not needed in our case
+
+override_dh_installlogrotate:
+	dh_installlogrotate --name=blept-example blept-example.logrotate
+	dh_installlogrotate --name=pt-example pt-example.logrotate
