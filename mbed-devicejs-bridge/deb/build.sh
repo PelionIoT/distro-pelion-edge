@@ -2,7 +2,6 @@
 
 # Internal variables
 PELION_PACKAGE_NAME="mbed-devicejs-bridge"
-PELION_PACKAGE_VERSION="0.0.1" # The same value is in debian/control file
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK=pelion_mbed_devicejs_bridge_origin_source_update_cb

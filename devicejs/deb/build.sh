@@ -2,7 +2,6 @@
 
 # Internal variables
 PELION_PACKAGE_NAME="devicejs-ng"
-PELION_PACKAGE_VERSION="0.0.1" # The same value is in debian/control file
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 PELION_PACKAGE_SKIP_DEPS_CHECKING=true

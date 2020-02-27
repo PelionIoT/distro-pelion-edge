@@ -2,7 +2,6 @@
 
 # Internal variables
 PELION_PACKAGE_NAME="mbed-edge-core"
-PELION_PACKAGE_VERSION="0.0.1" # The same value is in debian/control file
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK=pelion_mbed_edge_core_source_preparation
