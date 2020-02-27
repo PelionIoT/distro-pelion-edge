@@ -2,10 +2,9 @@
 Description=Maestro: Network, Config, DeviceJS manager
 
 [Service]
-#Restart=always
-#RestartSec=5s
-#ExecStartPre=mkdir -p /userdata/etc/
-ExecStart=/wigwag/system/bin/maestro -config /wigwag/wwrelay-utils/conf/maestro-conf/edge-config-rpi-production.yaml
+Restart=always
+RestartSec=5s
+ExecStart=/wigwag/system/bin/maestro -config /wigwag/etc/pelion-base-config.yaml
 
 [Install]
 RequiredBy=network.target
