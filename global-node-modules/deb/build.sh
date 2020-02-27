@@ -15,19 +15,25 @@ declare -A PELION_PACKAGE_COMPONENTS=(
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function pelion_global_node_modules_source_update_cb() {
-    echo -en "{\n\"devjs-configurator\": \"http://github.com/armPelionEdge/devjs-configurator#master\"\n}\n" > "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules/overrides.json"
-
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/devjs-production-tools"
-    npm install --ignore-scripts
+    npm install
+
+    echo -en "{\n\"devjs-configurator\": \"http://github.com/armPelionEdge/devjs-configurator#master\"\n}\n" > "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules/overrides.json"
 
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules"
 
-    node ../devjs-production-tools/consolidator.js -O overrides.json -d grease-log -d dhclient -d WWSupportTunnel ./*
+    node ../devjs-production-tools/consolidator.js -O overrides.json -d grease-log -d dhclient -d WWSupportTunnel ./*/
     sed -i '/isc-dhclient/d' ./package.json
     sed -i '/node-hotplug/d' ./package.json
 
+    rm -rf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/devjs-production-tools"
+
     npm install --loglevel silly node-expat iconv bufferutil@3.0.5 --production --ignore-scripts >> npm-first.log 2>&1
     npm --loglevel silly install --production --ignore-scripts >> npm-second.log 2>&1
+
+    mv "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules"/* "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
+    cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME" && \
+    rm -rf edge-node-modules
 }
 
 pelion_main "$@"

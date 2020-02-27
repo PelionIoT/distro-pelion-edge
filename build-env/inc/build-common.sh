@@ -2,6 +2,8 @@
 
 set -e -u
 
+shopt -s dotglob
+
 ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
 
 PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
