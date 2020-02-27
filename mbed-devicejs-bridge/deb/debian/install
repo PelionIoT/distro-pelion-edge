@@ -1,2 +1,2 @@
-mbed-devicejs-bridge /wigwag/mbed/
-mbed-edge-websocket  /wigwag/mbed/
+mbed-devicejs-bridge wigwag/mbed/
+mbed-edge-websocket  wigwag/mbed/
