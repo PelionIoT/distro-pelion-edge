@@ -21,7 +21,7 @@ function pelion_mbed_fcc_origin_source_update_cb() {
 
     if $PELION_PACKAGE_INSTALL_DEPS; then
     	sudo apt-get update && \
-    	sudo apt-get install python python-requests python-click
+    	sudo apt-get install -y python python-requests python-click
     fi
 
     PYTHONUSERBASE="$PELION_TMP_BUILD_DIR/" \
