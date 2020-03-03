@@ -15,6 +15,8 @@ PELION_PACKAGE_VERSION=$(cd "$PELION_PACKAGE_DIR"; dpkg-parsechangelog --show-fi
 PELION_PACKAGE_FOLDER_NAME="$PELION_PACKAGE_NAME"-"$PELION_PACKAGE_VERSION"
 PELION_PACKAGE_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_VERSION"
 
+PELION_PACKAGE_SOURCE=false
+PELION_PACKAGE_BUILD=false
 PELION_PACKAGE_INSTALL_DEPS=false
 PELION_PACKAGE_TARGET_ARCH=amd64
 
@@ -23,26 +25,38 @@ if [[ ! -v PELION_PACKAGE_SUPPORTED_ARCH ]]; then
 fi
 
 function pelion_parse_args() {
-   for opt in "$@"; do
+    for opt in "$@"; do
         case "$opt" in
-             --install)
+            --install)
                 PELION_PACKAGE_INSTALL_DEPS=true
                 ;;
 
-             --arch=*)
+            --arch=*)
                 PELION_PACKAGE_TARGET_ARCH="${opt#*=}"
+                ;;
+
+            --build)
+                PELION_PACKAGE_BUILD=true
+                ;;
+
+            --source)
+                PELION_PACKAGE_SOURCE=true
                 ;;
 
             --help|-h)
                 echo "Usage: $0 [Options]"
                 echo ""
                 echo "Options:"
-                echo " --install           Install all dependencies needed by deb packet."
+                echo " --source            Generate source package."
+                echo " --build             Build binary from source generated with --source option."
+                echo " --install           Install build dependencies."
                 echo " --arch=<arch>       Set target architecture."
                 echo " --help,-h           Print this message."
                 echo ""
+                echo "If neither '--source' nor '--build' option is specified both are activated."
+                echo ""
 
-                echo "Availiable architectures:"
+                echo "Available architectures:"
                 for arch in ${PELION_PACKAGE_SUPPORTED_ARCH[*]}
                 do
                     echo "  $arch"
@@ -54,6 +68,11 @@ function pelion_parse_args() {
                 ;;
         esac
     done
+
+    if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD; then
+        PELION_PACKAGE_SOURCE=true
+        PELION_PACKAGE_BUILD=true
+    fi
 }
 
 function pelion_env_validate() {
@@ -157,14 +176,18 @@ function pelion_main() {
 
     pelion_env_validate
 
-    pelion_source_preparation
-    echo "INFO: Source preparation done!"
+    if $PELION_PACKAGE_SOURCE; then
+        pelion_source_preparation
+        echo "INFO: Source preparation done!"
 
-    pelion_generation_deb_source_packages
-    echo "INFO: Generation debian source packages done!"
+        pelion_generation_deb_source_packages
+        echo "INFO: Generation Debian source packages done!"
+    fi
 
-    pelion_building_deb_package
-    echo "INFO: Building debian package done!"
+    if $PELION_PACKAGE_BUILD; then
+        pelion_building_deb_package
+        echo "INFO: Building Debian package done!"
+    fi
 
     echo "INFO: Done!"
 }
