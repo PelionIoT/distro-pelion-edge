@@ -5,4 +5,6 @@ declare -A ARCH_MAP=( \
     ["arm64"]="arm64" \
     ["armhf"]="arm")
 
-npm rebuild --target_arch=${ARCH_MAP["$1"]} ${@:2}
+NPM_ARCH=${ARCH_MAP["$1"]}
+
+npm rebuild --target_arch=$NPM_ARCH --arch=$NPM_ARCH ${@:2}
