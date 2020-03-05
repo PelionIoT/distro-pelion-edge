@@ -20,7 +20,7 @@ Also the build will need `sudo` privileges to install standard Ubuntu packages.
 
 1. Scripts for creating clean build docker images:
 ```
-$ ./build-env/bin/bin/docker-ubuntu-bionic-create.sh # Ubuntu 18.04
+$ ./build-env/bin/docker-ubuntu-bionic-create.sh # Ubuntu 18.04
 ```
 
 The above script creates docker images `pelion-bionic-build` with build
@@ -116,3 +116,58 @@ subdirectories per architecture:
 * `binary-arm64`
 * `binary-armhf`
 * `source`
+
+## APT repository
+
+Structure for APT repository server can be created in `build/deploy/deb/apt-repo` directory by
+`build-env/bin/pelion-apt-repo-create.sh`. It provides help information:
+
+```
+$ ./build-env/bin/pelion-apt-repo-create.sh --help
+Usage: pelion-apt-repo-create.sh [Options]
+
+Options:
+ --key-name=<name>         Filename of secret GPG key.
+ --key-[id|path]=<id|path> Use key id of existing GPG key or path where private key is placed.
+ --install                 Installs the necessary tools to create structure for apt repository.
+ --help,-h                 Print this message.
+
+```
+You have to sign the repository and its contents with the GPG key. There are two ways to pass a key to the script:
+using the key id of existing imported key into the machine or using a path to private key.
+
+**Note:** If you are using a path to the private key, the secret key must be placed in `build/deploy/deb/gpg/Pelion_GPG_key_private.gpg` by default.
+You can use change it using `--key-name` and `--key-path` options.
+
+#### GPG key pair generation
+
+You can use `build-env/bin/pelion-gpg-key-generate.sh` for GPG key pair generation. It provides help information:
+
+```
+$ ./build-env/bin/pelion-gpg-key-generate.sh --help
+Usage: pelion-gpg-key-generate.sh --key-email=<email> [Options]
+
+Options:
+ --key-name=<name>             Set name of GPG key and filename of public (<name>_public.gpg)
+                               and private (<name>_private.gpg) keys.
+ --key-email=<email>           Set email of GPG key.
+ --key-path=<path>             Set path where public and private keys will be placed.
+ --install                     Installs the necessary tools to generate the gpg key pair.
+ --help,-h                     Print this message.
+
+```
+There is one required options: `--key-email` for GPG key email. Public and private key
+pair will be placed into `build/deb/deploy/gpg` directory by default, but you can change it using `--key-path` option.
+
+#### APT repository usage
+
+To use your apt repository you need to add it to your `sources.list`. For example:
+
+```
+deb [arch=amd64] http://<ip address> bionic main
+```
+Also you need to import the GPG key of the apt server into your machine.
+
+```
+wget -q -O - http://<ip address>/key.gpg | sudo apt-key add -
+```
