@@ -4,10 +4,17 @@ set -e -u
 
 shopt -s dotglob
 
+PELION_PACKAGE_VERSION_CODENAME=$(cat /etc/os-release \
+    | grep VERSION_CODENAME | sed 's/VERSION_CODENAME=//g')
+
+if [ ! -v PELION_PACKAGE_APT_COMPONENT ]; then
+    PELION_PACKAGE_APT_COMPONENT=main
+fi
+
 ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
 
 PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
-PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb
+PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb/$PELION_PACKAGE_VERSION_CODENAME/$PELION_PACKAGE_APT_COMPONENT
 PELION_TMP_BUILD_DIR=$ROOT_DIR/build/tmp-build/$PELION_PACKAGE_NAME
 
 PELION_PACKAGE_FULL_VERSION=$(cd "$PELION_PACKAGE_DIR"; dpkg-parsechangelog --show-field Version)
@@ -117,7 +124,7 @@ function pelion_source_preparation() {
 }
 
 function pelion_generation_deb_source_packages() {
-    mkdir -p "$PELION_DEB_DEPLOY_DIR"
+    mkdir -p "$PELION_DEB_DEPLOY_DIR/source"
 
     rm -rf "$PELION_TMP_BUILD_DIR"
     mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
@@ -143,26 +150,26 @@ function pelion_generation_deb_source_packages() {
         $PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK
     fi
 
-    tar czf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ORIG_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR" "$PELION_PACKAGE_FOLDER_NAME"
+    tar czf "$PELION_DEB_DEPLOY_DIR/source/$PELION_PACKAGE_ORIG_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR" "$PELION_PACKAGE_FOLDER_NAME"
     cp -r "$PELION_PACKAGE_DIR/debian" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
-    cd "$PELION_DEB_DEPLOY_DIR" && \
+    cd "$PELION_DEB_DEPLOY_DIR/source" && \
     dpkg-source -b "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 }
 
 function pelion_building_deb_package() {
-    mkdir -p "$PELION_DEB_DEPLOY_DIR"
+    mkdir -p "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
 
     rm -rf "$PELION_TMP_BUILD_DIR"
     mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
     if $PELION_PACKAGE_INSTALL_DEPS; then
         sudo apt-get update && \
-        sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_DEB_ARCHIVE_NAME.dsc"
+        sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/source/$PELION_PACKAGE_DEB_ARCHIVE_NAME.dsc"
     fi
 
-    tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_ORIG_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR/"
-    tar xf "$PELION_DEB_DEPLOY_DIR/$PELION_PACKAGE_DEB_ARCHIVE_NAME.debian.tar.xz" -C "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
+    tar xf "$PELION_DEB_DEPLOY_DIR/source/$PELION_PACKAGE_ORIG_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR/"
+    tar xf "$PELION_DEB_DEPLOY_DIR/source/$PELION_PACKAGE_DEB_ARCHIVE_NAME.debian.tar.xz" -C "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
@@ -173,7 +180,7 @@ function pelion_building_deb_package() {
 
     dpkg-buildpackage $PELION_DPKG_BUILD_OPTIONS
 
-    mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_DEB_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR"
+    mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_DEB_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
 }
 
 function pelion_main() {
