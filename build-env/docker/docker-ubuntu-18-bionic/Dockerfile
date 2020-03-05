@@ -26,4 +26,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
+COPY --chown=user ./.bash_aliases /home/user/
+
 USER user
+WORKDIR /pelion-build
