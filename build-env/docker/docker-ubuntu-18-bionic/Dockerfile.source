@@ -1,0 +1,12 @@
+FROM pelion-bionic-build
+
+USER root
+
+RUN apt-get install -y --no-install-recommends \
+		git \
+		npm \
+		python \
+		ssh \
+		vim
+
+USER user
