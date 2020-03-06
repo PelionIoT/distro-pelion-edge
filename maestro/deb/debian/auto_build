@@ -13,7 +13,6 @@ export GOPATH="`pwd`/go-workspace"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
-RPATH=/usr/lib/pelion
 PACKAGE=github.com/armPelionEdge/maestro
 MAESTRODIR="$GOPATH"/src/"$PACKAGE"
 GREASEGODIR="$MAESTRODIR"/vendor/github.com/armPelionEdge/greasego
@@ -30,7 +29,6 @@ mkdir "$GREASEGODIR"/deps/lib
 cd "$GREASELIBDIR"/deps
 ./install-deps.sh
 
-export LDFLAGS="-Wl,-rpath=$RPATH $LDFLAGS"
 cd "$GREASELIBDIR"
 make libgrease.a-server
 make libgrease.so.1
@@ -53,4 +51,4 @@ rm -rf src
 make bindings.a
 
 cd "$MAESTRODIR"/maestro
-go build -ldflags "-r $RPATH" -tags debug -x "$PACKAGE"/maestro
+go build -buildmode=pie --tags debug "$PACKAGE"/maestro

@@ -14,3 +14,6 @@ override_dh_auto_clean:
 
 override_dh_installlogrotate:
 	dh_installlogrotate --name=maestro-runtime maestro-runtime.logrotate
+
+override_dh_shlibdeps:
+	dh_shlibdeps -l/usr/lib/pelion

@@ -8,7 +8,6 @@ FILES := $(wildcard *)
 PACKAGE = github.com/armPelionEdge/maestro-shell
 GOPKGDIR = go-workspace/src/"$(PACKAGE)"
 
-export CGO_ENABLED = 1
 export GOPATH = $(shell pwd)/go-workspace
 
 export CC = $(DEB_HOST_GNU_TYPE)-gcc
@@ -22,7 +21,7 @@ override_dh_auto_build:
 	mkdir -p "$(GOPKGDIR)"
 	cp -r $(FILES) "$(GOPKGDIR)"/
 	eval `debian/goenv.guess $(DEB_HOST_ARCH)` && \
-	go build -v "$(PACKAGE)"
+	go build -v -buildmode=pie "$(PACKAGE)"
 
 override_dh_auto_clean:
 	-rm -rf go-workspace
