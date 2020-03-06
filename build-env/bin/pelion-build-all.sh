@@ -26,6 +26,7 @@ PACKAGES=(
 
 PELION_PACKAGE_SOURCE=false
 PELION_PACKAGE_BUILD=false
+PELION_PACKAGE_DOCKER=false
 PELION_BUILD_OPT=''
 PELION_ARCHS=( 'amd64' )
 
@@ -48,12 +49,17 @@ function pelion_parse_args() {
                 PELION_PACKAGE_SOURCE=true
                 ;;
 
+            --docker)
+                PELION_PACKAGE_DOCKER=true
+                ;;
+
             --help|-h)
                 echo "Usage: $BASENAME [Options]"
                 echo ""
                 echo "Options:"
                 echo " --source            Generate source package."
                 echo " --build             Build binary from source generated with --source option."
+                echo " --docker            Use docker containers."
                 echo " --install           Install build dependencies."
                 echo " --arch=<arch>       Set comma-separated list of target architectures."
                 echo " --help,-h           Print this message."
@@ -69,6 +75,12 @@ function pelion_parse_args() {
     if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD; then
         PELION_PACKAGE_SOURCE=true
         PELION_PACKAGE_BUILD=true
+    fi
+
+    if $PELION_PACKAGE_DOCKER; then
+        # Overwrite 'install' option if it was provided. Docker build always
+        # installs dependencies.
+        PELION_BUILD_OPT="--docker"
     fi
 }
 

@@ -11,6 +11,7 @@ if [ ! -v PELION_PACKAGE_APT_COMPONENT ]; then
     PELION_PACKAGE_APT_COMPONENT=main
 fi
 
+BASENAME=$(basename "$0")
 ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
 
 PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
@@ -28,6 +29,7 @@ PELION_PACKAGE_DEB_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_FULL_VER
 # Default value of build options
 PELION_PACKAGE_SOURCE=false
 PELION_PACKAGE_BUILD=false
+PELION_PACKAGE_DOCKER=false
 
 PELION_PACKAGE_INSTALL_DEPS=false
 PELION_PACKAGE_TARGET_ARCH=amd64
@@ -35,6 +37,15 @@ PELION_PACKAGE_TARGET_ARCH=amd64
 if [[ ! -v PELION_PACKAGE_SUPPORTED_ARCH ]]; then
     PELION_PACKAGE_SUPPORTED_ARCH=(amd64 arm64 armhf armel)
 fi
+
+################################################################################
+# Terminate script by explicit signal handler to stop docker container.
+trap 'sig_handle' INT
+
+function sig_handle() {
+    exit 130
+}
+################################################################################
 
 function pelion_parse_args() {
     for opt in "$@"; do
@@ -55,10 +66,15 @@ function pelion_parse_args() {
                 PELION_PACKAGE_SOURCE=true
                 ;;
 
+            --docker)
+                PELION_PACKAGE_DOCKER=true
+                ;;
+
             --help|-h)
                 echo "Usage: $0 [Options]"
                 echo ""
                 echo "Options:"
+                echo " --docker            Use docker containers."
                 echo " --source            Generate source package."
                 echo " --build             Build binary from source generated with --source option."
                 echo " --install           Install build dependencies."
@@ -183,10 +199,55 @@ function pelion_building_deb_package() {
     mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_DEB_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
 }
 
+################################################################################
+# Docker helpers
+################################################################################
+
+DOCKER_DIST="bionic"
+
+function pelion_docker_image_create() {
+    IMAGE_NUM=$(docker images | grep -E "^pelion-$DOCKER_DIST-(source|build)\s" | wc -l)
+    if [ "$IMAGE_NUM" -ne 2 ]; then
+        echo "Creating docker images"
+        "$ROOT_DIR/build-env/bin/docker-ubuntu-$DOCKER_DIST-create.sh"
+    fi
+}
+
+function pelion_docker_build() {
+    SCRIPT_PATH=$(cd "`dirname \"$0\"`" && pwd)
+    DOCKER_ROOT_DIR="/pelion-build"
+    DOCKER_SCRIPT_PATH=$(echo $SCRIPT_PATH | sed "s:^$ROOT_DIR:$DOCKER_ROOT_DIR:")
+
+    # Use separate docker containers for source generation and package build.
+    if $PELION_PACKAGE_SOURCE; then
+        docker run \
+            -v "$HOME/.ssh":/home/user/.ssh \
+            -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            pelion-$DOCKER_DIST-source \
+            "$DOCKER_SCRIPT_PATH/$BASENAME" \
+                --install --arch=$PELION_PACKAGE_TARGET_ARCH --source
+    fi
+
+    if $PELION_PACKAGE_BUILD; then
+        docker run \
+            -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            pelion-$DOCKER_DIST-build \
+            "$DOCKER_SCRIPT_PATH/$BASENAME" \
+                --install --arch=$PELION_PACKAGE_TARGET_ARCH --build
+    fi
+}
+################################################################################
+
 function pelion_main() {
     pelion_parse_args "$@"
 
     pelion_env_validate
+
+    if $PELION_PACKAGE_DOCKER; then
+        pelion_docker_image_create
+        pelion_docker_build
+        exit 0
+    fi
 
     if $PELION_PACKAGE_SOURCE; then
         pelion_source_preparation
