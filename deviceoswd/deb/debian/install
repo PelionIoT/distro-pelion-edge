@@ -1,6 +1,6 @@
-deviceOSWD             wigwag/system/bin/
-deviceOSWD_dummy       wigwag/system/bin/
-deviceOSWD_a10_debug   wigwag/system/bin/
-deviceOSWD_a10_relay   wigwag/system/bin/
-deviceOSWD_dummy_debug wigwag/system/bin/
-deviceOSWD_a10_tiny841 wigwag/system/bin/
+deviceOSWD             usr/bin/
+deviceOSWD_dummy       usr/bin/
+deviceOSWD_a10_debug   usr/bin/
+deviceOSWD_a10_relay   usr/bin/
+deviceOSWD_dummy_debug usr/bin/
+deviceOSWD_a10_tiny841 usr/bin/

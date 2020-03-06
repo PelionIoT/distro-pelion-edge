@@ -1,6 +1,6 @@
-debian/pelion-base-config.yaml wigwag/etc
-debian/template wigwag/etc
-go-workspace/src/github.com/armPelionEdge/maestro/maestro/maestro wigwag/system/bin
-go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libgrease.so.1 wigwag/system/lib
-go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libtcmalloc_minimal.so.4 wigwag/system/lib
-go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libtcmalloc_minimal.so.4.2.6 wigwag/system/lib
+debian/pelion-base-config.yaml etc/pelion
+debian/template etc/pelion
+go-workspace/src/github.com/armPelionEdge/maestro/maestro/maestro usr/bin
+go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libgrease.so.1 usr/lib/pelion
+go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libtcmalloc_minimal.so.4 usr/lib/pelion
+go-workspace/src/github.com/armPelionEdge/maestro/vendor/github.com/armPelionEdge/greasego/deps/lib/libtcmalloc_minimal.so.4.2.6 usr/lib/pelion

@@ -4,7 +4,7 @@ Description=Maestro: Network, Config, DeviceJS manager
 [Service]
 Restart=always
 RestartSec=5s
-ExecStart=/wigwag/system/bin/maestro -config /wigwag/etc/pelion-base-config.yaml
+ExecStart=/usr/bin/maestro -config /etc/pelion/pelion-base-config.yaml
 
 [Install]
 RequiredBy=network.target

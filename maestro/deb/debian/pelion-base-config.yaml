@@ -2,11 +2,11 @@ unixLogSocket: /tmp/grease.socket
 sysLogSocket: /dev/log
 linuxKernelLog: true
 httpUnixSocket: /tmp/maestroapi.sock
-configDBPath: /userdata/etc/maestroConfig.db
+configDBPath: /var/lib/pelion/etc/maestroConfig.db
 clientId: "{{ARCH_SERIAL_NUMBER}}"
 #watchdog:
-#    path: "/wigwag/system/lib/rp100wd.so"
-#    opt1: "/var/deviceOSkeepalive"
+#    path: "/usr/lib/pelion/rp100wd.so"
+#    opt1: "/var/lib/pelion/deviceOSkeepalive"
 #    opt2: "30"
 network:
     interfaces:
@@ -19,30 +19,30 @@ processes:
 platform_readers:
   - platform: "fsonly"
     params:
-      identityPath: "/userdata/edge_gw_config/identity.json"
+      identityPath: "/var/lib/pelion/edge_gw_config/identity.json"
 var_defs:
    - key: "TMP_DIR"
      value: "/tmp"
    - key: "WIGWAG_NODE_PATH"
-     value: "/wigwag/devicejs-core-modules/node_modules"
+     value: "/usr/lib/pelion/devicejs-core-modules/node_modules"
    - key: "WIGWAG_DIR"
-     value: "/wigwag"
+     value: "/usr/lib/pelion"
    - key: "NODE_EXEC"
      value: "/usr/bin/node"
    - key: "DEVICEJS_ROOT"
-     value: "/wigwag/devicejs-ng"
+     value: "/usr/lib/pelion/devicejs-ng"
    - key: "DEVJS_CORE_MODULES"
-     value: "/wigwag/devicejs-core-modules"
+     value: "/usr/lib/pelion/devicejs-core-modules"
    - key: "MAESTRO_RUNNER_DIR"
-     value: "/wigwag/devicejs-core-modules/maestroRunner"
+     value: "/usr/lib/pelion/devicejs-core-modules/maestroRunner"
    - key: "SSL_CERTS_PATH"
-     value: "/userdata/edge_gw_config/.ssl"
+     value: "/var/lib/pelion/edge_gw_config/.ssl"
    - key: "LOCAL_DEVICEDB_PORT"
      value: 9000
    - key: "LOCAL_DATABASE_STORAGE_DIRECTORY"
-     value: "/userdata/etc/devicejs/db"
+     value: "/var/lib/pelion/etc/devicejs/db"
 #   - key: "RELAY_VERSIONS_FILE"
-#     value: "/wigwag/etc/versions.json"
+#     value: "/etc/pelion/versions.json"
 #   - key: "FACTORY_VERSIONS_FILE"
 #     value: "/mnt/.overlay/factory/wigwag/etc/versions.json"
 #   - key: "USER_VERSIONS_FILE"
@@ -95,7 +95,7 @@ symphony:
     url_stats: "{{ARCH_GW_SERVICES_URL}}/relay-stats/stats_obj"
     # port: "{{ARCH_RELAY_SERVICES_PORT}}"
 targets:
-   - file: "/wigwag/log/devicejs.log"
+   - file: "/var/log/pelion/devicejs.log"
      rotate:
          max_files: 4
          max_file_size: 10000000  # 10MB max file size
@@ -128,17 +128,17 @@ targets:
          format_pre: "{"     # you will wrap this output with { "log": [ OUTPUT ] }
 static_file_generators:
    - name: "devicejs"
-     template_file: "/wigwag/etc/template/template.devicejs.conf"
-     output_file: "/wigwag/etc/run/devicejs.conf"
+     template_file: "/etc/pelion/template/template.devicejs.conf"
+     output_file: "/etc/pelion/run/devicejs.conf"
    - name: "devicedb"
-     template_file: "/wigwag/etc/template/template.devicedb.conf"
-     output_file: "/wigwag/etc/run/devicedb.yaml"
+     template_file: "/etc/pelion/template/template.devicedb.conf"
+     output_file: "/etc/pelion/run/devicedb.yaml"
    - name: "relayTerm"
-     template_file: "/wigwag/etc/template/relayTerm.template.json"
-     output_file: "/wigwag/etc/run/relay-term-config.json"
+     template_file: "/etc/pelion/template/relayTerm.template.json"
+     output_file: "/etc/pelion/run/relay-term-config.json"
    - name: "radioProfile"
-     template_file: "/wigwag/etc/template/radioProfile.template.json"
-     output_file: "/wigwag/etc/run/radioProfile.config.json"
+     template_file: "/etc/pelion/template/radioProfile.template.json"
+     output_file: "/etc/pelion/run/radioProfile.config.json"
    - name: "ca_pem"
      template: "{{ARCH_CA_CERT_PEM}}"
      output_file: "{{SSL_CERTS_PATH}}/ca.cert.pem"
@@ -172,7 +172,7 @@ container_templates:
      add_env:
 #        - "LD_PRELOAD=/usr/lib/libcrypto.so.1.0.2"
         - "DEVJS_ROOT={{DEVICEJS_ROOT}}"
-        - "DEVJS_CONFIG_FILE=/wigwag/etc/run/devicejs.conf"
+        - "DEVJS_CONFIG_FILE=/etc/pelion/run/devicejs.conf"
         - "NODE_PATH={{WIGWAG_NODE_PATH}}"
      exec_cmd: "{{NODE_EXEC}}"        # will use PATH if not absolute path (as per execvp())
      send_composite_jobs_to_stdin: true
@@ -196,7 +196,7 @@ container_templates:
      add_env:
  #       - "LD_PRELOAD=/usr/lib/libcrypto.so.1.0.2"
         - "DEVJS_ROOT={{DEVICEJS_ROOT}}"
-        - "DEVJS_CONFIG_FILE=/wigwag/etc/run/devicejs.conf"
+        - "DEVJS_CONFIG_FILE=/etc/pelion/run/devicejs.conf"
         - "NODE_PATH={{WIGWAG_NODE_PATH}}"
      exec_cmd: "{{NODE_EXEC}}"        # will use PATH if not absolute path (as per execvp())
      send_composite_jobs_to_stdin: true
@@ -223,13 +223,13 @@ jobs:
    - job: "devicedb"
      immutable: true
      die_on_parent_death: true
-     exec_cmd: "/wigwag/system/bin/devicedb"
+     exec_cmd: "/usr/bin/devicedb"
      restart: true
      restart_limit: 5000
      restart_pause: 1
      exec_args:
         - "start"
-        - "-conf=/wigwag/etc/run/devicedb.yaml"
+        - "-conf=/etc/pelion/run/devicedb.yaml"
 #   - job: "devicejs"
 #     defer_running_status: 30000   # waits 8 seconds before marking this Job as RUNNING, which delays all dependencies
 #     depends_on:
@@ -246,7 +246,7 @@ jobs:
 #     restart_limit: 5000
 #     restart_pause: 10
 #     exec_args:
-#        - "--config=/wigwag/etc/run/devicejs.conf"
+#        - "--config=/etc/pelion/run/devicejs.conf"
    - job: "MbedDeviceJSBridge"
      immutable: true  # don't store in DB
      exec_cmd: "${thisdir}/../../mbed/mbed-devicejs-bridge"

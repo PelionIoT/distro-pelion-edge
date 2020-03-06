@@ -1,2 +1,2 @@
-userdata/etc
-wigwag/log
+var/lib/pelion/etc
+var/log/pelion

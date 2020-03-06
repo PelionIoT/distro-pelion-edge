@@ -13,7 +13,7 @@ export GOPATH="`pwd`/go-workspace"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
-RPATH=/wigwag/system/lib
+RPATH=/usr/lib/pelion
 PACKAGE=github.com/armPelionEdge/maestro
 MAESTRODIR="$GOPATH"/src/"$PACKAGE"
 GREASEGODIR="$MAESTRODIR"/vendor/github.com/armPelionEdge/greasego

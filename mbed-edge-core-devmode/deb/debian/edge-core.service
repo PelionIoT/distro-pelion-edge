@@ -5,8 +5,8 @@ After=systemd-networkd-wait-online.service
 [Service]
 Restart=always
 RestartSec=5s
-WorkingDirectory=/userdata/mbed
-ExecStart=/wigwag/mbed/edge-core --cbor-conf=/wigwag/etc/credentials.cbor --http-port 9101
+WorkingDirectory=/var/lib/pelion/mbed
+ExecStart=/usr/bin/edge-core --cbor-conf=/etc/pelion/credentials.cbor --http-port 9101
 
 [Install]
 RequiredBy=network.target

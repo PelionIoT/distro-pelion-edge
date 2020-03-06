@@ -1,1 +1,1 @@
-kubelet wigwag/system/bin
+kubelet usr/bin
