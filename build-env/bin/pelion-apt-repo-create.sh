@@ -137,7 +137,7 @@ function pelion_apt_repo_dists_component_create() {
     apt-ftparchive --md5=no --sha1=no --sha256=no --sha512=no -o APT::FTPArchive::Release::Origin="ARM" \
         -o APT::FTPArchive::Release::Label="Pelion" \
         -o APT::FTPArchive::Release::Version="0.0.1" \
-        -o APT::FTPArchive::Release::Codename="Pelion" \
+        -o APT::FTPArchive::Release::Codename="$DISTRIBUTION_DIR_NAME" \
         -o APT::FTPArchive::Release::Components="$COMPONENT_DIR_NAME" \
         -o APT::FTPArchive::Release::Architectures="$PACKAGE_ARCH" \
         release "$POOL_COMPONENT_DIR_PREFIX/" > "$PELION_DEB_TMP_BUILD_DIR/Release"
@@ -182,7 +182,7 @@ function pelion_apt_repo_dists_distribution_create() {
     apt-ftparchive -o APT::FTPArchive::Release::Origin="ARM" \
         -o APT::FTPArchive::Release::Label="Pelion" \
         -o APT::FTPArchive::Release::Version="0.0.1" \
-        -o APT::FTPArchive::Release::Codename="Pelion" \
+        -o APT::FTPArchive::Release::Codename="$DISTRIBUTION_DIR_NAME" \
         -o APT::FTPArchive::Release::Components="${DISTRIBUTION_SUPPORTED_COMPONENTS[*]}" \
         -o APT::FTPArchive::Release::Architectures="${DISTRIBUTION_SUPPORTED_ARCH[*]}" \
     release . > "$PELION_DEB_TMP_BUILD_DIR/Release"
