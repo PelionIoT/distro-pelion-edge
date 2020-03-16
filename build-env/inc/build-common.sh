@@ -12,7 +12,9 @@ if [ ! -v PELION_PACKAGE_APT_COMPONENT ]; then
 fi
 
 BASENAME=$(basename "$0")
-ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR=$(cd "$SCRIPT_DIR"/../.. && pwd)
 
 PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
 PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb/$PELION_PACKAGE_VERSION_CODENAME/$PELION_PACKAGE_APT_COMPONENT
@@ -137,6 +139,22 @@ function pelion_source_preparation() {
     if [ -v PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK ]; then
         $PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK
     fi
+}
+
+function pelion_generation_deb_metapackage() {
+    rm -rf "$PELION_TMP_BUILD_DIR"
+
+    mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
+    cp -r "$PELION_PACKAGE_DIR/debian" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
+
+    cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME" && \
+        dpkg-buildpackage -us -uc
+
+    mkdir -p "$PELION_DEB_DEPLOY_DIR/source"
+    mkdir -p "$PELION_DEB_DEPLOY_DIR/binary-all"
+
+    mv "$PELION_TMP_BUILD_DIR/"{*.tar.gz,*.dsc} "$PELION_DEB_DEPLOY_DIR/source"
+    mv "$PELION_TMP_BUILD_DIR/"*.deb            "$PELION_DEB_DEPLOY_DIR/binary-all"
 }
 
 function pelion_generation_deb_source_packages() {

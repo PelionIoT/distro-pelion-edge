@@ -24,7 +24,7 @@ PELION_APT_REPO_GPG_KEY_PATH=$PELION_APT_REPO_DIR
 
 PELION_PACKAGES_SUPPORTED_DIST=(bionic xenial stretch)
 PELION_PACKAGES_SUPPORTED_COMPONENTS=(main)
-PELION_PACKAGES_SUPPORTED_ARCH=(amd64 arm64 armhf armel)
+PELION_PACKAGES_SUPPORTED_ARCH=(amd64 arm64 armhf armel all)
 
 function pelion_apt_repo_parse_args() {
     for opt in "$@"; do
@@ -98,7 +98,7 @@ function pelion_apt_repo_pool_update() {
     cd "$PELION_DEB_DEPLOY_DIR"
 
     find . -mindepth 4 -maxdepth 4 -regextype posix-extended -regex \
-        "\./($PELION_APT_REPO_POOL_DISTS)/($PELION_APT_REPO_POOL_COMPONENTS)/source/.*(orig\.tar\.gz|debian\.tar\.xz|dsc)" \
+        "\./($PELION_APT_REPO_POOL_DISTS)/($PELION_APT_REPO_POOL_COMPONENTS)/source/.*(orig\.tar\.gz|debian\.tar\.xz|\.tar\.gz|dsc)" \
         -exec cp --parents -t "$PELION_APT_REPO_DIR/pool" {} +
 
     find . -mindepth 4 -maxdepth 4 -regextype posix-extended -regex \

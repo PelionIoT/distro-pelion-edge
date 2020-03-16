@@ -1,0 +1,12 @@
+Source: pelion-base-devmode
+Section: metapackage
+Priority: optional
+Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/index.html
+
+Package: pelion-base-devmode
+Architecture: all
+Depends: mbed-edge-core-devmode, maestro, maestro-shell, devicedb, fog-proxy
+Description: pelion-base-devmode

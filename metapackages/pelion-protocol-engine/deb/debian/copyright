@@ -1,0 +1,5 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: pelion-protocol-engine
+
+Files: *
+Copyright: 2019, Travis McCollum <Travis.McCollum@arm.com>
