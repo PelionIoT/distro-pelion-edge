@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/i
 
 Package: mbed-devicejs-bridge
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash, nodejs
 Description: bridging software, which exposes devices in deviceJS to mbed, and vice versa.
  The mbed-devicejs-bridge software should be installed on all Arm mbed branded gateways.

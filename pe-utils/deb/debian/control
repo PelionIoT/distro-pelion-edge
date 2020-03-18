@@ -8,5 +8,5 @@ Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/i
 
 Package: pe-utils
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, nodejs, jq, curl
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash, curl, jq, nodejs, openssl
 Description: utilities and a light-weight programs for Pelion Edge

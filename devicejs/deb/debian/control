@@ -8,5 +8,5 @@ Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/i
 
 Package: devicejs-ng
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash, nodejs
 Description: devicejs message bus

@@ -8,5 +8,5 @@ Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/i
 
 Package: global-node-modules
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash, nodejs
 Description: modules which uses the devicejs bus and enriches the edge platform
