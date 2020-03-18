@@ -24,6 +24,13 @@ PACKAGES=(
     'rallypointwatchdogs'
 )
 
+METAPACKAGES=(
+    'pelion-base'
+    'pelion-base-devmode'
+    'pelion-container-orchestration'
+    'pelion-protocol-engine'
+)
+
 PELION_PACKAGE_SOURCE=false
 PELION_PACKAGE_BUILD=false
 PELION_PACKAGE_DOCKER=false
@@ -102,3 +109,7 @@ if $PELION_PACKAGE_BUILD; then
     done
 fi
 
+for p in ${METAPACKAGES[@]}; do
+    echo "Generating '$p'"
+    "$SCRIPT_DIR"/../../metapackages/$p/deb/build.sh $PELION_BUILD_OPT
+done

@@ -4,6 +4,7 @@ The folder `build-env` contains helper or common scripts. Other directories
 contain build scripts specific for each package:
 ```
 <package name>/deb/build.sh
+metapackages/<package name>/deb/build.sh
 ```
 
 The build scripts `build.sh` or `build-env/bin/pelion-build-all.sh` can build packages

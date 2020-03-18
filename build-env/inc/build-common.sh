@@ -31,6 +31,7 @@ PELION_PACKAGE_DEB_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_FULL_VER
 # Default value of build options
 PELION_PACKAGE_SOURCE=false
 PELION_PACKAGE_BUILD=false
+PELION_METAPACKAGE_GEN=false
 PELION_PACKAGE_DOCKER=false
 
 PELION_PACKAGE_INSTALL_DEPS=false
@@ -48,6 +49,34 @@ function sig_handle() {
     exit 130
 }
 ################################################################################
+
+function pelion_metapackage_parse_args() {
+    for opt in "$@"; do
+        case "$opt" in
+            --install)
+                PELION_PACKAGE_INSTALL_DEPS=true
+                ;;
+
+            --docker)
+                PELION_PACKAGE_DOCKER=true
+                ;;
+
+            --help|-h)
+                echo "Usage: $0 [Options]"
+                echo ""
+                echo "Options:"
+                echo " --docker            Use docker containers."
+                echo " --install           Install build dependencies."
+                echo " --help,-h           Print this message."
+                echo ""
+                echo "Default mode: $0"
+                exit 0
+                ;;
+        esac
+    done
+
+    PELION_METAPACKAGE_GEN=true
+}
 
 function pelion_parse_args() {
     for opt in "$@"; do
@@ -146,6 +175,11 @@ function pelion_generation_deb_metapackage() {
 
     mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
     cp -r "$PELION_PACKAGE_DIR/debian" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
+
+    if $PELION_PACKAGE_INSTALL_DEPS; then
+        sudo apt-get update && \
+        sudo apt-get install -y debhelper
+    fi
 
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME" && \
         dpkg-buildpackage -us -uc
@@ -253,8 +287,30 @@ function pelion_docker_build() {
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --build
     fi
+
+    if $PELION_METAPACKAGE_GEN; then
+        docker run \
+            -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            pelion-$DOCKER_DIST-build \
+            "$DOCKER_SCRIPT_PATH/$BASENAME" \
+                --install
+    fi
 }
 ################################################################################
+
+function pelion_metapackage_main() {
+    pelion_metapackage_parse_args "$@"
+
+    if $PELION_PACKAGE_DOCKER; then
+        pelion_docker_image_create
+        pelion_docker_build
+        exit 0
+    fi
+
+    pelion_generation_deb_metapackage
+
+    echo "INFO: Done!"
+}
 
 function pelion_main() {
     pelion_parse_args "$@"
