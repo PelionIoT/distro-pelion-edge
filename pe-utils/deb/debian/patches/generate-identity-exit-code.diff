@@ -1,0 +1,16 @@
+Description: generate-identity.sh error code fix
+ Adds an error code to generate-identity.sh for when it's unable to connect to
+ Edge Core.
+Author: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/identity-tools/generate-identity.sh
++++ b/identity-tools/generate-identity.sh
+@@ -54,6 +54,7 @@ execute () {
+     fi
+   else
+     echo "Error: edge-core is not connected yet. Its status is- $status. Exited with code $?."
++    exit 1
+   fi
+ }
+ 
