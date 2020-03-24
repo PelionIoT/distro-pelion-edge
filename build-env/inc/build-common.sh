@@ -272,7 +272,7 @@ function pelion_docker_build() {
 
     # Use separate docker containers for source generation and package build.
     if $PELION_PACKAGE_SOURCE; then
-        docker run \
+        docker run --rm \
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             pelion-$DOCKER_DIST-source \
@@ -281,7 +281,7 @@ function pelion_docker_build() {
     fi
 
     if $PELION_PACKAGE_BUILD; then
-        docker run \
+        docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
@@ -289,7 +289,7 @@ function pelion_docker_build() {
     fi
 
     if $PELION_METAPACKAGE_GEN; then
-        docker run \
+        docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
