@@ -120,7 +120,7 @@ wrapelf() {
     cat >"$f" <<EOF
 #!/bin/sh
 root=\${0%/*}/$path_to_root
-"\$root"$cld --library-path "$libdirs" "\$0.elf" "\$@"
+exec "\$root"$cld --library-path "$libdirs" "\$0.elf" "\$@"
 EOF
 
     chmod +x "$f"

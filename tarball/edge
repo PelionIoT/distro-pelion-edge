@@ -1,0 +1,203 @@
+#!/bin/sh
+
+set -e
+cd "${0%/*}"
+
+pe_root="$(pwd)"
+rundir=$pe_root/var/run
+logdir=$pe_root/var/log
+peliondir=$pe_root/var/lib/pelion
+cborfile=$pe_root/etc/mbed-edge.cbor
+pidfile=$rundir/edge.pid
+
+export PATH="$pe_root/usr/lib/pelion/developer_identity/bin:$pe_root/bin:$pe_root/usr/bin${PATH:+:$PATH}"
+
+mkdir -p "$rundir"
+mkdir -p "$logdir"
+
+# Maestro creates these directories without executable permissions and
+# later fails because of it. So we have to create them here ourselves.
+mkdir -p "$peliondir"/edge_gw_config/.ssl
+mkdir -p etc/pelion/run
+
+launch() {
+    local opt r n
+    local OPTIND=1
+    while getopts "r:n:" opt; do
+        case "$opt" in
+            r) r=$OPTARG ;; # number of attempts
+            n) n=$OPTARG ;; # job name
+        esac
+    done
+    shift $((OPTIND - 1))
+
+    local i logfile
+    r=${r:-5}
+    n=${n:-$1}
+    logfile="$logdir/$n.stdout"
+
+    while [ $((i)) -lt "$r" ]; do
+        echo "Starting $n..." ${i:+"(attempt $((i+1))/$r)"}
+        if "$@" >"$logfile" 2>&1; then
+            return 0
+        fi
+
+        i=$((i + 1))
+        sleep 5
+    done
+
+    echo "Job $n failed. See $logfile"
+    return 1
+}
+
+# stab(LIST) - kills without making noise 🗡
+stab() { kill "$@" 2>/dev/null; }
+
+# running_p(PID) - checks if a process is alive.
+running_p() {
+    local pid
+
+    [ -f "$pidfile" ]    && \
+    read pid <"$pidfile" && \
+    stab -0 "$pid"       || \
+        return 1
+}
+
+# bcast(SIG, LIST) - sends the signal SIG to all processes in LIST and
+# to all their descendants.
+bcast() {
+    local sig pid targets children
+    sig=$1; shift
+
+    while [ $# -gt 0 ]; do
+        pid=$1; shift
+        stab -STOP "$pid" || continue
+        targets="$targets $pid"
+
+        if children=$(pgrep -P "$pid"); then
+            set -- "$@" $children
+        fi
+    done
+
+    set -- $(echo $targets | xargs -n1 | sort -u)
+
+    if [ $# -ne 0 ]; then
+        stab "$sig" $*
+        stab -CONT $* || true
+        echo $*
+    fi
+}
+
+# terminate(LIST) - kills all targets in LIST and their
+# children. Doesn't work on Sarah Connor.
+terminate() {
+    local i=10
+
+    while [ $i -gt 0 ]; do
+        echo >&2 "Stopping $*"
+        set -- $(bcast -TERM "$@")
+        [ $# -eq 0 ] && return 0
+        i=$((i - 1))
+        sleep 1
+    done
+
+    echo >&2 "Killing $*"
+    bcast -KILL "$@" >/dev/null
+}
+
+run() {
+    local opt opt_d opt_t
+
+    local OPTIND=1
+    while getopts "dt" opt; do
+        case "$opt" in
+            d) opt_d=true ;; # developer mode
+            t) opt_t=true ;; # enable relay-term
+        esac
+    done
+
+    maestroconf=$pe_root/etc/maestro.conf
+    if [ ! -f "$maestroconf" ]; then
+        sed "s:\b__PE_ROOT__\b:$pe_root:g" <"${maestroconf}.in" >"$maestroconf"
+    fi
+
+    if [ "$opt_d" = true ] && [ ! -f "$cborfile" ]; then
+        echo >&2 "$cborfile does not exist"
+        exit 1
+    fi
+
+    cd "$peliondir"
+    trap wait EXIT
+
+    launch edge-core${opt_d:+-devmode --cbor-conf "$cborfile"} --http-port 9101 &
+    launch -r24 generate-identity.sh '' 9101 "$peliondir"/edge_gw_config
+    launch maestro -config "$maestroconf" &
+
+    if [ "$opt_t" = true ]; then
+        export NODE_PATH=$pe_root/usr/lib/pelion/devicejs-core-modules/node_modules
+        launch -n relay-term node "$pe_root/usr/lib/pelion/wigwag-core-modules/relay-term/src/index.js" \
+               start "$pe_root/etc/pelion/run/relay-term-config.json" &
+    fi
+
+    # Explicit exit is required here specifically for Bash. It's a
+    # workaround for https://savannah.gnu.org/support/?109840
+    exit
+}
+
+start() {
+    if running_p; then
+        echo "Edge is already running."
+        return 1
+    fi
+
+    run "$@" &
+    echo "$!" >"$pidfile"
+}
+
+stop() {
+    local pid
+
+    if ! read pid <"$pidfile"; then
+        echo >&2 "Edge is not running."
+        return 1
+    fi
+
+    terminate "$pid"
+    rm "$pidfile"
+}
+
+handle_int() {
+    trap '' INT
+    stop
+}
+
+usage() {
+    cat <<EOF
+Usage: ${0##*/} {start|foreground|stop} [OPTIONS]
+
+Commands:
+  start      - starts Pelion Edge in background
+  stop       - stops Pelion Edge
+  foreground - runs Pelion Edge in foreground
+
+Options for start and foreground:
+  -d Enables developer mode
+  -t Enables remote terminal
+EOF
+
+    exit 64
+}
+
+[ $# -eq 0 ] && usage
+op=$1; shift
+
+case "$op" in
+    start) start "$@" ;;
+    stop)  stop       ;;
+    foreground)
+        trap '' INT
+        start "$@"
+        trap handle_int INT
+        wait ;;
+    *) usage ;;
+esac
