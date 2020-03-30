@@ -224,6 +224,7 @@ jobs:
    - job: "devicedb"
      immutable: true
      die_on_parent_death: true
+     inherit_env: true
      exec_cmd: "__PE_ROOT__/usr/bin/devicedb"
      restart: true
      restart_limit: 5000

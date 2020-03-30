@@ -229,6 +229,10 @@ rm -rf "$downloads"
 cd "$moshpit"
 cp -a "$topdir"/tarball/* .
 
+echo "Copying root certificates..."
+mkdir -p etc/ssl/certs
+cp /etc/ssl/certs/ca-certificates.crt ./etc/ssl/certs
+
 echo "Scanning the resulting file tree for problems..."
 for f in **; do
     if [ -h "$f" ]; then

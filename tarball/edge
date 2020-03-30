@@ -109,10 +109,11 @@ run() {
     local opt opt_d opt_t
 
     local OPTIND=1
-    while getopts "dt" opt; do
+    while getopts "dtc" opt; do
         case "$opt" in
             d) opt_d=true ;; # developer mode
             t) opt_t=true ;; # enable relay-term
+            c) export SSL_CERT_FILE=$pe_root/etc/ssl/certs/ca-certificates.crt ;; # tarball root certificates
         esac
     done
 
@@ -176,13 +177,14 @@ usage() {
 Usage: ${0##*/} {start|foreground|stop} [OPTIONS]
 
 Commands:
-  start      - starts Pelion Edge in background
-  stop       - stops Pelion Edge
-  foreground - runs Pelion Edge in foreground
+  start      - start Pelion Edge in background
+  stop       - stop Pelion Edge
+  foreground - run Pelion Edge in foreground
 
 Options for start and foreground:
-  -d Enables developer mode
-  -t Enables remote terminal
+  -d Enable developer mode
+  -t Enable remote terminal
+  -c Use local root CA certificates (./etc/ssl/certs/ca-certificates.crt)
 EOF
 
     exit 64
