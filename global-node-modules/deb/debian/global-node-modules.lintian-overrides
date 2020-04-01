@@ -1,1 +1,14 @@
 new-package-should-close-itp-bug
+
+embedded-javascript-library
+package-contains-vcs-control-file
+privacy-breach-generic
+script-not-executable
+unusual-interpreter
+executable-not-elf-or-script
+package-contains-hardlink
+duplicate-font-file
+shlib-with-executable-bit
+shared-lib-without-dependency-information
+embedded-library
+windows-devel-file-in-package

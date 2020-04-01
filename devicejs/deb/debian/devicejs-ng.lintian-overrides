@@ -1,1 +1,12 @@
 new-package-should-close-itp-bug
+
+embedded-javascript-library
+package-contains-vcs-control-file
+privacy-breach-uses-embedded-file
+wrong-path-for-interpreter
+script-not-executable
+executable-not-elf-or-script
+package-contains-hardlink
+duplicate-font-file
+python-script-but-no-python-dep
+shlib-with-executable-bit
