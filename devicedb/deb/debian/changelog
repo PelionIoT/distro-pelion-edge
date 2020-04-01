@@ -1,6 +1,5 @@
 devicedb (0.0.1-1) unstable; urgency=medium
 
-  * Initial release for Debian.
+  * Initial release
 
- -- Vasily Smirnov <vasilii.smirnov@globallogic.com>  Fri, 10 Jan 2020 11:45:11 +0200
-
+ -- Vasily Smirnov <vasilii.smirnov@globallogic.com>  Wed, 01 Apr 2020 00:00:00 +0300
