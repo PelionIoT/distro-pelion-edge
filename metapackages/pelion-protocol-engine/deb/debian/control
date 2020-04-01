@@ -1,12 +1,14 @@
 Source: pelion-protocol-engine
-Section: metapackage
+Section: metapackages
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
 Build-Depends: debhelper (>=9)
 Standards-Version: 3.9.6
-Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/index.html
+Homepage: https://www.pelion.com
 
 Package: pelion-protocol-engine
 Architecture: all
 Depends: devicejs-ng, global-node-modules, mbed-devicejs-bridge, mbed-edge-examples, fog-core
-Description: pelion-protocol-engine
+Description: protocol-engine package group
+ Combine devicejs-ng, global-node-modules, mbed-devicejs-bridge,
+ mbed-edge-examples, fog-core

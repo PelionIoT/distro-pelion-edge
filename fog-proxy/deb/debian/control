@@ -4,9 +4,11 @@ Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
 Build-Depends: debhelper (>=9), golang-go:native (>=2:1.9~), libc6
 Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
 
 Package: fog-proxy
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: proxy for Fog-Core
+Description: proxies for ssl
+ Proxy for fog-core

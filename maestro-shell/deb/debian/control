@@ -4,10 +4,10 @@ Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
 Build-Depends: debhelper (>=9), golang-go:native (>=2:1.7~), libc6
 Standards-Version: 3.9.6
-Homepage: https://github.com/armPelionEdge/maestro-shell
+Homepage: https://www.pelion.com
 
 Package: maestro-shell
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: shell access to maestro
+Description: shell interface to maestro on gateway
  An interactive shell for controlling maestro locally on deviceOS.

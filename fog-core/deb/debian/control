@@ -4,17 +4,16 @@ Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
 Build-Depends: debhelper (>=9), golang-go:native (>=2:1.9~), libc6
 Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
 
 Package: fog-core
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: control plane for edge devices in a connected network of edge gateways
- Provides a uniform interface between applications running on edge
- gateways and devices connected to them.
- .
- Fog-Core's core features enable monitoring of device
- state, device control, device queries, and device discovery all
- without applications needing to worry about where a device is in the
- network. Fog-Core takes care of routing requests and data where it
- needs to go so the application just needs to worry about devices.
+Description: message bus (golang)
+ Provides a uniform interface between applications running on edge gateways and
+ devices connected to them. Fog-Core's core features enable monitoring of
+ device state, device control, device queries, and device discovery all without
+ applications needing to worry about where a device is in the network. Fog-Core
+ takes care of routing requests and data where it needs to go so the
+ application just needs to worry about devices.

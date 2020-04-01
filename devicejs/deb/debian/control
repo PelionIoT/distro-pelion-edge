@@ -4,9 +4,11 @@ Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
 Build-Depends: debhelper (>=9), nodejs:native, libssl1.0-dev, libstdc++6, npm:native, node-gyp:native
 Standards-Version: 3.9.6
-Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/index.html
+Homepage: https://www.pelion.com
 
 Package: devicejs-ng
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, bash, nodejs
-Description: devicejs message bus
+Description: message bus (nodejs)
+ Provides a uniform interface between applications running on edge gateways and
+ devices connected to them.

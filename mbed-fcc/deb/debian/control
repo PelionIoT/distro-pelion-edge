@@ -4,13 +4,10 @@ Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
 Build-Depends: debhelper (>=9), cmake (>=3.5), python:native, python-click:native, python-requests:native, libc6-dev, libstdc++6
 Standards-Version: 3.9.6
-Homepage: https://www.pelion.com/docs/device-management/current/provisioning-process/index.html
+Homepage: https://www.pelion.com
 
 Package: mbed-fcc
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Factory Configurator Client example
- To facilitate the provisioning process, we provide the open-source
- Device Management Client, which accepts the data that you configure
- in the factory, stores it securely on your device, and calls Device
- Management services when your device is ready to connect.
+Description: factory Configurator Client example
+ Factory client tool for preparing for registration

@@ -4,9 +4,11 @@ Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
 Build-Depends: debhelper (>=9), golang-go:native (>=2:1.9~), libc6
 Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
 
 Package: rallypointwatchdogs
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: RallyPoint 100 & 200 watchdog plugins for maestro
+Description: rallyPoint Maestro Watchdog
+ RallyPoint 100 & 200 watchdog plugins for maestro

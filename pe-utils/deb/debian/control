@@ -1,12 +1,13 @@
 Source: pe-utils
-Section: utils
+Section: javascript
 Priority: optional
 Maintainer: Olha Kulyk  <olha.kulyk@globallogic.com>
 Build-Depends: debhelper (>=9)
 Standards-Version: 3.9.6
-Homepage: https://www.pelion.com/docs/device-management-edge/0.10/introduction/index.html
+Homepage: https://www.pelion.com
 
 Package: pe-utils
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, bash, curl, jq, nodejs, openssl
-Description: utilities and a light-weight programs for Pelion Edge
+Description: pelion utilities
+ Utilities and a light-weight programs for Pelion Edge

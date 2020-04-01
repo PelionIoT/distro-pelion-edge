@@ -6,15 +6,15 @@ Build-Depends: debhelper (>=9), golang-go:native (>=2:1.9~), python:native (>=2.
  autoconf (>=2.69), automake (>=1:1.15), libtool (>=2.4.6),
  libc6, libstdc++6, libunwind-dev
 Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
 
 Package: maestro
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: systems management for Pelion Edge OS
+Description: system manager (logging, dhcp, cloud connector)
  Maestro is a replacement for a number of typical system utilities and
- management programs, while providing cloud-connected systems
- management. Maestro is designed specifically for cloud-connected
- embedded Linux computers, with somewhat limited RAM and disk space,
- where file systems are often flash - and would prefer less writing
- over time.
+ management programs, while providing cloud-connected systems management.
+ Maestro is designed specifically for cloud-connected embedded Linux computers,
+ with somewhat limited RAM and disk space, where file systems are often flash -
+ and would prefer less writing over time.
