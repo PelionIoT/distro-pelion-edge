@@ -2,7 +2,7 @@ build/bin/pt-example     usr/bin
 build/bin/blept-example  usr/bin
 build/bin/mqttpt-example usr/bin
 
-debian/blept-devices.json            etc/pelion
 mqttpt-example/mqttgw_sim/mqtt_ep.sh usr/bin
 mqttpt-example/mqttgw_sim/mqtt_gw.sh usr/bin
 
+debian/blept-devices.json  etc/pelion

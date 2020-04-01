@@ -1,2 +1,2 @@
-identity-tools/developer_identity   usr/lib/pelion
 identity-tools/generate-identity.sh usr/bin
+identity-tools/developer_identity   usr/lib/pelion
