@@ -1,13 +1,33 @@
+#!/bin/sh
+# -*- mode: markdown; -*-
+# vi: set ft=markdown:
 
-  * [Build scripts for Pelion Edge](#build-scripts-for-pelion-edge)
-    * [Build environment](#build-environment)
-    * [Building a single package](#building-a-single-package)
-    * [Building all packages](#building-all-packages)
-    * [Generating tar archives](#generating-tar-archives)
-    * [Build results](#build-results)
-    * [APT repository](#apt-repository)
+cd "${0%/*}"/../..
+m4 -P <<'EOF'
+m4_divert(-1)
+m4_changequote(⟨, ⟩)
+m4_changecom()
 
-# Build scripts for Pelion Edge
+m4_define(TOC,  1)
+m4_define(BODY, 2)
+
+m4_define(TOCENT,
+⟨$1 ⟨$2⟩m4_divert(TOC)⟩
+⟨m4_patsubst($1, #, ⟨  ⟩)* [$2](#m4_translit($2, A-Z , a-z-))m4_divert(BODY)⟩)
+
+m4_define(SECTION,    ⟨TOCENT(#,  $1)⟩)
+m4_define(SUBSECTION, ⟨TOCENT(##, $1)⟩)
+m4_define(SUBSUBSECTION,     ⟨### $1⟩)
+
+m4_define(CMD_EXAMPLE,
+⟨```⟩
+⟨$ $1⟩
+⟨m4_esyscmd($1)m4_dnl⟩
+⟨```⟩)
+
+m4_divert(BODY)
+
+SECTION(Build scripts for Pelion Edge)
 
 The  folder `build-env`  contains helper  or common  scripts. Other  directories
 contain build scripts specific for each package:
@@ -28,7 +48,7 @@ python environments).
 
 Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 
-## Build environment
+SUBSECTION(Build environment)
 
 1. Scripts for creating clean build docker images:
 ```
@@ -55,32 +75,11 @@ $ ./build-env/bin/docker-run.sh pelion-bionic-source
 The script mounts the user `.ssh` directory  to share git ssh keys.  The root of
 this repo is mounted to `/pelion-build`.
 
-## Building a single package
+SUBSECTION(Building a single package)
 
 The build scripts provide help information, for example:
 
-```
-$ maestro/deb/build.sh --help
-Usage: maestro/deb/build.sh [Options]
-
-Options:
- --docker            Use docker containers.
- --source            Generate source package.
- --build             Build binary from source generated with --source option.
- --install           Install build dependencies.
- --arch=<arch>       Set target architecture.
- --help,-h           Print this message.
-
-If neither '--source' nor '--build' option is specified both are activated.
-
-Available architectures:
-  amd64
-  arm64
-  armhf
-  armel
-
-Default mode: maestro/deb/build.sh --arch=amd64
-```
+CMD_EXAMPLE(maestro/deb/build.sh --help)
 
 These scripts can be used to generate both source and binary packages.
 
@@ -90,25 +89,9 @@ in appropriate containers automatically:
 * source packages will be generated in `pelion-bionic-source`
 * binary packages in `pelion-bionic-build`
 
-## Building all packages
+SUBSECTION(Building all packages)
 
-```
-$ ./build-env/bin/pelion-build-all.sh --help
-Usage: pelion-build-all.sh [Options]
-
-Options:
- --source            Generate source package.
- --build             Build binary from source generated with --source option.
- --tar               Build a tarball from Debian packages.
- --docker            Use docker containers.
- --install           Install build dependencies.
- --arch=<arch>       Set comma-separated list of target architectures.
- --help,-h           Print this message.
-
-If none of '--source', '--build' or '--tar' options are specified,
-all of them are activated.
-
-```
+CMD_EXAMPLE(./build-env/bin/pelion-build-all.sh --help)
 
 This script  will run build of  each package in new  docker container installing
 all build dependencies each time (with `--docker` option), for example:
@@ -126,27 +109,18 @@ user@95a30883d637:/pelion-build$ ./build-env/bin/pelion-build-all.sh --install -
 The option `--install` is required when the script is executed manually in clear
 docker container, otherwise it will fail due to missing build dependencies.
 
-## Generating tar archives
+SUBSECTION(Generating tar archives)
 
 A tar archive can be created from a binary release for Debian.  One option is to
 use the `pelion-build-all.sh`  script as described above.  Another  option is to
 invoke `build-env/bin/deb2tar.sh` directly.
 
-```
-$ build-env/bin/deb2tar.sh --help
-deb2tar.sh - converts a set of Debian packages into a portable tarball.
-
-Usage: deb2tar.sh [-h|--help] [-a ARCH|--arch ARCH]
- -h, --help
-  Display this help message.
- -a ARCH, --arch ARCH
-  Set the host architecture of the tarball.
-```
+CMD_EXAMPLE(build-env/bin/deb2tar.sh --help)
 
 Before invoking `deb2tar.sh` make sure that all packages you want to be included
 in the tarball are already built.
 
-## Build results
+SUBSECTION(Build results)
 
 The scripts create  or modify files only  in the `build` directory  that is also
 created automatically.
@@ -162,7 +136,7 @@ in subdirectories per architecture:
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
 
-## APT repository
+SUBSECTION(APT repository)
 
 Structure for APT repository server can be created in `build/deploy/deb/apt-repo`
 directory by `build-env/bin/pelion-apt-repo-create.sh`. It provides help
@@ -185,7 +159,7 @@ two ways to pass such a key to the  script: using an id of a key stored in one's
 GPG keyring or a filesystem path to a secret key. The default is to use the file
 `build/deploy/deb/gpg/Pelion_GPG_key_private.gpg`.
 
-### GPG key pair generation
+SUBSUBSECTION(GPG key pair generation)
 
 To generate a key pair one can use `build-env/bin/pelion-gpg-key-generate.sh`:
 ```
@@ -206,7 +180,7 @@ The `--key-email`  flag is required  (it's the email part  of a key's  id).  The
 generated public  and private  keys will  be placed  into `build/deb/deploy/gpg`
 directory by default, but this can be changed using the `--key-path` option.
 
-### APT repository usage
+SUBSUBSECTION(APT repository usage)
 
 In order to get access to an apt  repository add a line of the following form in
 `/etc/apt/sources.list`:
@@ -218,3 +192,4 @@ Then import the GPG key the repository was signed with:
 ```
 wget -q -O - http://<ip address>/key.gpg | sudo apt-key add -
 ```
+EOF
