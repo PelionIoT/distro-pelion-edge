@@ -3,6 +3,7 @@ FROM pelion-bionic-build
 USER root
 
 RUN apt-get install -y --no-install-recommends \
+		apt-rdepends \
 		git \
 		npm \
 		python \
