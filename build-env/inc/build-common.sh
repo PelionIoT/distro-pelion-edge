@@ -214,6 +214,8 @@ function pelion_generation_deb_source_packages() {
         fi
     done
 
+    find "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/" -name .gitignore -exec rm {} +
+
     if [ -v PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK ]; then
         $PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK
     fi
