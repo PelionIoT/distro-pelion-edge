@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: global-node-modules
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, bash, nodejs
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), nodejs
 Description: modules which enriches the edge platform
  Modules use the devicejs bus

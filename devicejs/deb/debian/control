@@ -8,7 +8,7 @@ Homepage: https://www.pelion.com
 
 Package: devicejs-ng
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, bash, nodejs
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), nodejs
 Description: message bus (nodejs)
  Provides a uniform interface between applications running on edge gateways and
  devices connected to them.
