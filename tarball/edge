@@ -9,6 +9,7 @@ logdir=$pe_root/var/log
 peliondir=$pe_root/var/lib/pelion
 cborfile=$pe_root/etc/mbed-edge.cbor
 pidfile=$rundir/edge.pid
+barrier=$rundir/edge.barrier
 
 export PATH="$pe_root/usr/lib/pelion/developer_identity/bin:$pe_root/bin:$pe_root/usr/bin${PATH:+:$PATH}"
 
@@ -53,16 +54,6 @@ launch() {
 # stab(LIST) - kills without making noise 🗡
 stab() { kill "$@" 2>/dev/null; }
 
-# running_p(PID) - checks if a process is alive.
-running_p() {
-    local pid
-
-    [ -f "$pidfile" ]    && \
-    read pid <"$pidfile" && \
-    stab -0 "$pid"       || \
-        return 1
-}
-
 # bcast(SIG, LIST) - sends the signal SIG to all processes in LIST and
 # to all their descendants.
 bcast() {
@@ -83,7 +74,7 @@ bcast() {
 
     if [ $# -ne 0 ]; then
         stab "$sig" $*
-        stab -CONT $* || true
+        stab -CONT $* || :
         echo $*
     fi
 }
@@ -103,6 +94,13 @@ terminate() {
 
     echo >&2 "Killing $*"
     bcast -KILL "$@" >/dev/null
+}
+
+on_exit() {
+    wait
+    exec 4>>"$barrier"
+    flock 4
+    rm "$pidfile"
 }
 
 run() {
@@ -128,7 +126,7 @@ run() {
     fi
 
     cd "$peliondir"
-    trap wait EXIT
+    trap on_exit EXIT
 
     launch edge-core${opt_d:+-devmode --cbor-conf "$cborfile"} --http-port 9101 &
     launch -r24 generate-identity.sh '' 9101 "$peliondir"/edge_gw_config
@@ -146,19 +144,28 @@ run() {
 }
 
 start() {
-    if running_p; then
+    exec 3>"$pidfile"
+
+    if ! flock -n 3; then
         echo "Edge is already running."
         return 1
     fi
 
     run "$@" &
-    echo "$!" >"$pidfile"
+    echo "$!" >&3
 }
 
 stop() {
     local pid
 
-    if ! read pid <"$pidfile"; then
+    exec 4>>"$barrier"
+    if ! flock -n 4; then
+        echo >&2 "Another stop operation is in progress."
+        return 1
+    fi
+
+    exec 3<>"$pidfile"
+    if flock -n 3 || ! read pid <&3; then
         echo >&2 "Edge is not running."
         return 1
     fi

@@ -142,6 +142,10 @@ fetch_deps() {
         's/^(libldap-common):.*/\1:all/'
     )
 
+    local -a append=(
+        'util-linux'
+    )
+
     local f
     for f in "$@"; do
         split ", " "$(dpkg-deb -W --showformat '${Depends}' "$f")"
@@ -153,8 +157,8 @@ fetch_deps() {
     join ';' "${rewrite[@]}"; rewrite=$eax
 
     local pkg
-    apt-rdepends "${!deps[@]}" |\
-    sed -E "/^ /d; s/.*/\0:$host/; $rewrite" |\
+    apt-rdepends "${!deps[@]}" "${append[@]}" |\
+    sed -E "/^ /d; s/.*/\0:$host/; $rewrite"  |\
     xargs apt-get download
 }
 
@@ -208,6 +212,13 @@ patch_edge_core_devmode() {
     mv lib/systemd/system/edge-core{,-devmode}.service
 }
 
+patch_util_linux() {
+    cp usr/bin/flock ..
+    rm -rf *
+    mkdir -p usr/bin
+    mv ../flock usr/bin
+}
+
 echo "Extracting Debian packages..."
 for pkg in "${pkgs[@]}" "$downloads"/*.deb; do
     mkdir -p "$workdir/ar_x" && cd "$_"
@@ -217,9 +228,12 @@ for pkg in "${pkgs[@]}" "$downloads"/*.deb; do
     mkdir data
     tar -xf data.tar.* -C data
 
-    if [[ ${pkg##*/} == mbed-edge-core-devmode* ]]; then
-        cd data; patch_edge_core_devmode; cd "$workdir/ar_x"
-    fi
+    case "${pkg##*/}" in
+        mbed-edge-core-devmode*)
+            cd data; patch_edge_core_devmode; cd "$workdir/ar_x" ;;
+        util-linux*)
+            cd data; patch_util_linux;        cd "$workdir/ar_x" ;;
+    esac
 
     cp -r data/* "$moshpit/"
     cd "$workdir" && rm -rf ar_x
