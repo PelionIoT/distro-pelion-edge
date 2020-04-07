@@ -1,5 +1,7 @@
 new-package-should-close-itp-bug
 
+shell-script-fails-syntax-check
+
 embedded-javascript-library
 package-contains-vcs-control-file
 privacy-breach-uses-embedded-file
