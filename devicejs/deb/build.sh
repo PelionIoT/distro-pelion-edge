@@ -16,6 +16,8 @@ source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 function pelion_devicejs_ng_origin_source_update_cb() {
     cd  "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
     npm install --production --ignore-scripts
+
+    pelion_update_too_old_files "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/node_modules"
 }
 
 pelion_main "$@"

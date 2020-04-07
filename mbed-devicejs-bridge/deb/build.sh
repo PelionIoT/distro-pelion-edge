@@ -12,25 +12,22 @@ declare -A PELION_PACKAGE_COMPONENTS=(
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
-function pelion_mbed_devicejs_bridge_check_no_elf() {
-    if find "$1" -type f -exec file {} + | grep -q ELF; then
-        echo "Error: $1 have ELF file."
-        exit 1
-    fi
-}
-
 function pelion_mbed_devicejs_bridge_origin_source_update_cb() {
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-devicejs-bridge" && cp devicejs.json package.json
     npm install
     rm -rf node_modules/mbed-cloud-sdk/.venv
 
-    pelion_mbed_devicejs_bridge_check_no_elf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-devicejs-bridge/node_modules"
+    pelion_update_too_old_files "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-devicejs-bridge/node_modules"
+
+    pelion_check_no_elf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-devicejs-bridge/node_modules"
     cp "$PELION_PACKAGE_DIR/config-dev.json" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-devicejs-bridge/config.json"
 
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-edge-websocket"
     npm install
 
-    pelion_mbed_devicejs_bridge_check_no_elf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-edge-websocket/node_modules"
+    pelion_update_too_old_files "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-edge-websocket/node_modules"
+
+    pelion_check_no_elf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/mbed-edge-websocket/node_modules"
 }
 
 pelion_main "$@"

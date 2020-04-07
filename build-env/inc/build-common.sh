@@ -50,6 +50,31 @@ function sig_handle() {
 }
 ################################################################################
 
+################################################################################
+# Additional helper functions for package building
+
+function pelion_check_no_elf() {
+    if find "$1" -type f -exec file {} + | grep -q ELF; then
+        echo "Error: $1 have ELF file."
+        exit 1
+    fi
+}
+
+function pelion_update_too_old_files() {
+    DEBIAN_POLICY_MIN_YEAR=$(($(date +"%Y")-20))
+
+    find "$1" -print0 |
+    while IFS= read -r -d '' File; do
+        FILE_MODIFICATION_YEAR=$(date -r "$File" +"%Y")
+
+        if [ "$FILE_MODIFICATION_YEAR" -le "$DEBIAN_POLICY_MIN_YEAR" ]; then
+            touch -m $File
+        fi
+    done
+}
+
+################################################################################
+
 function pelion_metapackage_parse_args() {
     for opt in "$@"; do
         case "$opt" in

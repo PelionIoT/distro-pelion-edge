@@ -31,6 +31,8 @@ function pelion_global_node_modules_source_update_cb() {
     npm install --loglevel silly node-expat iconv bufferutil@3.0.5 --production --ignore-scripts >> npm-first.log 2>&1
     npm --loglevel silly install --production --ignore-scripts >> npm-second.log 2>&1
 
+    pelion_update_too_old_files "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules/node_modules"
+
     mv "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules"/* "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME" && \
     rm -rf edge-node-modules

@@ -12,18 +12,13 @@ declare -A PELION_PACKAGE_COMPONENTS=(
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
-function pelion_pe_utils_check_no_elf() {
-    if find "$1" -type f -exec file {} + | grep -q ELF; then
-        echo "Error: $1 have ELF file."
-        exit 1
-    fi
-}
-
 function pelion_pe_utils_origin_source_update_cb() {
     cd  "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/identity-tools/developer_identity"
     npm install
 
-    pelion_pe_utils_check_no_elf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/identity-tools/developer_identity/node_modules"
+    pelion_update_too_old_files "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/identity-tools/developer_identity/node_modules"
+
+    pelion_check_no_elf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/identity-tools/developer_identity/node_modules"
     chmod +x "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/identity-tools/generate-identity.sh"
 }
 
