@@ -144,6 +144,7 @@ fetch_deps() {
 
     local -a append=(
         'util-linux'
+        'bsdutils'
     )
 
     local f
@@ -207,18 +208,6 @@ mkdir -p "$moshpit" "$downloads"
 cd "$downloads"
 fetch_deps "${pkgs[@]}"
 
-patch_edge_core_devmode() {
-    mv usr/bin/edge-core{,-devmode}
-    mv lib/systemd/system/edge-core{,-devmode}.service
-}
-
-patch_util_linux() {
-    cp usr/bin/flock ..
-    rm -rf *
-    mkdir -p usr/bin
-    mv ../flock usr/bin
-}
-
 echo "Extracting Debian packages..."
 for pkg in "${pkgs[@]}" "$downloads"/*.deb; do
     mkdir -p "$workdir/ar_x" && cd "$_"
@@ -226,13 +215,15 @@ for pkg in "${pkgs[@]}" "$downloads"/*.deb; do
     echo "- ar x $pkg"
     ar x "$pkg"
     mkdir data
-    tar -xf data.tar.* -C data
 
     case "${pkg##*/}" in
         mbed-edge-core-devmode*)
-            cd data; patch_edge_core_devmode; cd "$workdir/ar_x" ;;
-        util-linux*)
-            cd data; patch_util_linux;        cd "$workdir/ar_x" ;;
+            tar -xf data.tar.* -C data
+            mv data/usr/bin/edge-core{,-devmode}
+            mv data/lib/systemd/system/edge-core{,-devmode}.service ;;
+        util-linux*) tar -xf data.tar.* -C data ./usr/bin/flock     ;;
+        bsdutils*)   tar -xf data.tar.* -C data ./usr/bin/script    ;;
+        *)           tar -xf data.tar.* -C data                     ;;
     esac
 
     cp -r data/* "$moshpit/"

@@ -21,6 +21,23 @@ mkdir -p "$logdir"
 mkdir -p "$peliondir"/edge_gw_config/.ssl
 mkdir -p etc/pelion/run
 
+escape() {
+    local x
+    for x; do
+        x=$(printf '%s' "$x" | sed "s/'/'\\\\''/g")
+        shift; set -- "$@" "'$x'"
+    done
+    echo "$@"
+}
+
+faketty() {
+    local typescript cmd
+    typescript=$1; shift
+    cmd=$(escape "$@")
+    echo >"$typescript" "Output of $cmd"
+    script -qeafc "$cmd" "$typescript" >/dev/null 2>&1
+}
+
 launch() {
     local opt r n
     local OPTIND=1
@@ -39,7 +56,7 @@ launch() {
 
     while [ $((i)) -lt "$r" ]; do
         echo "Starting $n..." ${i:+"(attempt $((i+1))/$r)"}
-        if "$@" >"$logfile" 2>&1; then
+        if faketty "$logfile" "$@"; then
             return 0
         fi
 
@@ -82,21 +99,26 @@ bcast() {
 # terminate(LIST) - kills all targets in LIST and their
 # children. Doesn't work on Sarah Connor.
 terminate() {
-    local i=10
+    local sig
 
-    while [ $i -gt 0 ]; do
+    for sig in TERM HUP ABRT KILL; do
         echo >&2 "Stopping $*"
-        set -- $(bcast -TERM "$@")
+        set -- $(bcast -"$sig" "$@")
         [ $# -eq 0 ] && return 0
-        i=$((i - 1))
         sleep 1
     done
 
-    echo >&2 "Killing $*"
-    bcast -KILL "$@" >/dev/null
+    if [ $# -gt 0 ]; then
+        echo >&2 "Unable to stop $*"
+    fi
 }
 
 on_exit() {
+    if [ $? -ne 0 ]; then
+        echo >&2 'Something went wrong. To shutdown all remaining processes run'
+        echo >&2 '"./edge stop" or, if running in the foreground, press C-c.'
+    fi
+
     wait
     exec 4>>"$barrier"
     flock 4
