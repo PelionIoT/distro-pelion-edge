@@ -1,5 +1,7 @@
 new-package-should-close-itp-bug
 
+systemd-service-file-refers-to-unusual-wantedby-target
+
 embedded-javascript-library
 package-contains-vcs-control-file
 privacy-breach-generic

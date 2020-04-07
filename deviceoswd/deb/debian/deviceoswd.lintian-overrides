@@ -2,3 +2,4 @@ new-package-should-close-itp-bug
 binary-without-manpage
 
 statically-linked-binary
+systemd-service-file-refers-to-unusual-wantedby-target
