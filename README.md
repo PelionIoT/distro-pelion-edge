@@ -67,11 +67,13 @@ Options:
  --docker            Use docker containers.
  --source            Generate source package.
  --build             Build binary from source generated with --source option.
+ --verify            Verify package conformity to the Debian policy.
  --install           Install build dependencies.
  --arch=<arch>       Set target architecture.
  --help,-h           Print this message.
 
-If neither '--source' nor '--build' option is specified both are activated.
+ If none of '--source', '--build' or '--verify' options are specified,
+ all of them are activated.
 
 Available architectures:
   amd64
@@ -79,7 +81,7 @@ Available architectures:
   armhf
   armel
 
-Default mode: maestro/deb/build.sh --arch=amd64
+Default mode: maestro/deb/build.sh --arch=amd64 --source --build --verify
 ```
 
 These scripts can be used to generate both source and binary packages.

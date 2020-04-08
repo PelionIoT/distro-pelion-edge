@@ -33,7 +33,9 @@ METAPACKAGES=(
 
 PELION_PACKAGE_SOURCE=false
 PELION_PACKAGE_BUILD=false
+
 PELION_TARBALL=false
+
 PELION_PACKAGE_DOCKER=false
 PELION_BUILD_OPT=''
 PELION_ARCHS=( 'amd64' )
@@ -88,6 +90,7 @@ function pelion_parse_args() {
     if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD && ! $PELION_TARBALL; then
         PELION_PACKAGE_SOURCE=true
         PELION_PACKAGE_BUILD=true
+
         PELION_TARBALL=true
     fi
 
@@ -108,6 +111,7 @@ if $PELION_PACKAGE_SOURCE; then
 fi
 
 if $PELION_PACKAGE_BUILD; then
+    # Build
     for arch in "${PELION_ARCHS[@]}"; do
         for p in "${PACKAGES[@]}"; do
             echo "Building '$p' for '$arch'"
@@ -117,7 +121,20 @@ if $PELION_PACKAGE_BUILD; then
 
     for p in "${METAPACKAGES[@]}"; do
         echo "Generating '$p'"
-        "$SCRIPT_DIR"/../../metapackages/"$p"/deb/build.sh $PELION_BUILD_OPT
+        "$SCRIPT_DIR"/../../metapackages/"$p"/deb/build.sh $PELION_BUILD_OPT --build
+    done
+
+    #Verify
+    for arch in "${PELION_ARCHS[@]}"; do
+        for p in "${PACKAGES[@]}"; do
+            echo "Verifying '$p' for '$arch'"
+            "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --arch="$arch" --verify
+        done
+    done
+
+    for p in "${METAPACKAGES[@]}"; do
+        echo "Verifying '$p'"
+        "$SCRIPT_DIR"/../../metapackages/"$p"/deb/build.sh $PELION_BUILD_OPT --verify
     done
 fi
 

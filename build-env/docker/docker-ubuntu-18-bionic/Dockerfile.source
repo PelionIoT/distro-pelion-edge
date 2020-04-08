@@ -5,6 +5,7 @@ USER root
 RUN apt-get install -y --no-install-recommends \
 		apt-rdepends \
 		git \
+		lintian \
 		npm \
 		python \
 		quilt \

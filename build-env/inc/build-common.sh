@@ -32,6 +32,8 @@ PELION_PACKAGE_DEB_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_FULL_VER
 PELION_PACKAGE_SOURCE=false
 PELION_PACKAGE_BUILD=false
 PELION_METAPACKAGE_GEN=false
+PELION_PACKAGE_VERIFY=false
+
 PELION_PACKAGE_DOCKER=false
 
 PELION_PACKAGE_INSTALL_DEPS=false
@@ -82,6 +84,14 @@ function pelion_metapackage_parse_args() {
                 PELION_PACKAGE_INSTALL_DEPS=true
                 ;;
 
+            --verify)
+                PELION_PACKAGE_VERIFY=true
+                ;;
+
+            --build)
+                PELION_METAPACKAGE_GEN=true
+                ;;
+
             --docker)
                 PELION_PACKAGE_DOCKER=true
                 ;;
@@ -91,16 +101,23 @@ function pelion_metapackage_parse_args() {
                 echo ""
                 echo "Options:"
                 echo " --docker            Use docker containers."
+                echo " --build             Build metapackage."
+                echo " --verify            Verify metapackage conformity to the Debian policy."
                 echo " --install           Install build dependencies."
                 echo " --help,-h           Print this message."
                 echo ""
-                echo "Default mode: $0"
+                echo "Default mode: $0 --build --verify"
                 exit 0
                 ;;
         esac
     done
 
-    PELION_METAPACKAGE_GEN=true
+    if ! $PELION_METAPACKAGE_GEN && ! $PELION_PACKAGE_VERIFY; then
+        PELION_METAPACKAGE_GEN=true
+        PELION_PACKAGE_VERIFY=true
+    fi
+
+    PELION_PACKAGE_TARGET_ARCH=all
 }
 
 function pelion_parse_args() {
@@ -112,6 +129,10 @@ function pelion_parse_args() {
 
             --arch=*)
                 PELION_PACKAGE_TARGET_ARCH="${opt#*=}"
+                ;;
+
+            --verify)
+                PELION_PACKAGE_VERIFY=true
                 ;;
 
             --build)
@@ -133,11 +154,13 @@ function pelion_parse_args() {
                 echo " --docker            Use docker containers."
                 echo " --source            Generate source package."
                 echo " --build             Build binary from source generated with --source option."
+                echo " --verify            Verify package conformity to the Debian policy."
                 echo " --install           Install build dependencies."
                 echo " --arch=<arch>       Set target architecture."
                 echo " --help,-h           Print this message."
                 echo ""
-                echo "If neither '--source' nor '--build' option is specified both are activated."
+                echo " If none of '--source', '--build' or '--verify' options are specified,"
+                echo " all of them are activated."
                 echo ""
 
                 echo "Available architectures:"
@@ -147,15 +170,16 @@ function pelion_parse_args() {
                 done
                 echo ""
 
-                echo "Default mode: $0 --arch=$PELION_PACKAGE_TARGET_ARCH"
+                echo "Default mode: $0 --arch=$PELION_PACKAGE_TARGET_ARCH --source --build --verify"
                 exit 0
                 ;;
         esac
     done
 
-    if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD; then
+    if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD && ! $PELION_PACKAGE_VERIFY; then
         PELION_PACKAGE_SOURCE=true
         PELION_PACKAGE_BUILD=true
+        PELION_PACKAGE_VERIFY=true
     fi
 }
 
@@ -278,6 +302,18 @@ function pelion_building_deb_package() {
     mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_DEB_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
 }
 
+function pelion_verifying_deb_package() {
+    if $PELION_PACKAGE_INSTALL_DEPS; then
+        sudo apt-get update && \
+        sudo apt-get install -y lintian
+    fi
+
+    cd $PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH
+
+    lintian --no-tag-display-limit --info \
+        ${PELION_PACKAGE_DEB_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian
+}
+
 ################################################################################
 # Docker helpers
 ################################################################################
@@ -320,7 +356,16 @@ function pelion_docker_build() {
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
-                --install
+                --install --build
+    fi
+
+    if $PELION_PACKAGE_VERIFY; then
+        docker run --rm \
+            -v "$HOME/.ssh":/home/user/.ssh \
+            -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            pelion-$DOCKER_DIST-source \
+            "$DOCKER_SCRIPT_PATH/$BASENAME" \
+               --arch=$PELION_PACKAGE_TARGET_ARCH --verify
     fi
 }
 ################################################################################
@@ -334,7 +379,15 @@ function pelion_metapackage_main() {
         exit 0
     fi
 
-    pelion_generation_deb_metapackage
+    if $PELION_METAPACKAGE_GEN; then
+        echo "INFO: Building Debian metapackage!"
+        pelion_generation_deb_metapackage
+    fi
+
+    if $PELION_PACKAGE_VERIFY; then
+        echo "INFO: Verifying Debian metapackage!"
+        pelion_verifying_deb_package
+    fi
 
     echo "INFO: Done!"
 }
@@ -351,16 +404,21 @@ function pelion_main() {
     fi
 
     if $PELION_PACKAGE_SOURCE; then
+        echo "INFO: Source preparation!"
         pelion_source_preparation
-        echo "INFO: Source preparation done!"
 
+        echo "INFO: Generating Debian source packages!"
         pelion_generation_deb_source_packages
-        echo "INFO: Generation Debian source packages done!"
     fi
 
     if $PELION_PACKAGE_BUILD; then
+        echo "INFO: Building Debian package!"
         pelion_building_deb_package
-        echo "INFO: Building Debian package done!"
+    fi
+
+    if $PELION_PACKAGE_VERIFY; then
+        echo "INFO: Verifying Debian package!"
+        pelion_verifying_deb_package
     fi
 
     echo "INFO: Done!"
