@@ -11,7 +11,7 @@ Homepage: https://www.pelion.com
 Package: maestro
 Architecture: any
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, libnss-myhostname
 Description: system manager (logging, dhcp, cloud connector)
  Maestro is a replacement for a number of typical system utilities and
  management programs, while providing cloud-connected systems management.
