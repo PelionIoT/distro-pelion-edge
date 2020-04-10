@@ -264,6 +264,9 @@ for f in "${elves[@]}"; do
     wrapelf "$f"
 done
 
+echo "Applying patches..."
+quilt push -a
+
 echo "Compressing archive..."
 mkdir -p "$deploydir"
 cd "$workdir"

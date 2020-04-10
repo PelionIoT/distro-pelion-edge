@@ -1,0 +1,29 @@
+Description: makes generate-identity.sh update /etc/hosts file
+Author: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+Index: pelion-edge-amd64/usr/bin/generate-identity.sh
+===================================================================
+--- pelion-edge-amd64.orig/usr/bin/generate-identity.sh
++++ pelion-edge-amd64/usr/bin/generate-identity.sh
+@@ -34,7 +34,7 @@ readEeprom() {
+   deviceID=$(jq -r .deviceID ${IDENTITY_DIR}/identity.json)
+ }
+ 
+-execute () {
++execute() {
+   if [ "x$status" = "xconnected" ]; then
+     echo "Edge-core is connected..."
+     readEeprom
+@@ -52,6 +52,11 @@ execute () {
+         --identity-dir ${IDENTITY_DIR}\
+         --internal-id $internalid
+     fi
++    if ! grep -q "$internalid" /etc/hosts; then
++      sed -i '/Pelion Edge/d' /etc/hosts && \
++      echo "127.1.2.7 $internalid # Pelion Edge" >> /etc/hosts
++    fi 2>/dev/null
++    exit 0
+   else
+     echo "Error: edge-core is not connected yet. Its status is- $status. Exited with code $?."
+     exit 1
