@@ -1,0 +1,41 @@
+# A crappy polyfill for go-rpm-macros.
+
+%define gometa %{expand:
+%forgemeta -u https://%{goipath}
+%define gourl %{forgeurl}
+%define gosource %{forgesource}
+%define extractdir %{archivename}
+%define gosourcedir %{_builddir}/%{extractdir}
+%define gobuilddir %{gosourcedir}/_build
+
+# RHEL8 has trouble generating debug packages for Go programs. This is
+# a quick workaround:
+%global debug_package %{nil}
+
+BuildRequires: golang
+}
+
+%define goprep(k) %{expand:
+%setup -q %{forgesetupargs}
+if [[ ! -e "%{gobuilddir}/bin" ]]; then
+  install -vdm 0755 "%{gobuilddir}/bin"
+  export GOPATH="%{gobuilddir}:${GOPATH:+${GOPATH}:}%{?gopath}"
+fi
+if [[ ! -e "%{gobuilddir}/src/%{goipath}" ]]; then
+  install -vdm 0755 "$(dirname "%{gobuilddir}/src/%{goipath}")"
+  ln -sf "%{gosourcedir}" "%{gobuilddir}/src/%{goipath}"
+fi
+cd "%{gobuilddir}/src/%{goipath}"
+}
+
+%define gobuild(o:) %{expand:
+# https://bugzilla.redhat.com/show_bug.cgi?id=995136#c12
+%global _dwz_low_mem_die_limit 0
+%ifnarch ppc64
+buildmode="-buildmode pie"
+%else
+buildmode=
+%endif
+%{?gobuilddir:GOPATH="%{gobuilddir}:${GOPATH:+${GOPATH}:}%{?gopath}"} GO111MODULE=off \\
+go build $buildmode -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-}%{?currentgoldflags} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '%__global_ldflags %{?__golang_extldflags}'" -a -v -x %{?**};
+}

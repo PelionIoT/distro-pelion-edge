@@ -1,0 +1,1 @@
+../../build-env/inc/rpm-common.sh
