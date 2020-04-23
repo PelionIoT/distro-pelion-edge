@@ -1,0 +1,15 @@
+Package: golang
+Pin: release a=stretch-backports
+Pin-Priority: 900
+
+Package: golang-go
+Pin: release a=stretch-backports
+Pin-Priority: 900
+
+Package: golang-src
+Pin: release a=stretch-backports
+Pin-Priority: 900
+
+Package: golang-doc
+Pin: release a=stretch-backports
+Pin-Priority: 900

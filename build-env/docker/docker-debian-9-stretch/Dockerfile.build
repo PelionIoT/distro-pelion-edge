@@ -8,6 +8,7 @@ RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
 
 COPY ./sources.list.stretch /etc/apt/sources.list
+COPY ./preferences /etc/apt/preferences
 
 RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armel
