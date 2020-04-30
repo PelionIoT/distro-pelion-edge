@@ -1,0 +1,13 @@
+Source: pe-nodejs
+Section: javascript
+Priority: optional
+Maintainer: Travis McCollum  <travs.mccollum@arm.com>
+Build-Depends: debhelper (>=9), libc6, libstdc++6
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: pe-nodejs
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Node.js javascript engine for Pelion Edge applications.
+ Node.js engine that is compatible with Pelion Edge javascript applications.

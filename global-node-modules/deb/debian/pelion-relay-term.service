@@ -5,7 +5,7 @@ Description=relay terminal for remote terminals in pelion cloud
 Restart=always
 RestartSec=5s
 Environment=NODE_PATH=/usr/lib/pelion/devicejs-core-modules/node_modules
-ExecStart=/usr/bin/node /usr/lib/pelion/wigwag-core-modules/relay-term/src/index.js start /etc/pelion/run/relay-term-config.json
+ExecStart=/usr/lib/pelion/bin/node /usr/lib/pelion/wigwag-core-modules/relay-term/src/index.js start /etc/pelion/run/relay-term-config.json
 
 [Install]
 WantedBy=network.target

@@ -11,7 +11,7 @@ cborfile=$pe_root/etc/mbed-edge.cbor
 pidfile=$rundir/edge.pid
 barrier=$rundir/edge.barrier
 
-export PATH="$pe_root/usr/lib/pelion/developer_identity/bin:$pe_root/bin:$pe_root/usr/bin${PATH:+:$PATH}"
+export PATH="$pe_root/usr/lib/pelion/bin:$pe_root/usr/lib/pelion/developer_identity/bin:$pe_root/bin:$pe_root/usr/bin${PATH:+:$PATH}"
 
 mkdir -p "$rundir"
 mkdir -p "$logdir"

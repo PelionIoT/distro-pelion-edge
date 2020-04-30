@@ -133,6 +133,7 @@ fetch_deps() {
     local -A deps
 
     local -a rewrite=(
+        '/^pe-nodejs/d'
         '/^debconf/d'
         '/^dpkg/d'
         '/^tar\b/d'

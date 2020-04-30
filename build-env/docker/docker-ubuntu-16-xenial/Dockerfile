@@ -14,20 +14,23 @@ RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armhf
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-		sudo \
-		emacs-nox \
-		ssh \
-		git \
-		vim \
-		fakeroot \
-		ca-certificates \
 		build-essential \
+		ca-certificates \
 		crossbuild-essential-arm64 \
-		crossbuild-essential-armhf
+		crossbuild-essential-armhf \
+		fakeroot \
+		git \
+		ssh \
+		sudo \
+		vim \
+		wget
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
 COPY --chown=user ./common/.bash_aliases /home/user/
+
+COPY ./common/nodejs-apt-repo.sh /root/
+RUN /root/nodejs-apt-repo.sh && apt-get update
 
 USER user
 WORKDIR /pelion-build

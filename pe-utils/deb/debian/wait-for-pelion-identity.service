@@ -6,7 +6,7 @@ After=edge-core.service
 Restart=on-failure
 RestartSec=5s
 RemainAfterExit=true
-ExecStart=/bin/bash -c "PATH=/usr/lib/pelion/developer_identity/bin:$PATH exec /usr/bin/generate-identity.sh /usr/lib/pelion 9101 /var/lib/pelion/edge_gw_config"
+ExecStart=/bin/bash -c "PATH=/usr/lib/pelion/bin:/usr/lib/pelion/developer_identity/bin:$PATH exec /usr/bin/generate-identity.sh /usr/lib/pelion 9101 /var/lib/pelion/edge_gw_config"
 
 [Install]
 WantedBy=network.target

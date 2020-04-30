@@ -22,12 +22,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		crossbuild-essential-armel \
 		crossbuild-essential-armhf \
 		fakeroot \
-		sudo
+		sudo \
+		wget
 
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
 COPY --chown=user ./common/.bash_aliases /home/user/
+
+COPY ./common/nodejs-apt-repo.sh /root/
+RUN /root/nodejs-apt-repo.sh && apt-get update
 
 USER user
 WORKDIR /pelion-build

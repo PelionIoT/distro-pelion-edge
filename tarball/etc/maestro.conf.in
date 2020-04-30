@@ -28,7 +28,7 @@ var_defs:
    - key: "WIGWAG_DIR"
      value: "__PE_ROOT__/usr/lib/pelion"
    - key: "NODE_EXEC"
-     value: "__PE_ROOT__/usr/bin/node"
+     value: "__PE_ROOT__/usr/lib/pelion/bin/node"
    - key: "DEVICEJS_ROOT"
      value: "__PE_ROOT__/usr/lib/pelion/devicejs-ng"
    - key: "DEVJS_CORE_MODULES"

@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: pe-utils
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), curl, jq, nodejs, openssl
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), curl, jq, pe-nodejs, openssl
 Description: pelion utilities
  Utilities and a light-weight programs for Pelion Edge

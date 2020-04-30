@@ -2,13 +2,14 @@ Source: devicejs-ng
 Section: javascript
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
-Build-Depends: debhelper (>=9), nodejs:native, libssl1.0-dev, libstdc++6, npm:native, node-gyp:native
+Build-Depends: debhelper (>=9), libssl1.0-dev, libstdc++6,
+ nodejs:native (=8.11.4-1nodesource1), python:native (>=2.7)
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
 Package: devicejs-ng
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), nodejs
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), pe-nodejs
 Description: message bus (nodejs)
  Provides a uniform interface between applications running on edge gateways and
  devices connected to them.

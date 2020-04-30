@@ -2,12 +2,13 @@ Source: global-node-modules
 Section: javascript
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
-Build-Depends: debhelper (>=9), nodejs:native, libssl1.0-dev, libstdc++6, libudev-dev, npm:native, node-gyp:native
+Build-Depends: debhelper (>=9), libssl1.0-dev, libstdc++6,
+ nodejs:native (=8.11.4-1nodesource1), python:native (>=2.7)
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
 Package: global-node-modules
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), nodejs
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), pe-nodejs
 Description: modules which enriches the edge platform
  Modules use the devicejs bus
