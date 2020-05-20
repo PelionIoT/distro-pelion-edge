@@ -1,0 +1,15 @@
+FROM pelion-buster-build
+
+USER root
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		apt-rdepends \
+		git \
+		lintian \
+		nodejs \
+		python \
+		quilt \
+		ssh \
+		vim
+
+USER user
