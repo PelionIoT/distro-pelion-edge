@@ -10,5 +10,6 @@ Package: fog-proxy
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: proxies for ssl
- Proxy for fog-core
+Description: HTTP proxy for Pelion Edge
+ Provides a proxy for Pelion Edge components that routes traffic
+ through Edge Core.
