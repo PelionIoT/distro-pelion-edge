@@ -7,22 +7,23 @@ BASENAME=$(basename "$0")
 
 PACKAGES=(
     'devicedb'
-    'devicejs'
-    'deviceoswd'
-    'fog-core'
+#    'devicejs'
+#    'deviceoswd'
+#    'fog-core'
     'fog-proxy'
     'global-node-modules'
     'kubelet'
     'maestro'
     'maestro-shell'
-    'mbed-devicejs-bridge'
+#    'mbed-devicejs-bridge'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
-    'mbed-edge-examples'
-    'mbed-fcc'
-    'pe-nodejs'
-    'pe-utils'
-    'rallypointwatchdogs'
+#    'mbed-edge-examples'
+#    'mbed-fcc'
+#    'pe-nodejs'
+#    'pe-utils'
+#    'rallypointwatchdogs'
+    
 )
 
 METAPACKAGES=(
