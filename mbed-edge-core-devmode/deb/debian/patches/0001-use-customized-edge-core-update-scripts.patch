@@ -16,7 +16,7 @@ index 1d1228b..872f101 100644
 
  arm_ucp_worker_t arm_uc_worker_parameters_active_details = {
 -    .command = "../../../arm_update_active_details.sh",
-+    .command = "/wigwag/arm_update_active_details.sh",
++    .command = "/usr/lib/pelion/scripts/arm_update_active_details.sh",
      .header   = 1,
      .firmware = 0,
      .location = 0,
@@ -25,7 +25,7 @@ index 1d1228b..872f101 100644
 
  arm_ucp_worker_t arm_uc_worker_parameters_activate = {
 -    .command = "../../../arm_update_activate.sh",
-+    .command = "/wigwag/arm_update_activate.sh",
++    .command = "/usr/lib/pelion/scripts/arm_update_activate.sh",
      .header   = 1,
      .firmware = 1,
      .location = 0,
@@ -34,7 +34,7 @@ index 1d1228b..872f101 100644
 
  arm_ucp_worker_t arm_uc_worker_parameters_installer = {
 -    .command = "../../../arm_update_installer.sh",
-+    .command = "/wigwag/arm_update_installer.sh",
++    .command = "/usr/lib/pelion/scripts/arm_update_installer.sh",
      .header   = 1,
      .firmware = 0,
      .location = 0,

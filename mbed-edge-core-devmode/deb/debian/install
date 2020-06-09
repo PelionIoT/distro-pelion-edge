@@ -1,2 +1,2 @@
 build/bin/edge-core usr/bin
-../../../../mbed-edge-core-devmode/deb/debian/files/arm_update*.sh wigwag
+../../../../mbed-edge-core-devmode/deb/debian/files/arm_update*.sh usr/lib/pelion/scripts
