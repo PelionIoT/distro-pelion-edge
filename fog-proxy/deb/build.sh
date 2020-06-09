@@ -5,7 +5,7 @@ PELION_PACKAGE_NAME="fog-proxy"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["git@github.com:armPelionEdge/fog-proxy.git"]="fe33b2bc2570da514326937597d84343bf4febe6")
+    ["git@github.com:armPelionEdge/fog-proxy.git"]="9eb83a24b44386ff963c99470c38eb7c56f95e9a")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 

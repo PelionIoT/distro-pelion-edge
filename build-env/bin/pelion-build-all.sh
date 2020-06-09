@@ -23,6 +23,7 @@ PACKAGES=(
 #    'pe-nodejs'
 #    'pe-utils'
 #    'rallypointwatchdogs'
+    'wwrelay-utils'
     
 )
 
