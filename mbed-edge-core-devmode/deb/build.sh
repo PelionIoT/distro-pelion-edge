@@ -7,7 +7,7 @@ PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK=pelion_mbed_edge_core_source_preparation_cb
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["https://github.com/ARMmbed/mbed-edge.git"]="0.10.0")
+    ["https://github.com/ARMmbed/mbed-edge.git"]="0.12.0")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
@@ -17,6 +17,7 @@ function pelion_mbed_edge_core_source_preparation_cb() {
     cp "$PELION_PACKAGE_DIR/../../mbed_cloud_dev_credentials.c" "$PELION_SOURCE_DIR/mbed-edge/config/mbed_cloud_dev_credentials.c"
     cp "$PELION_PACKAGE_DIR/../../update_default_resources.c" "$PELION_SOURCE_DIR/mbed-edge/config/update_default_resources.c"
     cp "$PELION_PACKAGE_DIR/debian/files/sotp_fs_linux.h" "$PELION_SOURCE_DIR/mbed-edge/config/sotp_fs_linux.h"
+    cp "$PELION_PACKAGE_DIR/debian/files/osreboot.c" "$PELION_SOURCE_DIR/mbed-edge/edge-core/osreboot.c"
 }
 
 pelion_main "$@"
