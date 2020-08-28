@@ -10,7 +10,7 @@ PACKAGES=(
 #    'devicejs'
 #    'deviceoswd'
 #    'fog-core'
-    'fog-proxy'
+    'edge-proxy'
     'global-node-modules'
     'kubelet'
     'maestro'
@@ -24,7 +24,7 @@ PACKAGES=(
 #    'pe-utils'
 #    'rallypointwatchdogs'
     'wwrelay-utils'
-    
+
 )
 
 METAPACKAGES=(
