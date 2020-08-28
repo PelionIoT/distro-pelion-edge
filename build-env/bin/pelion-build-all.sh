@@ -7,7 +7,6 @@ BASENAME=$(basename "$0")
 
 PACKAGES=(
     'devicedb'
-#    'devicejs'
 #    'deviceoswd'
 #    'fog-core'
     'edge-proxy'
@@ -15,7 +14,6 @@ PACKAGES=(
     'kubelet'
     'maestro'
     'maestro-shell'
-#    'mbed-devicejs-bridge'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
 #    'mbed-edge-examples'
