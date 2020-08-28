@@ -8,7 +8,7 @@ PELION_PACKAGE_SKIP_DEPS_CHECKING=true
 PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK=pelion_pe_utils_origin_source_update_cb
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["https://github.com/armPelionEdge/pe-utils.git"]="master")
+    ["https://github.com/armPelionEdge/pe-utils.git"]="ffe2cd18c4f5948c78223974bfbdfe04779e9a9e")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
