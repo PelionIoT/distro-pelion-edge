@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: fog-proxy
-Source: https://github.com/armPelionEdge/fog-proxy
+Upstream-Name: edge-proxy
+Source: https://github.com/armPelionEdge/edge-proxy
 
 Files: *
 Copyright: 2019, Travis McCollum <Travis.McCollum@arm.com>
