@@ -164,6 +164,27 @@ in subdirectories per architecture:
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
 
+## Installing packages
+
+Build results can be installed onto a target system either by manually
+copying the packages to a target system and installing via apt or by
+making the packages available in an APT repository on a server and installing
+on the target via apt. The instructions in this section show how to install
+the packages manually.  See the next section for setting up an APT repository.
+
+Copy the debian packages found in `build/deploy/deb/` to the
+target system and install with `apt`.
+
+Install all packages with the following command.
+```
+$ sudo apt install -y ./*.deb
+```
+
+Or, install a single package by specifying its deb file name.
+```
+$ sudo apt install -y ./devicedb_<version>_<arch>.deb
+```
+
 ## APT repository
 
 Structure for APT repository server can be created in `build/deploy/deb/apt-repo`
