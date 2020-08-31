@@ -39,6 +39,9 @@ The  above  script  creates   docker  images  `pelion-bionic-build`  with  build
 essentials  and `pelion-bionic-source`  with  additional  packages required  for
 generating source packages (for example git, npm, python).
 
+To build packages for other distributions, replace `pelion-bionic` with the name
+of the distribution.  For example, to build for Debian 10, use `debian-buster`.
+
 The system is configured to use `sudo` without a password.
 
 
