@@ -1,0 +1,7 @@
+Package: golang-go
+Pin: release a=buster-backports
+Pin-Priority: 900
+
+Package: golang-src
+Pin: release a=buster-backports
+Pin-Priority: 900
