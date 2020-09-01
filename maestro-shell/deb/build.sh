@@ -4,9 +4,10 @@
 PELION_PACKAGE_NAME="maestro-shell"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
-declare -A PELION_PACKAGE_COMPONENTS=(
-    ["git@github.com:armPelionEdge/maestro-shell.git"]="6961f98d2e95bde62ce26d0f18765ff523e09c2e")
+#exported the branch so we can use it in auto_build script
+export PACKAGE_BRANCH="2c90fbe2552c58ec5121b75a08718be6ebe5a791"
 
-source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
+declare -A PELION_PACKAGE_COMPONENTS=(
+    ["git@github.com:armPelionEdge/maestro-shell.git"]="$PACKAGE_BRANCH")
 
 pelion_main "$@"
