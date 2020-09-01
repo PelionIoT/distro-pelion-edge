@@ -5,7 +5,7 @@ PELION_PACKAGE_NAME="kubelet"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["git@github.com:armPelionEdge/argus.git"]="44277f2070300ab32279298dc4217c0bd6fc0627")
+    ["git@github.com:armPelionEdge/edge-kubelet.git"]="83b266ae6939012883611d6dbda745f2490a67c4")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
