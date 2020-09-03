@@ -1,0 +1,13 @@
+[Unit]
+Description=DeviceDB: Remote database manager for Maestro
+After=maestro edge-proxy
+
+[Service]
+Restart=always
+RestartSec=5s
+Environment="LD_LIBRARY_PATH=/usr/lib/pelion"
+ExecStart=/usr/bin/devicedb start -conf /etc/pelion/run/devicedb.yaml
+Type=simple
+
+[Install]
+RequiredBy=network.target
