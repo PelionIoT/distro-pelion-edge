@@ -10,6 +10,10 @@ Package: golang-src
 Pin: release a=testing
 Pin-Priority: 900
 
+Package: debhelper
+Pin: release a=testing
+Pin-Priority: 900
+
 Package: dh-golang
 Pin: release a=testing
 Pin-Priority: 900
