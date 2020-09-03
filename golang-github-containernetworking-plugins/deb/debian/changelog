@@ -1,0 +1,39 @@
+golang-github-containernetworking-plugins (0.8.4-1) unstable; urgency=medium
+
+  * New upstream release.
+  * (Build-)Depends:
+    = golang-github-coreos-go-iptables-dev (>= 0.4.5~)
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Mon, 13 Jan 2020 17:47:22 +1100
+
+golang-github-containernetworking-plugins (0.8.3-2) unstable; urgency=medium
+
+  * Install plugins documentation.
+  * dev/Depends: added missing packages.
+  * Do not install "echosvr" test utility.
+  * Install "sample" plugin as example.
+  * Excluded windows plugins.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Tue, 31 Dec 2019 00:32:16 +1100
+
+golang-github-containernetworking-plugins (0.8.3-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Standards-Version: 4.4.1.
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Thu, 14 Nov 2019 16:23:58 +1100
+
+golang-github-containernetworking-plugins (0.8.2-2) unstable; urgency=medium
+
+  * Upload to unstable.
+  * (Build-)Depends:
+    + golang-github-alexflint-go-filemutex-dev
+
+ -- Dmitry Smirnov <onlyjob@debian.org>  Thu, 17 Oct 2019 02:52:55 +1100
+
+golang-github-containernetworking-plugins (0.8.2-1) experimental; urgency=medium
+
+  * Initial release (Closes: #930900)
+    (Split from "golang-github-appc-cni" package).
+
+ -- Jamie Bliss <jamie@ivyleav.es>  Thu, 26 Sep 2019 20:41:30 +1000
