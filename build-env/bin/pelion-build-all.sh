@@ -16,6 +16,7 @@ PACKAGES=(
     'maestro-shell'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
+    'golang-github-containernetworking-plugins'
 #    'mbed-edge-examples'
 #    'mbed-fcc'
     'pe-nodejs'
