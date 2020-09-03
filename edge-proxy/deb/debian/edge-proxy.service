@@ -1,0 +1,10 @@
+[Unit]
+Description=Maestro: Network, Config, DeviceJS manager
+
+[Service]
+Restart=always
+RestartSec=5s
+ExecStart=/usr/bin/launch-edge-proxy.sh
+
+[Install]
+RequiredBy=network.target
