@@ -1,0 +1,44 @@
+#!/usr/bin/make -f
+
+#export DH_VERBOSE = 1
+
+export DH_GOLANG_GO_GENERATE := 1
+
+export DH_GOLANG_EXCLUDES := integration plugins/sample plugins/main/windows
+
+%:
+	dh $@ --buildsystem=golang --with=golang --builddirectory=_build
+
+override_dh_clean:
+	dh_clean $(PB_GO_FILES)
+	## Remove Files-Excluded (when built from checkout or non-DFSG tarball):
+	$(RM) -rv `perl -0nE 'say $$1 if m{^Files\-Excluded\:\s*(.*?)(?:\n\n|Files:|Comment:)}sm;' debian/copyright`
+	-find vendor -mindepth 1 -type d -empty -delete -printf 'removed %p\n'
+
+override_dh_auto_test:
+	## Tests require root...
+
+DD=debian/tmp
+override_dh_install:
+## Exclude "echosvr" because is not a plugin but a test utility.
+	dh_install -Xechosvr
+## Docs:
+	cp -v plugins/ipam/dhcp/README.md		$(DD)/ipam_dhcp.md
+	cp -v plugins/ipam/host-local/README.md		$(DD)/ipam_host-local.md
+	cp -v plugins/ipam/static/README.md		$(DD)/ipam_static.md
+	cp -v plugins/main/bridge/README.md		$(DD)/main_bridge.md
+	cp -v plugins/main/host-device/README.md	$(DD)/main_host-device.md
+	cp -v plugins/main/ipvlan/README.md		$(DD)/main_ipvlan.md
+#	cp -vplugins/main/loopback/no-README.md
+	cp -v plugins/main/macvlan/README.md		$(DD)/main_macvlan.md
+	cp -v plugins/main/ptp/README.md		$(DD)/main_ptp.md
+#	cp -vplugins/main/vlan/no-README.md
+	cp -v plugins/meta/bandwidth/README.md		$(DD)/meta_bandwidth.md
+	cp -v plugins/meta/firewall/README.md		$(DD)/meta_firewall.md
+	cp -v plugins/meta/flannel/README.md		$(DD)/meta_flannel.md
+	cp -v plugins/meta/portmap/README.md		$(DD)/meta_portmap.md
+	cp -v plugins/meta/sbr/README.md		$(DD)/meta_sbr.md
+	cp -v plugins/meta/tuning/README.md		$(DD)/meta_tuning.md
+
+override_dh_compress:
+	dh_compress -X.md
