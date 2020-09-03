@@ -1,0 +1,7 @@
+[Unit]
+Description=Kubelet
+
+[Service]
+Restart=always
+RestartSec=5s
+ExecStart=/usr/bin/launch-kubelet.sh

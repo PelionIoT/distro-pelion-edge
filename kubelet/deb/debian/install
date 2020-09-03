@@ -1,1 +1,4 @@
 kubelet usr/bin
+debian/kubeconfig /etc/pelion
+debian/launch-edgenet.sh usr/bin
+debian/launch-kubelet.sh usr/bin
