@@ -9,3 +9,75 @@ Pin-Priority: 900
 Package: golang-src
 Pin: release a=testing
 Pin-Priority: 900
+
+Package: dh-golang
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-dbus-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-ginkgo-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-alexflint-go-filemutex-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-appc-cni-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-coreos-go-iptables-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-coreos-go-systemd-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-d2g-dhcp4client-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-d2g-dhcp4-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-j-keck-arping-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-mattn-go-shellwords-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-safchain-ethtool-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-vishvananda-netlink-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-golang-x-sys-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-gomega-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-onsi-ginkgo-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-hpcloud-tail-dev
+Pin: release a=testing
+Pin-Priority: 900
+
+Package: golang-github-influxdata-tail-dev
+Pin: release a=testing
+Pin-Priority: 900
