@@ -8,8 +8,7 @@ scratchPath: /tmp/maestro/scratch
 clientId: "{{ARCH_SERIAL_NUMBER}}"
 network:
   interfaces:
-    - if_name: eth0
-      dhcpv4: true
+    disable: true
 platform_readers:
   - platform: "fsonly"
     params:
