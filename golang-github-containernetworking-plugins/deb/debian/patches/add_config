@@ -1,0 +1,19 @@
+Add config files
+--- /dev/null
++++ b/10-c2d.conf
+@@ -0,0 +1,6 @@
++{
++  "cniVersion": "0.2.0",
++  "name": "edgenet",
++  "type": "c2d",
++  "debug": true
++}
+\ No newline at end of file
+--- /dev/null
++++ b/99-loopback.conf
+@@ -0,0 +1,4 @@
++{
++    "cniVersion": "0.3.1",
++    "type": "loopback"
++}
+\ No newline at end of file
