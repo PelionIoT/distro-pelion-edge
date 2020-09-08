@@ -7,8 +7,7 @@ imagePath: /tmp/maestro/images
 scratchPath: /tmp/maestro/scratch
 clientId: "{{ARCH_SERIAL_NUMBER}}"
 network:
-  interfaces:
-    disable: true
+  disable: true
 platform_readers:
   - platform: "fsonly"
     params:
