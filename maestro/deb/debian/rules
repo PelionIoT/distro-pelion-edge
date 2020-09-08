@@ -22,7 +22,7 @@ override_dh_installlogrotate:
 	dh_installlogrotate --name=maestro-runtime maestro-runtime.logrotate
 
 override_dh_systemd_enable:
-	dh_systemd_enable --no-enable --name=maestro maestro.service
+	dh_systemd_enable --name=maestro maestro.service
 
 override_dh_shlibdeps:
 	dh_shlibdeps -l/usr/lib/pelion
