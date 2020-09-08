@@ -73,7 +73,7 @@ symphony:
   send_time_threshold: 120000 # set the send time threshold to 2 minutes
   # port: "{{ARCH_RELAY_SERVICES_PORT}}"
 targets:
-  - file: "/var/log/pelion//maestro.log"
+  - file: "/var/log/pelion/maestro.log"
     rotate:
       max_files: 4
       max_file_size: 10000000 # 10MB max file size
