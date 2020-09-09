@@ -19,3 +19,7 @@ cp -r "$@" "$pkgdir"/
 
 cd "$pkgdir"
 go build -buildmode=pie "$package"/cmd/edge-proxy
+
+# fix go's weird habit of checking out code read-only
+find "$GOPATH" -type d | xargs chmod +rwx
+find "$GOPATH" -type f | xargs chmod +rw
