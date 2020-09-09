@@ -1,5 +1,5 @@
 [Unit]
-Description=Maestro: Network, Config, DeviceJS manager
+Description=Edge Proxy
 
 [Service]
 Restart=always
