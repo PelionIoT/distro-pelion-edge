@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: pelion-base-devmode
 Architecture: all
-Depends: mbed-edge-core-devmode, maestro, maestro-shell, devicedb, edge-proxy
+Depends: mbed-edge-core-devmode, maestro, maestro-shell, edge-proxy, global-node-modules
 Description: base package group in developer mode
- Combine mbed-edge-core-devmode, maestro, maestro-shell, devicedb, edge-proxy
+ Combine mbed-edge-core-devmode, maestro, maestro-shell, edge-proxy, global-node-modules
