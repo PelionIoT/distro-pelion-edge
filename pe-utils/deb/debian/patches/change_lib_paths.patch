@@ -1,0 +1,12 @@
+Fix the paths for the bash libraries
+--- a/identity-tools/generate-identity.sh
++++ b/identity-tools/generate-identity.sh
+@@ -58,7 +58,7 @@
+                 cp ${IDENTITY_DIR}/identity.json ${IDENTITY_DIR}/identity_original.json
+             fi
+             IFS='.' read -ra ADDR <<< "$lwm2mserveruri"
+-            ./developer_identity/create-dev-identity.sh\
++            /usr/lib/pelion/developer_identity/create-dev-identity.sh\
+                 -d \
+                 -m ${ADDR[2]}\
+                 -p DEV0\
