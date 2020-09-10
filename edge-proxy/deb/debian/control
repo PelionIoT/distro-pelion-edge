@@ -9,6 +9,6 @@ Homepage: https://www.pelion.com
 Package: edge-proxy
 Architecture: any
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, pe-utils
 Description: proxies for ssl
  Proxy for edge-core

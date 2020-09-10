@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: pelion-base
 Architecture: all
-Depends: mbed-edge-core, maestro, maestro-shell, devicedb, edge-proxy
+Depends: mbed-edge-core, maestro, maestro-shell, edge-proxy, global-node-modules
 Description: base package group
- Combine mbed-edge-core, maestro, maestro-shell, devicedb, edge-proxy
+ Combine mbed-edge-core, maestro, maestro-shell, edge-proxy, global-node-modules
