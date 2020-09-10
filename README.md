@@ -58,7 +58,7 @@ $ ./build-env/bin/docker-run.sh pelion-bionic-source
 The script mounts the user `.ssh` directory  to share git ssh keys.  The root of
 this repo is mounted to `/pelion-build`.
 
-## Build for debian-10
+### Build environment for debian-10
 
 1. Scripts for creating clean build docker images:
 ```
