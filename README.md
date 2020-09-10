@@ -58,6 +58,19 @@ $ ./build-env/bin/docker-run.sh pelion-bionic-source
 The script mounts the user `.ssh` directory  to share git ssh keys.  The root of
 this repo is mounted to `/pelion-build`.
 
+## Build for debian-10
+
+1. Scripts for creating clean build docker images:
+```
+$ ./build-env/bin/docker-debian-buster-create.sh # Debian 10
+```
+
+2. Run docker image:
+```
+$ ./build-env/bin/docker-run.sh pelion-buster-source
+```
+
+
 ## Building a single package
 
 The build scripts provide help information, for example:
@@ -186,6 +199,18 @@ $ sudo apt install -y ./*.deb
 Or, install a single package by specifying its deb file name.
 ```
 $ sudo apt install -y ./devicedb_<version>_<arch>.deb
+```
+
+## Removing packages
+
+To remove use command:
+```
+$ sudo apt remove -y <package name>
+```
+
+After remove all package, manually remove credentials and config files:
+```
+$ sudo rm -rf /var/lib/pelion/
 ```
 
 ## APT repository
