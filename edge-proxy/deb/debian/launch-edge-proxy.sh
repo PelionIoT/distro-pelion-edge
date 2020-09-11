@@ -17,10 +17,16 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
+IDENTITY_JSON=/var/lib/pelion/edge_gw_config/identity.json
 
-EDGE_K8S_ADDRESS=$(jq -r .edgek8sServicesAddress /var/lib/pelion/edge_gw_config/identity.json)
-GATEWAYS_ADDRESS=$(jq -r .gatewayServicesAddress /var/lib/pelion/edge_gw_config/identity.json)
-DEVICE_ID=$(jq -r .deviceID /var/lib/pelion/edge_gw_config/identity.json)
+if [ ! -f${IDENTITY_JSON} ]; then
+    echo "identity.json does not exist"
+    exit 1
+fi
+
+EDGE_K8S_ADDRESS=$(jq -r .edgek8sServicesAddress ${IDENTITY_JSON})
+GATEWAYS_ADDRESS=$(jq -r .gatewayServicesAddress ${IDENTITY_JSON})
+DEVICE_ID=$(jq -r .deviceID ${IDENTITY_JSON})
 EDGE_PROXY_URI_RELATIVE_PATH=$(jq -r .edge_proxy_uri_relative_path /etc/pelion/edge-proxy.conf.json)
 
 if ! grep -q "gateways.local" /etc/hosts; then
