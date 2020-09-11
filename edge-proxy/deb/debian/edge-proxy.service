@@ -1,5 +1,6 @@
 [Unit]
 Description=Edge Proxy
+After=wait-for-pelion-identity.service
 
 [Service]
 Restart=always

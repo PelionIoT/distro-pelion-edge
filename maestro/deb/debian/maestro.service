@@ -1,5 +1,6 @@
 [Unit]
 Description=Maestro: Network, Config, DeviceJS manager
+After=wait-for-pelion-identity.service edge-proxy.service
 
 [Service]
 Restart=always
