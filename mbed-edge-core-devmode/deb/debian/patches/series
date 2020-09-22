@@ -6,3 +6,4 @@ Broadcast-gateway-stats-to-LWM2M-resources.patch
 allow-resources-to-be-named.patch
 patch-mbed-edge-with-the-ability-to-override-pelion-.patch
 Remove-Version.patch
+Fix-CPU-Temp-Path.patch
