@@ -205,12 +205,13 @@ $ sudo apt install -y ./devicedb_<version>_<arch>.deb
 
 To remove use command:
 ```
-$ sudo apt remove -y <package name>
+$ sudo apt remove -y <package name> --autoremove --purge
 ```
 
 After remove all package, manually remove credentials and config files:
 ```
 $ sudo rm -rf /var/lib/pelion/
+$ sudo rm -rf /etc/pelion/
 ```
 
 ## APT repository
