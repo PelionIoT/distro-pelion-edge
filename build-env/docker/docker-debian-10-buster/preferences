@@ -2,11 +2,11 @@ Package: *
 Pin: release a=stable
 Pin-Priority: 800
 
-Package: golang-go
+Package: golang-1.14-go
 Pin: release a=testing
 Pin-Priority: 900
 
-Package: golang-src
+Package: golang-1.14-src
 Pin: release a=testing
 Pin-Priority: 900
 
