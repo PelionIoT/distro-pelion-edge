@@ -2,7 +2,7 @@ Source: maestro
 Section: utils
 Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
-Build-Depends: debhelper (>=9), golang-go:native (>=2:1.14~), golang-go:native (<<2:1.15~), python:native (>=2.7),
+Build-Depends: debhelper (>=9), golang-1.14-go:native (>=1.14.4), python:native (>=2.7),
  autoconf (>=2.69), automake (>=1:1.15), libtool (>=2.4.6),
  libc6, libstdc++6, libunwind-dev
 Standards-Version: 3.9.6
