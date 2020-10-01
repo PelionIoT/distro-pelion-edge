@@ -1,0 +1,36 @@
+FROM ubuntu:20.04
+
+ARG USER_ID
+ARG GROUP_ID
+ARG LOCAL_SRC_PATH=./docker-ubuntu-20-focal
+
+RUN addgroup --gid $GROUP_ID user
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+RUN usermod -aG sudo user
+
+COPY $LOCAL_SRC_PATH/sources.list.focal /etc/apt/sources.list
+
+RUN dpkg --add-architecture arm64
+RUN dpkg --add-architecture armhf
+
+ENV TZ=UCT
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		build-essential \
+		ca-certificates \
+		crossbuild-essential-arm64 \
+		crossbuild-essential-armhf \
+		fakeroot \
+		sudo \
+		wget
+
+RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
+
+COPY --chown=user ./common/.bash_aliases /home/user/
+
+COPY ./common/nodejs-apt-repo.sh /root/
+RUN /root/nodejs-apt-repo.sh && apt-get update
+
+USER user
+WORKDIR /pelion-build
