@@ -5,7 +5,7 @@ PELION_PACKAGE_NAME="maestro"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["git@github.com:armPelionEdge/maestro.git"]="300fcdf67616f4018f0f2b53db4b88c54a333e1b")
+    ["git@github.com:armPelionEdge/maestro.git"]="ab9ae5817e579741e33accb8237d74b86ee316de")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
