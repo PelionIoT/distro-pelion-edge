@@ -208,15 +208,15 @@ function pelion_source_preparation() {
 
         if [ ! -d "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME" ]; then
             git clone $COMPONENT "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME"
+            if [ ! ${PELION_PACKAGE_COMPONENTS[$COMPONENT]} ]; then
+                PELION_PACKAGE_COMPONENTS[$COMPONENT]=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+            fi
+
+            cd "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME"        && \
+            git remote update                                          && \
+            git checkout ${PELION_PACKAGE_COMPONENTS[$COMPONENT]}
         fi
 
-        if [ ! ${PELION_PACKAGE_COMPONENTS[$COMPONENT]} ]; then
-            PELION_PACKAGE_COMPONENTS[$COMPONENT]=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
-        fi
-
-        cd "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME"        && \
-        git remote update                                          && \
-        git checkout ${PELION_PACKAGE_COMPONENTS[$COMPONENT]}
     done
 
     if [ -v PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK ]; then
