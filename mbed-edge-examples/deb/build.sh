@@ -12,7 +12,7 @@ declare -A PELION_PACKAGE_COMPONENTS=(
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function pelion_mbed_edge_examples_source_preparation() {
-    cd "$PELION_SOURCE_DIR/mbed-edge-examples"
+    cd "$PELION_SOURCE_DIR/$PELION_PACKAGE_NAME/mbed-edge-examples"
     git submodule update --init --recursive
 }
 
