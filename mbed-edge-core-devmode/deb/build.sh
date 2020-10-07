@@ -12,12 +12,12 @@ declare -A PELION_PACKAGE_COMPONENTS=(
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function pelion_mbed_edge_core_source_preparation_cb() {
-    cd "$PELION_SOURCE_DIR/mbed-edge"
+    cd "$PELION_SOURCE_DIR/$PELION_PACKAGE_NAME/mbed-edge"
     git submodule update --init --recursive
-    cp "$PELION_PACKAGE_DIR/../../mbed_cloud_dev_credentials.c" "$PELION_SOURCE_DIR/mbed-edge/config/mbed_cloud_dev_credentials.c"
-    cp "$PELION_PACKAGE_DIR/../../update_default_resources.c" "$PELION_SOURCE_DIR/mbed-edge/config/update_default_resources.c"
-    cp "$PELION_PACKAGE_DIR/debian/files/sotp_fs_linux.h" "$PELION_SOURCE_DIR/mbed-edge/config/sotp_fs_linux.h"
-    cp "$PELION_PACKAGE_DIR/debian/files/osreboot.c" "$PELION_SOURCE_DIR/mbed-edge/edge-core/osreboot.c"
+    cp "$PELION_PACKAGE_DIR/../../mbed_cloud_dev_credentials.c" "./config/mbed_cloud_dev_credentials.c"
+    cp "$PELION_PACKAGE_DIR/../../update_default_resources.c" "./config/update_default_resources.c"
+    cp "$PELION_PACKAGE_DIR/debian/files/sotp_fs_linux.h" "./config/sotp_fs_linux.h"
+    cp "$PELION_PACKAGE_DIR/debian/files/osreboot.c" "./edge-core/osreboot.c"
 }
 
 pelion_main "$@"
