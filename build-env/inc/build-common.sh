@@ -83,6 +83,8 @@ function pelion_update_too_old_files() {
 ################################################################################
 
 function pelion_metapackage_parse_args() {
+    PELION_PACKAGE_TARGET_ARCH=all
+
     for opt in "$@"; do
         case "$opt" in
             --install)
@@ -101,6 +103,11 @@ function pelion_metapackage_parse_args() {
                 PELION_PACKAGE_DOCKER=true
                 ;;
 
+            --print-target)
+                pelion_print_target_package_path
+                exit 0
+                ;;
+
             --help|-h)
                 echo "Usage: $0 [Options]"
                 echo ""
@@ -109,6 +116,7 @@ function pelion_metapackage_parse_args() {
                 echo " --build             Build metapackage."
                 echo " --verify            Verify metapackage conformity to the Debian policy."
                 echo " --install           Install build dependencies."
+                echo " --print-target      Print target package file path and exit"
                 echo " --help,-h           Print this message."
                 echo ""
                 echo "Default mode: $0 --build --verify"
@@ -121,8 +129,6 @@ function pelion_metapackage_parse_args() {
         PELION_METAPACKAGE_GEN=true
         PELION_PACKAGE_VERIFY=true
     fi
-
-    PELION_PACKAGE_TARGET_ARCH=all
 }
 
 function pelion_parse_args() {
@@ -152,6 +158,11 @@ function pelion_parse_args() {
                 PELION_PACKAGE_DOCKER=true
                 ;;
 
+            --print-target)
+                pelion_print_target_package_path
+                exit 0
+                ;;
+
             --help|-h)
                 echo "Usage: $0 [Options]"
                 echo ""
@@ -162,6 +173,7 @@ function pelion_parse_args() {
                 echo " --verify            Verify package conformity to the Debian policy."
                 echo " --install           Install build dependencies."
                 echo " --arch=<arch>       Set target architecture."
+                echo " --print-target      Print target package file path and exit"
                 echo " --help,-h           Print this message."
                 echo ""
                 echo " If none of '--source', '--build' or '--verify' options are specified,"
@@ -321,6 +333,10 @@ function pelion_verifying_deb_package() {
         ${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian
 }
 
+function pelion_print_target_package_path()
+{
+    echo $PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH/${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb
+}
 ################################################################################
 # Docker helpers
 ################################################################################
