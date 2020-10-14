@@ -6,7 +6,7 @@ After=maestro edge-proxy
 Restart=always
 RestartSec=5s
 Environment="LD_LIBRARY_PATH=/usr/lib/pelion"
-ExecStart=/usr/bin/devicedb start -conf /etc/pelion/run/devicedb.yaml
+ExecStart=/usr/bin/devicedb start -conf /etc/pelion/devicedb.yaml
 Type=simple
 
 [Install]

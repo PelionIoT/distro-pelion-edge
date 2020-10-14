@@ -107,7 +107,7 @@ targets:
 static_file_generators:
   - name: "devicedb"
     template_file: "/etc/pelion/template/template.devicedb.conf"
-    output_file: "/etc/pelion/run/devicedb.yaml"
+    output_file: "/etc/pelion/devicedb.yaml"
   - name: "ca_pem"
     template: "{{ARCH_CA_CERT_PEM}}"
     output_file: "{{SSL_CERTS_PATH}}/ca.cert.pem"
@@ -131,5 +131,5 @@ static_file_generators:
     output_file: "{{SSL_CERTS_PATH}}/ca-chain.cert.pem"
   - name: "relayTerm"
     template_file: "/etc/pelion/template/relayTerm.template.json"
-    output_file: "/etc/pelion/run/relay-term-config.json"
+    output_file: "/etc/pelion/relay-term-config.json"
 config_end: true
