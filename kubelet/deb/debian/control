@@ -2,13 +2,13 @@ Source: kubelet
 Section: utils
 Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
-Build-Depends: debhelper (>=9), golang-go:native (>=2:1.9~), libc6
+Build-Depends: debhelper (>=9), golang-1.14-go:native (>=1.14.4), libc6
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
 Package: kubelet
 Architecture: any
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, conntrack, docker.io | docker-ce, ebtables, ethtool, iproute2, iptables (>=1.4.21), mount, socat, containernetworking-plugins, edge-proxy, pe-utils
 Description: talks to kubernetes service
- Repository https://github.com/armPelionEdge/argus
+ Repository https://github.com/armPelionEdge/edge-kubelet

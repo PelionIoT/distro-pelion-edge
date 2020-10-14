@@ -7,27 +7,25 @@ BASENAME=$(basename "$0")
 
 PACKAGES=(
     'devicedb'
-    'devicejs'
-    'deviceoswd'
-    'fog-core'
-    'fog-proxy'
+#    'deviceoswd'
+#    'fog-core'
+    'edge-proxy'
     'global-node-modules'
     'kubelet'
     'maestro'
     'maestro-shell'
-    'mbed-devicejs-bridge'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
-    'mbed-edge-examples'
-    'mbed-fcc'
+    'golang-github-containernetworking-plugins'
+#    'mbed-edge-examples'
+#    'mbed-fcc'
     'pe-nodejs'
     'pe-utils'
-    'rallypointwatchdogs'
+#    'rallypointwatchdogs'
 )
 
 METAPACKAGES=(
     'pelion-base'
-    'pelion-base-devmode'
     'pelion-container-orchestration'
     'pelion-protocol-engine'
 )
@@ -107,7 +105,16 @@ pelion_parse_args "$@"
 if $PELION_PACKAGE_SOURCE; then
     for p in "${PACKAGES[@]}"; do
         echo "Generating source package of '$p'"
-        "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source
+        if [ "$p" == "pe-nodejs" ]; then
+            # pe-nodejs is just a debian package of pre-built # source.
+            # We need to pass the arch here so we know what binary tarball
+            # architecture to download.
+            for arch in "${PELION_ARCHS[@]}"; do
+                "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --arch="$arch" --source
+            done
+        else
+            "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source
+        fi
     done
 fi
 

@@ -2,10 +2,14 @@ FROM debian:10
 
 ARG USER_ID
 ARG GROUP_ID
+ARG LOCAL_SRC_PATH=./docker-debian-10-buster
 
 RUN addgroup --gid $GROUP_ID user
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
+
+COPY $LOCAL_SRC_PATH/sources.list.buster /etc/apt/sources.list
+COPY $LOCAL_SRC_PATH/preferences /etc/apt/preferences
 
 RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armel

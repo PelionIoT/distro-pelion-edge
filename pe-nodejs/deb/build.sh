@@ -6,7 +6,7 @@ PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 
-NODEJS_DOWNLOAD_DIR="$PELION_SOURCE_DIR/nodejs.org"
+NODEJS_DOWNLOAD_DIR="$PELION_SOURCE_DIR/$PELION_PACKAGE_NAME/nodejs.org"
 
 # Node version is based on the package version in 'debian/changelog'
 NODE_VERSION=$PELION_PACKAGE_VERSION

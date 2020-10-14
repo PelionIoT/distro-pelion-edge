@@ -1,0 +1,3 @@
+go-workspace/src/github.com/armPelionEdge/edge-proxy/edge-proxy usr/bin/
+debian/launch-edge-proxy.sh usr/bin
+debian/edge-proxy.conf.json etc/pelion

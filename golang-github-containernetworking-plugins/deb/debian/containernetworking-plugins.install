@@ -1,0 +1,4 @@
+usr/bin/*		usr/lib/cni/
+*.conf			etc/cni/net.d/
+c2d             usr/lib/cni/
+c2d-inner       usr/lib/cni/

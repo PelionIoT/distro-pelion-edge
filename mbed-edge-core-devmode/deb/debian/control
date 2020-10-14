@@ -10,6 +10,7 @@ Package: mbed-edge-core-devmode
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: mbed-edge-core
+Replaces: mbed-edge-core
 Description: pelion LWM2M path and registration
  Device Management Edge (from now on, just Edge) is a product that enables you
  to connect a variety of devices to Device Management. Examples of such devices

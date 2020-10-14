@@ -1,1 +1,2 @@
-maestro-shell usr/bin
+debian/maestro-shell.sh /usr/bin/
+go-workspace/src/github.com/armPelionEdge/maestro-shell/maestro-shell usr/bin/pelion/

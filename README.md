@@ -39,6 +39,9 @@ The  above  script  creates   docker  images  `pelion-bionic-build`  with  build
 essentials  and `pelion-bionic-source`  with  additional  packages required  for
 generating source packages (for example git, npm, python).
 
+To build packages for other distributions, replace `pelion-bionic` with the name
+of the distribution.  For example, to build for Debian 10, use `debian-buster`.
+
 The system is configured to use `sudo` without a password.
 
 
@@ -54,6 +57,19 @@ $ ./build-env/bin/docker-run.sh pelion-bionic-source
 
 The script mounts the user `.ssh` directory  to share git ssh keys.  The root of
 this repo is mounted to `/pelion-build`.
+
+### Build environment for debian-10
+
+1. Scripts for creating clean build docker images:
+```
+$ ./build-env/bin/docker-debian-buster-create.sh # Debian 10
+```
+
+2. Run docker image:
+```
+$ ./build-env/bin/docker-run.sh pelion-buster-source
+```
+
 
 ## Building a single package
 
@@ -163,6 +179,40 @@ in subdirectories per architecture:
 * `source`
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
+
+## Installing packages
+
+Build results can be installed onto a target system either by manually
+copying the packages to a target system and installing via apt or by
+making the packages available in an APT repository on a server and installing
+on the target via apt. The instructions in this section show how to install
+the packages manually.  See the next section for setting up an APT repository.
+
+Copy the debian packages found in `build/deploy/deb/` to the
+target system and install with `apt`.
+
+Install all packages with the following command.
+```
+$ sudo apt install -y ./*.deb
+```
+
+Or, install a single package by specifying its deb file name.
+```
+$ sudo apt install -y ./devicedb_<version>_<arch>.deb
+```
+
+## Removing packages
+
+To remove use command:
+```
+$ sudo apt remove -y <package name> --autoremove --purge
+```
+
+After remove all package, manually remove credentials and config files:
+```
+$ sudo rm -rf /var/lib/pelion/
+$ sudo rm -rf /etc/pelion/
+```
 
 ## APT repository
 

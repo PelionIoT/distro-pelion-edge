@@ -39,6 +39,11 @@ PELION_PACKAGE_DOCKER=false
 PELION_PACKAGE_INSTALL_DEPS=false
 PELION_PACKAGE_TARGET_ARCH=amd64
 
+if [[ ! -v PELION_PACKAGE_BINARY_NAME ]]; then
+	PELION_PACKAGE_BINARY_NAME="${PELION_PACKAGE_NAME}"
+fi
+PELION_PACKAGE_DEB_BINARY_NAME="$PELION_PACKAGE_BINARY_NAME"_"$PELION_PACKAGE_FULL_VERSION"
+
 if [[ ! -v PELION_PACKAGE_SUPPORTED_ARCH ]]; then
     PELION_PACKAGE_SUPPORTED_ARCH=(amd64 arm64 armhf armel)
 fi
@@ -200,18 +205,19 @@ function pelion_source_preparation() {
     for COMPONENT in "${!PELION_PACKAGE_COMPONENTS[@]}"; do
         PACKAGE_COMPONENT_BASENAME=$(basename $COMPONENT)
         PACKAGE_COMPONENT_FILENAME=${PACKAGE_COMPONENT_BASENAME%.*}
+        PACKAGE_COMPONENT_SOURCE_DIR=${PELION_SOURCE_DIR}/${PELION_PACKAGE_NAME}/${PACKAGE_COMPONENT_FILENAME}
 
-        if [ ! -d "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME" ]; then
-            git clone $COMPONENT "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME"
+        if [ ! -d "$PACKAGE_COMPONENT_SOURCE_DIR" ]; then
+            git clone $COMPONENT "$PACKAGE_COMPONENT_SOURCE_DIR"
+            if [ ! ${PELION_PACKAGE_COMPONENTS[$COMPONENT]} ]; then
+                PELION_PACKAGE_COMPONENTS[$COMPONENT]=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+            fi
+
+            cd "$PACKAGE_COMPONENT_SOURCE_DIR"                         && \
+            git remote update                                          && \
+            git checkout ${PELION_PACKAGE_COMPONENTS[$COMPONENT]}
         fi
 
-        if [ ! ${PELION_PACKAGE_COMPONENTS[$COMPONENT]} ]; then
-            PELION_PACKAGE_COMPONENTS[$COMPONENT]=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
-        fi
-
-        cd "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME"        && \
-        git remote update                                          && \
-        git checkout ${PELION_PACKAGE_COMPONENTS[$COMPONENT]}
     done
 
     if [ -v PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK ]; then
@@ -249,14 +255,15 @@ function pelion_generation_deb_source_packages() {
     for COMPONENT in "${!PELION_PACKAGE_COMPONENTS[@]}"; do
         PACKAGE_COMPONENT_BASENAME=$(basename $COMPONENT)
         PACKAGE_COMPONENT_FILENAME=${PACKAGE_COMPONENT_BASENAME%.*}
+        PACKAGE_COMPONENT_SOURCE_DIR=${PELION_SOURCE_DIR}/${PELION_PACKAGE_NAME}/${PACKAGE_COMPONENT_FILENAME}
 
         if [ ${#PELION_PACKAGE_COMPONENTS[@]} -gt 1 ]; then
-            cp -r "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/"
+            cp -r "$PACKAGE_COMPONENT_SOURCE_DIR" "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/"
 
             rm -rf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/$PACKAGE_COMPONENT_FILENAME/.git" \
                    "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/$PACKAGE_COMPONENT_FILENAME/.github"
         else
-            cp -r "$PELION_SOURCE_DIR/$PACKAGE_COMPONENT_FILENAME/." "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/"
+            cp -r "$PACKAGE_COMPONENT_SOURCE_DIR/." "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/"
 
             rm -rf "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/.git" \
                    "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/.github"
@@ -299,7 +306,7 @@ function pelion_building_deb_package() {
 
     dpkg-buildpackage $PELION_DPKG_BUILD_OPTIONS
 
-    mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_DEB_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
+    mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
 }
 
 function pelion_verifying_deb_package() {
@@ -311,7 +318,7 @@ function pelion_verifying_deb_package() {
     cd $PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH
 
     lintian --no-tag-display-limit --info \
-        ${PELION_PACKAGE_DEB_ARCHIVE_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian
+        ${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian
 }
 
 ################################################################################
