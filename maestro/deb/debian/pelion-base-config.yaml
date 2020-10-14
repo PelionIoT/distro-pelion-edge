@@ -28,7 +28,7 @@ var_defs:
   - key: "LOCAL_DEVICEDB_PORT"
     value: 9000
   - key: "LOCAL_DATABASE_STORAGE_DIRECTORY"
-    value: "/var/lib/pelion/etc/devicedb/db"
+    value: "/var/lib/pelion/devicedb"
   - key: "RELAY_VERSIONS_FILE"
     value: "/etc/pelion/versions.json"
   - key: "FACTORY_VERSIONS_FILE"
