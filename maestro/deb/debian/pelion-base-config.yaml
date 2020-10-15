@@ -2,7 +2,7 @@ unixLogSocket: /tmp/grease.socket
 sysLogSocket: /run/systemd/journal/syslog
 linuxKernelLog: false
 httpUnixSocket: /tmp/maestroapi.sock
-configDBPath: /var/lib/pelion/etc/maestroConfig.db
+configDBPath: /var/lib/pelion/maestro/maestroConfig.db
 imagePath: /tmp/maestro/images
 scratchPath: /tmp/maestro/scratch
 clientId: "{{ARCH_SERIAL_NUMBER}}"
