@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: pelion-container-orchestration
 Architecture: all
-Depends: kubelet, tini, docker-compose
+Depends: kubelet, tini
 Description: container-orchestration package group
  Combine kubelet
