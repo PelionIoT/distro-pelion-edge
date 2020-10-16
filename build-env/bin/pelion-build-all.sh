@@ -7,8 +7,6 @@ BASENAME=$(basename "$0")
 
 PACKAGES=(
     'devicedb'
-#    'deviceoswd'
-#    'fog-core'
     'edge-proxy'
     'global-node-modules'
     'kubelet'
@@ -17,11 +15,10 @@ PACKAGES=(
     'mbed-edge-core'
     'mbed-edge-core-devmode'
     'golang-github-containernetworking-plugins'
-#    'mbed-edge-examples'
-#    'mbed-fcc'
+    'mbed-edge-examples'
+    'mbed-fcc'
     'pe-nodejs'
     'pe-utils'
-#    'rallypointwatchdogs'
 )
 
 METAPACKAGES=(
