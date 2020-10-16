@@ -108,6 +108,16 @@ function pelion_metapackage_parse_args() {
                 exit 0
                 ;;
 
+            --print-package-name)
+                echo $PELION_PACKAGE_NAME
+                exit 0
+                ;;
+
+            --print-package-version)
+                echo $PELION_PACKAGE_FULL_VERSION
+                exit 0
+                ;;
+
             --help|-h)
                 echo "Usage: $0 [Options]"
                 echo ""
@@ -117,6 +127,8 @@ function pelion_metapackage_parse_args() {
                 echo " --verify            Verify metapackage conformity to the Debian policy."
                 echo " --install           Install build dependencies."
                 echo " --print-target      Print target package file path and exit"
+                echo " --print-package-name Print package name (eg. devicejs) and exit"
+                echo " --print-package-version Print package version (eg. devicejs) and exit"
                 echo " --help,-h           Print this message."
                 echo ""
                 echo "Default mode: $0 --build --verify"
@@ -163,6 +175,16 @@ function pelion_parse_args() {
                 exit 0
                 ;;
 
+            --print-package-name)
+                echo $PELION_PACKAGE_NAME
+                exit 0
+                ;;
+
+            --print-package-version)
+                echo $PELION_PACKAGE_FULL_VERSION
+                exit 0
+                ;;
+
             --help|-h)
                 echo "Usage: $0 [Options]"
                 echo ""
@@ -174,6 +196,8 @@ function pelion_parse_args() {
                 echo " --install           Install build dependencies."
                 echo " --arch=<arch>       Set target architecture."
                 echo " --print-target      Print target package file path and exit"
+                echo " --print-package-name Print package name (eg. devicejs) and exit"
+                echo " --print-package-version Print package version (eg. devicejs) and exit"
                 echo " --help,-h           Print this message."
                 echo ""
                 echo " If none of '--source', '--build' or '--verify' options are specified,"
