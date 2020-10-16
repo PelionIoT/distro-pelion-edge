@@ -6,8 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		apt-rdepends \
 		git  \
 		lintian \
-		nodejs \
-		python2.7 \
+		python3 \
 		quilt \
 		ssh \
 		vim

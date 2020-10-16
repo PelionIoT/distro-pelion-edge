@@ -18,6 +18,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		build-essential \
+		debhelper \
 		ca-certificates \
 		crossbuild-essential-arm64 \
 		crossbuild-essential-armhf \
@@ -28,9 +29,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
 COPY --chown=user ./common/.bash_aliases /home/user/
-
-COPY ./common/nodejs-apt-repo.sh /root/
-RUN /root/nodejs-apt-repo.sh && apt-get update
 
 USER user
 WORKDIR /pelion-build

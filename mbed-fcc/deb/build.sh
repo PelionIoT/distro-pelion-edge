@@ -21,7 +21,14 @@ function pelion_mbed_fcc_origin_source_update_cb() {
 
     if $PELION_PACKAGE_INSTALL_DEPS; then
     	sudo apt-get update && \
-    	sudo apt-get install -y python python-requests python-click
+        # use python3 by default
+        if python --version 2>&1 | grep -q 'Python 2'; then
+            echo "Using python2..."
+    	    sudo apt-get install -y python python-requests python-click
+        else
+            echo "Using python3..."
+    	    sudo apt-get install -y python3 python3-requests python3-click
+        fi
     fi
 
     PYTHONUSERBASE="$PELION_TMP_BUILD_DIR/" \
