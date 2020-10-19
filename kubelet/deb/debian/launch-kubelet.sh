@@ -33,5 +33,4 @@ exec /usr/bin/kubelet \
     --network-plugin=cni \
     --node-status-update-frequency=150s \
     --register-node=true \
-    --docker-endpoint=unix:///run/docker.sock \
     $NODE_IP_OPTION
