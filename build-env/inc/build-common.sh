@@ -16,6 +16,9 @@ BASENAME=$(basename "$0")
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR=$(cd "$SCRIPT_DIR"/../.. && pwd)
 
+# import common environment setup
+source $SCRIPT_DIR/env-common.sh
+
 PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
 PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb/$PELION_PACKAGE_VERSION_CODENAME/$PELION_PACKAGE_APT_COMPONENT
 PELION_TMP_BUILD_DIR=$ROOT_DIR/build/tmp-build/$PELION_PACKAGE_NAME
