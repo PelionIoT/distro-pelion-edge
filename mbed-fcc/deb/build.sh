@@ -20,19 +20,38 @@ function pelion_mbed_fcc_origin_source_update_cb() {
     rm -rf factory-configurator-client-example
 
     if $PELION_PACKAGE_INSTALL_DEPS; then
-    	sudo apt-get update && \
-        # use python3 by default
-        if python --version 2>&1 | grep -q 'Python 2'; then
-            echo "Using python2..."
-    	    sudo apt-get install -y python python-requests python-click
+        sudo apt-get update
+        # use python3 by default if python is not installed
+        if ! which python3 >/dev/null && ! which python2 >/dev/null; then
+            echo "No python found, installing python3"
+            TO_INSTALL="python3 python3-requests python3-click"
+            PYTHONCMD=python3
+        elif python --version 2>&1 | grep -q 'Python 2'; then
+            # try to install python-requests and python-click for Python2
+            # as we should use python2 if it was choosen. On failure we switch
+            # to python3
+            if ! sudo apt install python-requests python-click; then
+                echo "Unable to install deps for python2, switching to python3"
+                TO_INSTALL="python3 python3-requests python3-click"
+                PYTHONCMD=python3
+            else
+                echo "Using python2 installation"
+                TO_INSTALL=""
+                PYTHONCMD=python2
+            fi
         else
-            echo "Using python3..."
-    	    sudo apt-get install -y python3 python3-requests python3-click
+            echo "Python3 already installed; installing python3 deps"
+            TO_INSTALL="python3-requests python3-click"
+            PYTHONCMD=python3
+        fi
+
+        if [ ! -z "$TO_INSTALL" ]; then
+            sudo apt-get install -y $TO_INSTALL
         fi
     fi
 
     PYTHONUSERBASE="$PELION_TMP_BUILD_DIR/" \
-    python pal-platform/pal-platform.py -v deploy --target=Yocto_Generic_YoctoLinux_mbedtls generate
+    $PYTHONCMD pal-platform/pal-platform.py -v deploy --target=Yocto_Generic_YoctoLinux_mbedtls generate
 }
 
 pelion_main "$@"
