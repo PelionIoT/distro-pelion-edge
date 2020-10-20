@@ -64,7 +64,6 @@ chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/nopt/bin/nopt.js
 chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/which/bin/which
 chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/config-chain/index.js
 chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin/node-gyp
-chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/npm-lifecycle/node-gyp-bin/node-gyp.cmd
 chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-url/node_modules/rc/index.js
 chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/update-notifier/node_modules/latest-version/node_modules/package-json/node_modules/registry-auth-token/node_modules/rc/index.js
 chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/update-notifier/node_modules/boxen/node_modules/term-size/vendor/macos/term-size
@@ -81,7 +80,6 @@ chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/semver/bin/semver
 chmod +x /usr/lib/pelion/lib/node_modules/npm/node_modules/libnpx/node_modules/yargs/node_modules/cliui/node_modules/wrap-ansi/index.js
 chmod +x /usr/lib/pelion/lib/node_modules/npm/configure
 chmod +x /usr/lib/pelion/lib/node_modules/npm/bin/node-gyp-bin/node-gyp
-chmod +x /usr/lib/pelion/lib/node_modules/npm/bin/node-gyp-bin/node-gyp.cmd
 chmod +x /usr/lib/pelion/lib/node_modules/npm/bin/npm
 chmod +x /usr/lib/pelion/lib/node_modules/npm/bin/npx-cli.js
 chmod +x /usr/lib/pelion/lib/node_modules/npm/bin/npm-cli.js
