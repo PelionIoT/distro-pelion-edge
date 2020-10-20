@@ -33,5 +33,7 @@ RUN /root/nodejs-apt-repo.sh && apt-get update
 COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts
 RUN chmod 644 /etc/ssh/ssh_known_hosts
 
+ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+
 USER user
 WORKDIR /pelion-build
