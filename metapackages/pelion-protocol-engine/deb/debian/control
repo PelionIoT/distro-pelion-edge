@@ -8,7 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: pelion-protocol-engine
 Architecture: all
-Depends: devicejs-ng, global-node-modules, mbed-devicejs-bridge, mbed-edge-examples, fog-core
+Depends: devicedb, global-node-modules, mbed-edge-examples, mbed-edge-core
 Description: protocol-engine package group
- Combine devicejs-ng, global-node-modules, mbed-devicejs-bridge,
- mbed-edge-examples, fog-core
+ Combine devicedb, global-node-modules mbed-edge-examples, mbed-edge-core
