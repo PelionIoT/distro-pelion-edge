@@ -7,7 +7,7 @@ function apt_scan_packages
 (
     local APT_REPO_NAME=$1
     cd $APT_REPO_PATH
-    dpkg-scanpackages $APT_REPO_NAME | sudo bash -c "gzip >$APT_REPO_NAME/Packages.gz"
+    dpkg-scanpackages --multiversion $APT_REPO_NAME | sudo bash -c "gzip >$APT_REPO_NAME/Packages.gz"
 )
 
 # create custom repo and add it as trusted

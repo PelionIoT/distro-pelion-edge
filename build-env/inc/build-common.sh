@@ -19,8 +19,18 @@ ROOT_DIR=$(cd "$SCRIPT_DIR"/../.. && pwd)
 # import common environment setup
 source $SCRIPT_DIR/env-common.sh
 
-PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
+function update_pelion_variables
+{
+    PELION_PACKAGE_VERSION_CODENAME=${PELION_PACKAGE_VERSION_CODENAME:-$DOCKER_DIST}
+
+    if [ -z "$PELION_PACKAGE_VERSION_CODENAME" ]; then
+        echo "WARNING: unable to get distro codename, using 'focal'"
+    fi
+
 PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb/$PELION_PACKAGE_VERSION_CODENAME/$PELION_PACKAGE_APT_COMPONENT
+}
+
+PELION_SOURCE_DIR=$ROOT_DIR/build/downloads
 PELION_TMP_BUILD_DIR=$ROOT_DIR/build/tmp-build/$PELION_PACKAGE_NAME
 
 PELION_PACKAGE_FULL_VERSION=$(cd "$PELION_PACKAGE_DIR"; dpkg-parsechangelog --show-field Version)
@@ -41,6 +51,8 @@ PELION_PACKAGE_DOCKER=false
 
 PELION_PACKAGE_INSTALL_DEPS=false
 PELION_PACKAGE_TARGET_ARCH=amd64
+
+PELION_PRINT_TARGET_PACKAGE_NAME=false
 
 if [[ ! -v PELION_PACKAGE_BINARY_NAME ]]; then
 	PELION_PACKAGE_BINARY_NAME="${PELION_PACKAGE_NAME}"
@@ -102,13 +114,14 @@ function pelion_metapackage_parse_args() {
                 PELION_METAPACKAGE_GEN=true
                 ;;
 
-            --docker)
+            --docker=*)
                 PELION_PACKAGE_DOCKER=true
+                local OPTARG=${opt#*=}
+                DOCKER_DIST=${OPTARG:-${DOCKER_DIST}}
                 ;;
 
             --print-target)
-                pelion_print_target_package_path
-                exit 0
+                PELION_PRINT_TARGET_PACKAGE_NAME=true
                 ;;
 
             --print-package-name)
@@ -125,7 +138,7 @@ function pelion_metapackage_parse_args() {
                 echo "Usage: $0 [Options]"
                 echo ""
                 echo "Options:"
-                echo " --docker            Use docker containers."
+                echo " --docker=[dist]     Use docker containers (optional dist eg. bionic, focal...)."
                 echo " --build             Build metapackage."
                 echo " --verify            Verify metapackage conformity to the Debian policy."
                 echo " --install           Install build dependencies."
@@ -139,6 +152,13 @@ function pelion_metapackage_parse_args() {
                 ;;
         esac
     done
+
+    update_pelion_variables
+
+    if $PELION_PRINT_TARGET_PACKAGE_NAME; then
+        pelion_print_target_package_path
+        exit 0
+    fi
 
     if ! $PELION_METAPACKAGE_GEN && ! $PELION_PACKAGE_VERIFY; then
         PELION_METAPACKAGE_GEN=true
@@ -169,13 +189,14 @@ function pelion_parse_args() {
                 PELION_PACKAGE_SOURCE=true
                 ;;
 
-            --docker)
+            --docker=*)
                 PELION_PACKAGE_DOCKER=true
+                local OPTARG=${opt#*=}
+                DOCKER_DIST=${OPTARG:-bionic}
                 ;;
 
             --print-target)
-                pelion_print_target_package_path
-                exit 0
+                PELION_PRINT_TARGET_PACKAGE_NAME=true
                 ;;
 
             --print-package-name)
@@ -219,6 +240,13 @@ function pelion_parse_args() {
                 ;;
         esac
     done
+
+    update_pelion_variables
+
+    if $PELION_PRINT_TARGET_PACKAGE_NAME; then
+        pelion_print_target_package_path
+        exit 0
+    fi
 
     if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD && ! $PELION_PACKAGE_VERIFY; then
         PELION_PACKAGE_SOURCE=true
@@ -368,8 +396,6 @@ function pelion_print_target_package_path()
 # Docker helpers
 ################################################################################
 
-DOCKER_DIST="bionic"
-
 function pelion_docker_image_create() {
     IMAGE_NUM=$(docker images | grep -E "^pelion-$DOCKER_DIST-(source|build)\s" | wc -l)
     if [ "$IMAGE_NUM" -ne 2 ]; then
@@ -382,12 +408,15 @@ function pelion_docker_build() {
     SCRIPT_PATH=$(cd "`dirname \"$0\"`" && pwd)
     DOCKER_ROOT_DIR="/pelion-build"
     DOCKER_SCRIPT_PATH=$(echo $SCRIPT_PATH | sed "s:^$ROOT_DIR:$DOCKER_ROOT_DIR:")
+    APT_REPO="$ROOT_DIR"/build/apt/$DOCKER_DIST
+    mkdir -p $APT_REPO
 
     # Use separate docker containers for source generation and package build.
     if $PELION_PACKAGE_SOURCE; then
         docker run --rm \
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            -v "$APT_REPO":/opt/apt-repo \
             pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --source
@@ -396,6 +425,7 @@ function pelion_docker_build() {
     if $PELION_PACKAGE_BUILD; then
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            -v "$APT_REPO":/opt/apt-repo \
             pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --build
@@ -404,6 +434,7 @@ function pelion_docker_build() {
     if $PELION_METAPACKAGE_GEN; then
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            -v "$APT_REPO":/opt/apt-repo \
             pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --build
@@ -413,6 +444,7 @@ function pelion_docker_build() {
         docker run --rm \
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
+            -v "$APT_REPO":/opt/apt-repo \
             pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                --arch=$PELION_PACKAGE_TARGET_ARCH --verify

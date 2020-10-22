@@ -52,3 +52,6 @@ deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal main multiver
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main multiverse restricted universe
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-security main multiverse restricted universe
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main multiverse restricted universe
+
+deb [trusted=yes] file:///opt/apt-repo pe-dependencies/
+

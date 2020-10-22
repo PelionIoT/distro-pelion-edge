@@ -15,6 +15,7 @@ declare -A PELION_PACKAGE_COMPONENTS=(
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function pelion_global_node_modules_source_update_cb() {
+    sudo apt update && sudo apt install pe-nodejs
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/devjs-production-tools"
     npm install
 
