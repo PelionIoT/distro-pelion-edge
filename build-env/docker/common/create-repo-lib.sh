@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APT_REPO_PATH=/opt/apt-repo
+APT_REPO_PATH=${APT_REPO_PATH:-/opt/apt-repo}
 
 # function to create "Packages.gz" for custom repo
 function apt_scan_packages
