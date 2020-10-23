@@ -34,5 +34,9 @@ COPY --chown=user ./common/.bash_aliases /home/user/
 COPY ./common/nodejs-apt-repo.sh /root/
 RUN /root/nodejs-apt-repo.sh && apt-get update
 
+# github.com ssh host key
+COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts
+RUN chmod 644 /etc/ssh/ssh_known_hosts
+
 USER user
 WORKDIR /pelion-build
