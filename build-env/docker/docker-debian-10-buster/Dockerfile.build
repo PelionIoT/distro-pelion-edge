@@ -10,6 +10,8 @@ RUN usermod -aG sudo user
 
 COPY $LOCAL_SRC_PATH/sources.list.buster /etc/apt/sources.list
 COPY $LOCAL_SRC_PATH/preferences /etc/apt/preferences
+COPY $LOCAL_SRC_PATH/apt.conf.d/10-no-check-valid-until /etc/apt/apt.conf.d/10-no-check-valid-until
+
 
 RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armel
