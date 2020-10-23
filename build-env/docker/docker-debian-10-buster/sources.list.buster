@@ -8,4 +8,4 @@ deb http://deb.debian.org/debian buster-updates main
 deb [arch=amd64] http://deb.debian.org/debian buster-backports main
 
 # testing for golang
-deb http://deb.debian.org/debian testing main
+deb http://snapshot.debian.org/archive/debian/20200930T204132Z/ testing main
