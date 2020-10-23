@@ -6,6 +6,7 @@ shopt -s dotglob
 
 PELION_PACKAGE_VERSION_CODENAME=$(cat /etc/os-release \
     | grep VERSION_CODENAME | sed 's/VERSION_CODENAME=//g')
+DOCKER_DIST=$PELION_PACKAGE_VERSION_CODENAME
 
 if [ ! -v PELION_PACKAGE_APT_COMPONENT ]; then
     PELION_PACKAGE_APT_COMPONENT=main
@@ -24,7 +25,8 @@ function update_pelion_variables
     PELION_PACKAGE_VERSION_CODENAME=${PELION_PACKAGE_VERSION_CODENAME:-$DOCKER_DIST}
 
     if [ -z "$PELION_PACKAGE_VERSION_CODENAME" ]; then
-        echo "WARNING: unable to get distro codename, using 'focal'"
+        echo "ERROR: unable to get build codename"
+        exit 0
     fi
 
 PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb/$PELION_PACKAGE_VERSION_CODENAME/$PELION_PACKAGE_APT_COMPONENT
