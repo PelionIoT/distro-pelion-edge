@@ -4,7 +4,7 @@ set -e
 
 SCRIPT_DIR=$(dirname "$0")
 BASENAME=$(basename "$0")
-ROOT_DIR="$SCRIPT_DIR"/../..
+ROOT_DIR=$(realpath "$SCRIPT_DIR"/../..)
 source "${ROOT_DIR}"/build-env/docker/common/create-repo-lib.sh
 
 DEPENDS=(
@@ -35,6 +35,7 @@ METAPACKAGES=(
 
 PELION_PACKAGE_SOURCE=false
 PELION_PACKAGE_BUILD=false
+PELION_BUILD_DEPS=false
 
 PELION_TARBALL=false
 
@@ -47,6 +48,7 @@ function pelion_parse_args() {
         case "$opt" in
             --install)
                 PELION_BUILD_OPT+=' --install'
+                PELION_BUILD_DEPS=true
                 ;;
 
             --arch=*)
@@ -107,8 +109,9 @@ function pelion_parse_args() {
 
 pelion_parse_args "$@"
 
-BUILD_DEPS=true
-if $BUILD_DEPS; then
+echo ">> pelion-build-all started"
+if $PELION_BUILD_DEPS; then
+    echo ">> Dependency build started"
     # TODO when --install or --docker is set only
     # Create repository dir if needed:
     # - for in-docker run - use APT_REPO_PATH
@@ -147,9 +150,11 @@ if $BUILD_DEPS; then
 
     # Create packages in target repository
     (cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$APT_REPO_NAME/Packages.gz)
+    echo ">> Dependency build finished"
 fi
 
 if $PELION_PACKAGE_SOURCE; then
+    echo ">> Source creation started"
     for p in "${PACKAGES[@]}"; do
         echo "Generating source package of '$p'"
         if [ "$p" == "pe-nodejs" ]; then
@@ -163,10 +168,11 @@ if $PELION_PACKAGE_SOURCE; then
             "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source
         fi
     done
+    echo ">> Source creation finished"
 fi
 
 if $PELION_PACKAGE_BUILD; then
-    # Build
+    echo ">> Build started"
     for arch in "${PELION_ARCHS[@]}"; do
         for p in "${PACKAGES[@]}"; do
             echo "Building '$p' for '$arch'"
@@ -191,9 +197,11 @@ if $PELION_PACKAGE_BUILD; then
         echo "Verifying '$p'"
         "$SCRIPT_DIR"/../../metapackages/"$p"/deb/build.sh $PELION_BUILD_OPT --verify
     done
+    echo ">> Build finished"
 fi
 
 if $PELION_TARBALL; then
+    echo ">> Tarball generation started"
     cd $ROOT_DIR
     CONTAINER=pelion-$DOCKER_DIST-source
 
@@ -207,9 +215,12 @@ if $PELION_TARBALL; then
             docker run --rm \
                 -v "$HOME/.ssh":/home/user/.ssh \
                 -v "$ROOT_DIR":/pelion-build \
-                $CONTAINER ./build-env/bin/deb2tar.sh --arch="$arch"
+                $CONTAINER ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DOCKER_DIST"
         else
-            ./build-env/bin/deb2tar.sh --arch="$arch"
+            ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DOCKER_DIST"
         fi
     done
+    echo ">> Tarball generation finished"
 fi
+
+echo ">> pelion-build-all finished"
