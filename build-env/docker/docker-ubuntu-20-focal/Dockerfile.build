@@ -32,5 +32,9 @@ RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/su
 
 COPY --chown=user ./common/.bash_aliases /home/user/
 
+# github.com ssh host key
+COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts
+RUN chmod 644 /etc/ssh/ssh_known_hosts
+
 USER user
 WORKDIR /pelion-build
