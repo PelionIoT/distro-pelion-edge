@@ -25,7 +25,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		crossbuild-essential-armhf \
 		fakeroot \
 		sudo \
-		wget
+		wget \
+        git
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
