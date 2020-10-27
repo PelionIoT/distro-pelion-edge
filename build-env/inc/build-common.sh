@@ -402,7 +402,7 @@ function pelion_docker_image_create() {
     IMAGE_NUM=$(docker images | grep -E "^pelion-$DOCKER_DIST-(source|build)\s" | wc -l)
     if [ "$IMAGE_NUM" -ne 2 ]; then
         echo "Creating docker images"
-        "$ROOT_DIR/build-env/bin/docker-ubuntu-$DOCKER_DIST-create.sh"
+        $ROOT_DIR/build-env/bin/docker-*-$DOCKER_DIST-create.sh
     fi
 }
 
