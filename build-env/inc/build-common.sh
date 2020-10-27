@@ -26,7 +26,7 @@ function update_pelion_variables
 
     if [ -z "$PELION_PACKAGE_VERSION_CODENAME" ]; then
         echo "ERROR: unable to get build codename"
-        exit 0
+        exit 1
     fi
 
 PELION_DEB_DEPLOY_DIR=$ROOT_DIR/build/deploy/deb/$PELION_PACKAGE_VERSION_CODENAME/$PELION_PACKAGE_APT_COMPONENT

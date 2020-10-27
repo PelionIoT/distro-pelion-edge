@@ -70,7 +70,7 @@ function pelion_parse_args() {
             --docker=*)
                 PELION_PACKAGE_DOCKER=true
                 local OPTARG=${opt#*=}
-                DOCKER_DIST=${OPTARG:-bionic}
+                DIST_CODENAME=${OPTARG}
                 ;;
 
             --help|-h)
@@ -80,7 +80,7 @@ function pelion_parse_args() {
                 echo " --source            Generate source package."
                 echo " --build             Build binary from source generated with --source option."
                 echo " --tar               Build a tarball from Debian packages."
-                echo " --docker[=dist]     Use docker containers (dist can be focal, bionic, buster...)."
+                echo " --docker=<dist>     Use docker containers (dist can be focal, bionic, buster...)."
                 echo " --install           Install build dependencies."
                 echo " --arch=<arch>       Set comma-separated list of target architectures."
                 echo " --help,-h           Print this message."
@@ -103,7 +103,15 @@ function pelion_parse_args() {
     if $PELION_PACKAGE_DOCKER; then
         # Overwrite 'install' option if it was provided. Docker build always
         # installs dependencies.
-        PELION_BUILD_OPT="--docker=$DOCKER_DIST"
+        PELION_BUILD_OPT="--docker=$DIST_CODENAME"
+    else
+        # run build natively, determine Linux distribution
+        DIST_CODENAME=$(cat /etc/os-release | grep VERSION_CODENAME | sed 's/VERSION_CODENAME=//g')
+
+        if [ -z "$DIST_CODENAME" ]; then
+            echo "ERROR: unable to get build codename"
+            exit 1
+        fi
     fi
 }
 
@@ -114,11 +122,10 @@ if $PELION_BUILD_DEPS; then
     echo ">> Dependency build started"
     # TODO when --install or --docker is set only
     # Create repository dir if needed:
-    # - for in-docker run - use APT_REPO_PATH
     # - for out-of-docker: use apt/$CONTAINER-apt
     # - for no container: use apt
     # TODO: if --docker
-    APT_REPO_PATH=$ROOT_DIR/build/apt/$DOCKER_DIST
+    APT_REPO_PATH=$ROOT_DIR/build/apt/$DIST_CODENAME
     # TODO: else
     # APT_REPO_PATH=${APT_REPO_PATH:-$ROOT_DIR/build/apt}
     # if --install
@@ -203,7 +210,7 @@ fi
 if $PELION_TARBALL; then
     echo ">> Tarball generation started"
     cd $ROOT_DIR
-    CONTAINER=pelion-$DOCKER_DIST-source
+    CONTAINER=pelion-$DIST_CODENAME-source
 
     if $PELION_PACKAGE_DOCKER && [ -z "$(docker images -q $CONTAINER)" ]; then
         # TODO: do not use * here
@@ -215,9 +222,9 @@ if $PELION_TARBALL; then
             docker run --rm \
                 -v "$HOME/.ssh":/home/user/.ssh \
                 -v "$ROOT_DIR":/pelion-build \
-                $CONTAINER ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DOCKER_DIST"
+                $CONTAINER ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DIST_CODENAME"
         else
-            ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DOCKER_DIST"
+            ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DIST_CODENAME"
         fi
     done
     echo ">> Tarball generation finished"
