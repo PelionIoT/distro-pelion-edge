@@ -30,7 +30,7 @@ function pelion_mbed_fcc_origin_source_update_cb() {
             # try to install python-requests and python-click for Python2
             # as we should use python2 if it was choosen. On failure we switch
             # to python3
-            if ! sudo apt install python-requests python-click; then
+            if ! sudo apt install -y python-requests python-click; then
                 echo "Unable to install deps for python2, switching to python3"
                 TO_INSTALL="python3 python3-requests python3-click"
                 PYTHONCMD=python3
@@ -46,7 +46,7 @@ function pelion_mbed_fcc_origin_source_update_cb() {
         fi
 
         if [ ! -z "$TO_INSTALL" ]; then
-            sudo apt-get install -y $TO_INSTALL
+            sudo apt install -y $TO_INSTALL
         fi
     fi
 
