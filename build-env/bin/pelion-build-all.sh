@@ -7,12 +7,15 @@ BASENAME=$(basename "$0")
 ROOT_DIR=$(realpath "$SCRIPT_DIR"/../..)
 source "${ROOT_DIR}"/build-env/docker/common/create-repo-lib.sh
 
+# build dependencies
 DEPENDS=(
     'golang-providers/golang-virtual'
     'pe-nodejs'
 )
 
+# TODO: do not duplicate for amd64 only build
 PACKAGES=(
+    'pe-nodejs'
     'devicedb'
     'edge-proxy'
     'global-node-modules'
@@ -137,11 +140,11 @@ if $PELION_BUILD_DEPS; then
     # Create packages in target repository - empty required to not fail the build
     (cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$APT_REPO_NAME/Packages.gz)
 
-	# Deps build
+	# Deps build - always use host arch
     for arch in "${PELION_ARCHS[@]}"; do
         for p in "${DEPENDS[@]}"; do
             echo "Building '$p' for '$arch'"
-            "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --arch="$arch" --source --build
+            "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source --build
         done
     done
 
@@ -149,8 +152,8 @@ if $PELION_BUILD_DEPS; then
     for arch in "${PELION_ARCHS[@]}"; do
         for p in "${DEPENDS[@]}"; do
             echo "Installing '$p' for '$arch'"
-            echo "$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --arch="$arch" --print-target
-            TARGET_PACKAGE=$("$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --arch="$arch" --print-target)
+            echo "$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target
+            TARGET_PACKAGE=$("$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target)
             cp -f $TARGET_PACKAGE $APT_REPO_PATH/$APT_REPO_NAME
         done
     done
