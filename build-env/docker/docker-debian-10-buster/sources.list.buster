@@ -9,3 +9,5 @@ deb [arch=amd64] http://deb.debian.org/debian buster-backports main
 
 # testing for golang
 deb http://snapshot.debian.org/archive/debian/20200930T204132Z/ testing main
+
+deb [trusted=yes] file:///opt/apt-repo pe-dependencies/
