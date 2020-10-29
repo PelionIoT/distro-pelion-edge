@@ -358,6 +358,10 @@ function pelion_building_deb_package() {
     rm -rf "$PELION_TMP_BUILD_DIR"
     mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
+    if [ -v PELION_PACKAGE_PRE_BUILD_CALLBACK ]; then
+        $PELION_PACKAGE_PRE_BUILD_CALLBACK
+    fi
+
     if $PELION_PACKAGE_INSTALL_DEPS; then
         sudo apt-get update && \
         sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/source/$PELION_PACKAGE_DEB_ARCHIVE_NAME.dsc"
