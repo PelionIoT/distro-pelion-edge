@@ -51,7 +51,6 @@ function pelion_parse_args() {
         case "$opt" in
             --install)
                 PELION_BUILD_OPT+=' --install'
-                PELION_BUILD_DEPS=true
                 ;;
 
             --arch=*)
@@ -64,6 +63,10 @@ function pelion_parse_args() {
 
             --source)
                 PELION_PACKAGE_SOURCE=true
+                ;;
+
+            --deps)
+                PELION_BUILD_DEPS=true
                 ;;
 
             --tar)
@@ -83,6 +86,7 @@ function pelion_parse_args() {
                 echo " --source            Generate source package."
                 echo " --build             Build binary from source generated with --source option."
                 echo " --tar               Build a tarball from Debian packages."
+                echo " --deps              Create build dependency packages."
                 echo " --docker=<dist>     Use docker containers (dist can be focal, bionic, buster...)."
                 echo " --install           Install build dependencies."
                 echo " --arch=<arch>       Set comma-separated list of target architectures."
@@ -96,7 +100,8 @@ function pelion_parse_args() {
                 ;;
         esac
     done
-    if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD && ! $PELION_TARBALL; then
+    if ! $PELION_PACKAGE_SOURCE && ! $PELION_PACKAGE_BUILD && ! $PELION_TARBALL && ! $PELION_BUILD_DEPS; then
+        PELION_BUILD_DEPS=true
         PELION_PACKAGE_SOURCE=true
         PELION_PACKAGE_BUILD=true
 
