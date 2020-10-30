@@ -12,6 +12,9 @@ if [ ! -v PELION_PACKAGE_APT_COMPONENT ]; then
     PELION_PACKAGE_APT_COMPONENT=main
 fi
 
+# set prefix for docker images
+export PELION_DOCKER_PREFIX=${PELION_DOCKER_PREFIX:-}
+
 BASENAME=$(basename "$0")
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -403,7 +406,7 @@ function pelion_print_target_package_path()
 ################################################################################
 
 function pelion_docker_image_create() {
-    IMAGE_NUM=$(docker images | grep -E "^pelion-$DOCKER_DIST-(source|build)\s" | wc -l)
+    IMAGE_NUM=$(docker images | grep -E "^${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-(source|build)\s" | wc -l)
     if [ "$IMAGE_NUM" -ne 2 ]; then
         echo "Creating docker images"
         $ROOT_DIR/build-env/bin/docker-*-$DOCKER_DIST-create.sh
@@ -423,7 +426,7 @@ function pelion_docker_build() {
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
-            pelion-$DOCKER_DIST-source \
+            ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --source
     fi
@@ -432,7 +435,7 @@ function pelion_docker_build() {
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
-            pelion-$DOCKER_DIST-build \
+            ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --build
     fi
@@ -441,7 +444,7 @@ function pelion_docker_build() {
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
-            pelion-$DOCKER_DIST-build \
+            ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --build
     fi
@@ -451,7 +454,7 @@ function pelion_docker_build() {
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
-            pelion-$DOCKER_DIST-source \
+            ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                --arch=$PELION_PACKAGE_TARGET_ARCH --verify
     fi
