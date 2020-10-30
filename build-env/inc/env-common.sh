@@ -32,3 +32,27 @@ function has_python() {
 
     return 0
 }
+
+# configure python
+function configure_python()
+{
+    if $PELION_PACKAGE_INSTALL_DEPS; then
+        # check python: use python3, python2 or install python3 if python is not installed
+        if has_python;then
+            return
+        fi
+
+        if has_python 3; then
+            select_python 3;
+            return
+        fi
+
+        if has_python 2; then
+            select_python 2;
+            return
+        fi
+
+        sudo apt install -y python3
+        select_python 3
+    fi
+}
