@@ -42,6 +42,12 @@ generating source packages (for example git, npm, python).
 To build packages for other distributions, replace `pelion-bionic` with the name
 of the distribution.  For example, to build for Debian 10, use `debian-buster`.
 
+To add prefix to docker images export `PELION_DOCKER_PREFIX`  variable  in  your
+shell with your prefix:
+```
+export PELION_DOCKER_PREFIX=${USER}-
+```
+
 The system is configured to use `sudo` without a password.
 
 
@@ -57,6 +63,8 @@ $ ./build-env/bin/docker-run.sh pelion-bionic-source
 
 The script mounts the user `.ssh` directory  to share git ssh keys.  The root of
 this repo is mounted to `/pelion-build`.
+
+Please note that `docker-run.sh` script does not use `PELION_DOCKER_PREFIX`.
 
 ### Build environment for debian-10
 
@@ -80,7 +88,7 @@ $ maestro/deb/build.sh --help
 Usage: maestro/deb/build.sh [Options]
 
 Options:
- --docker            Use docker containers.
+ --docker=<dist>     Use docker containers (dist can be focal, bionic, buster...).
  --source            Generate source package.
  --build             Build binary from source generated with --source option.
  --verify            Verify package conformity to the Debian policy.
@@ -105,8 +113,8 @@ These scripts can be used to generate both source and binary packages.
 It is possible to  use these scripts without the option  `--docker` if docker is
 run manually by `docker-run.sh`.  The option  `--docker` will make all tasks run
 in appropriate containers automatically:
-* source packages will be generated in `pelion-bionic-source`
-* binary packages in `pelion-bionic-build`
+* source packages will be generated in `pelion-<DISTRO>-source`
+* binary packages in `pelion-<DISTRO>-build`
 
 ## Building all packages
 
@@ -115,10 +123,11 @@ $ ./build-env/bin/pelion-build-all.sh --help
 Usage: pelion-build-all.sh [Options]
 
 Options:
+ --deps              Create build dependency packages.
  --source            Generate source package.
  --build             Build binary from source generated with --source option.
  --tar               Build a tarball from Debian packages.
- --docker            Use docker containers.
+ --docker=<DISTRO>   Use docker containers.
  --install           Install build dependencies.
  --arch=<arch>       Set comma-separated list of target architectures.
  --help,-h           Print this message.
@@ -131,7 +140,7 @@ all of them are activated.
 This script  will run build of  each package in new  docker container installing
 all build dependencies each time (with `--docker` option), for example:
 ```
-./build-env/bin/pelion-build-all.sh --docker --arch=amd64,armhf,arm64
+./build-env/bin/pelion-build-all.sh --docker=focal --arch=amd64,armhf,arm64
 ```
 
 It  is  possible to  manually  run  docker and  then  build  everything in  this
@@ -143,6 +152,10 @@ user@95a30883d637:/pelion-build$ ./build-env/bin/pelion-build-all.sh --install -
 
 The option `--install` is required when the script is executed manually in clear
 docker container, otherwise it will fail due to missing build dependencies.
+
+To provide  build  dependency  use  `--deps`  switch.  This  will  create  build
+dependencies  and  put  into local apt repository. This is enabled by default if
+not build/source/tar is set.
 
 ## Generating tar archives
 
@@ -157,8 +170,8 @@ deb2tar.sh - converts a set of Debian packages into a portable tarball.
 Usage: deb2tar.sh [-h|--help] [-a ARCH|--arch ARCH]
  -h, --help
   Display this help message.
- -a ARCH, --arch ARCH
-  Set the host architecture of the tarball.
+ -a ARCH, --arch ARCH		Set the host architecture of the tarball.
+ -d DISTRO, --distro DISTRO Set Linux distro (eg. focal, buster...)
 ```
 
 Before invoking `deb2tar.sh` make sure that all packages you want to be included
