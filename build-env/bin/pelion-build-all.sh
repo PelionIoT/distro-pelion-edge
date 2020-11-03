@@ -121,6 +121,57 @@ function pelion_parse_args() {
             exit 1
         fi
     fi
+
+    # relative path to repo
+    APT_REPO_PATH=build/apt/$DIST_CODENAME
+}
+
+# run command in docker
+# arg1:docker container, args...:command to run
+function docker_run_cmd() {
+    local DOCKER_CONTAINER=$1
+    shift 1
+
+    docker run --rm \
+        -v "$HOME/.ssh":/home/user/.ssh \
+        -v "$ROOT_DIR":/pelion-build \
+        -v "$ROOT_DIR/$APT_REPO_PATH":/opt/apt-repo \
+        $DOCKER_CONTAINER \
+        "$@"
+}
+
+# get PREFIX-pelion-CODENAME-SUFFIX container name
+# arg1: suffix, container kind: source or build
+function get_container_name()
+{
+    local CONTAINER_KIND=$1
+    shift
+
+    echo ${PELION_DOCKER_PREFIX}pelion-$DIST_CODENAME-$CONTAINER_KIND
+}
+
+# run cmd in container or natively
+# arg1: source or build - container suffix
+# args: command to run
+function run_cmd() {
+    local CONTAINER_KIND=$1
+    shift
+
+    if $PELION_PACKAGE_DOCKER; then
+        docker_run_cmd $(get_container_name $CONTAINER_KIND) "$@"
+    else
+        "$@"
+    fi
+}
+
+# ensure if container is created, create if needed
+# arg1: container suffix: source of build
+function ensure_container_created()
+{
+    if $PELION_PACKAGE_DOCKER && [ -z "$(docker images -q $(get_container_name $1))" ]; then
+        # TODO: do not use * here
+        ./build-env/bin/docker-*-$DIST_CODENAME-create.sh
+    fi
 }
 
 pelion_parse_args "$@"
@@ -128,22 +179,17 @@ pelion_parse_args "$@"
 echo ">> pelion-build-all started"
 if $PELION_BUILD_DEPS; then
     echo ">> Dependency build started"
-    # TODO when --install or --docker is set only
-    # Create repository dir if needed:
-    # - for out-of-docker: use apt/$CONTAINER-apt
-    # - for no container: use apt
-    # TODO: if --docker
-    APT_REPO_PATH=$ROOT_DIR/build/apt/$DIST_CODENAME
-    # TODO: else
-    # APT_REPO_PATH=${APT_REPO_PATH:-$ROOT_DIR/build/apt}
-    # if --install
-    # apt_create_trusted_repo $APT_REPO_NAME
-    # fi
+
+    cd $ROOT_DIR
     APT_REPO_NAME=pe-dependencies
     mkdir -p $APT_REPO_PATH/$APT_REPO_NAME
 
+    PACKAGES_GZ=$APT_REPO_NAME/Packages.gz
+
+    ensure_container_created source
+
     # Create packages in target repository - empty required to not fail the build
-    (cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$APT_REPO_NAME/Packages.gz)
+    run_cmd source bash -c "cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$PACKAGES_GZ"
 
 	# Deps build - always use host arch
     for arch in "${PELION_ARCHS[@]}"; do
@@ -164,7 +210,7 @@ if $PELION_BUILD_DEPS; then
     done
 
     # Create packages in target repository
-    (cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$APT_REPO_NAME/Packages.gz)
+    run_cmd source bash -c "cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$PACKAGES_GZ"
     echo ">> Dependency build finished"
 fi
 
@@ -218,22 +264,11 @@ fi
 if $PELION_TARBALL; then
     echo ">> Tarball generation started"
     cd $ROOT_DIR
-    CONTAINER=pelion-$DIST_CODENAME-source
 
-    if $PELION_PACKAGE_DOCKER && [ -z "$(docker images -q $CONTAINER)" ]; then
-        # TODO: do not use * here
-        ./build-env/bin/docker-*-$CONTAINER-create.sh
-    fi
+    ensure_container_created source
 
     for arch in "${PELION_ARCHS[@]}"; do
-        if $PELION_PACKAGE_DOCKER; then
-            docker run --rm \
-                -v "$HOME/.ssh":/home/user/.ssh \
-                -v "$ROOT_DIR":/pelion-build \
-                $CONTAINER ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DIST_CODENAME"
-        else
-            ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DIST_CODENAME"
-        fi
+        run_cmd source ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DIST_CODENAME"
     done
     echo ">> Tarball generation finished"
 fi
