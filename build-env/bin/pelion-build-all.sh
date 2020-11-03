@@ -192,21 +192,17 @@ if $PELION_BUILD_DEPS; then
     run_cmd source bash -c "cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$PACKAGES_GZ"
 
 	# Deps build - always use host arch
-    for arch in "${PELION_ARCHS[@]}"; do
-        for p in "${DEPENDS[@]}"; do
-            echo "Building '$p' for '$arch'"
-            "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source --build
-        done
+    for p in "${DEPENDS[@]}"; do
+        echo "Building '$p'"
+        "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source --build
     done
 
     # Install deps to local repo
-    for arch in "${PELION_ARCHS[@]}"; do
-        for p in "${DEPENDS[@]}"; do
-            echo "Installing '$p' for '$arch'"
-            echo "$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target
-            TARGET_PACKAGE=$("$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target)
-            cp -f $TARGET_PACKAGE $APT_REPO_PATH/$APT_REPO_NAME
-        done
+    for p in "${DEPENDS[@]}"; do
+        echo "Installing '$p' for '$arch'"
+        echo "$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target
+        TARGET_PACKAGE=$("$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target)
+        cp -f $TARGET_PACKAGE $APT_REPO_PATH/$APT_REPO_NAME
     done
 
     # Create packages in target repository
