@@ -1,0 +1,5 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: pe-golang-bin
+
+Files: *
+Copyright: 2020, Krzysztof Bembnista <krzysztof.bembnista@globallogic.com>
