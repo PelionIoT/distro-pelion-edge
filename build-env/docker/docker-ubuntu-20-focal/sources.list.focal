@@ -1,3 +1,5 @@
+# Local packages highest priority
+deb [trusted=yes] file:///opt/apt-repo pe-dependencies/
 # See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
 # newer versions of the distribution.
 deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ focal main restricted
@@ -52,6 +54,4 @@ deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal main multiver
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-updates main multiverse restricted universe
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-security main multiverse restricted universe
 deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal-backports main multiverse restricted universe
-
-deb [trusted=yes] file:///opt/apt-repo pe-dependencies/
 

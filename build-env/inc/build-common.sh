@@ -308,6 +308,10 @@ function pelion_generation_deb_metapackage() {
         sudo apt-get install -y debhelper
     fi
 
+    if [ -v PELION_PACKAGE_PRE_BUILD_CALLBACK ]; then
+        $PELION_PACKAGE_PRE_BUILD_CALLBACK
+    fi
+
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME" && \
         dpkg-buildpackage -us -uc
 
