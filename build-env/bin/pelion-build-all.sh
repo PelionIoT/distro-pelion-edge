@@ -9,7 +9,8 @@ source "${ROOT_DIR}"/build-env/docker/common/create-repo-lib.sh
 
 # build dependencies
 DEPENDS=(
-    'golang-providers/golang-virtual'
+    # 'golang-providers/golang-virtual'
+    'golang-providers/pe-golang-bin'
     'pe-nodejs'
 )
 

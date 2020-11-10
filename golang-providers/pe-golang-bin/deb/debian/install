@@ -1,9 +1,9 @@
-go/bin       usr/lib/pe-golang-bin/
-go/lib       usr/lib/pe-golang-bin/
-go/misc      usr/lib/pe-golang-bin/
-go/pkg       usr/lib/pe-golang-bin/
-go/src       usr/lib/pe-golang-bin/
-go/LICENSE   usr/lib/pe-golang-bin/
-go/PATENTS   usr/lib/pe-golang-bin/
-go/VERSION   usr/lib/pe-golang-bin/
+go/bin       usr/lib/pe-golang/
+go/lib       usr/lib/pe-golang/
+go/misc      usr/lib/pe-golang/
+go/pkg       usr/lib/pe-golang/
+go/src       usr/lib/pe-golang/
+go/LICENSE   usr/lib/pe-golang/
+go/PATENTS   usr/lib/pe-golang/
+go/VERSION   usr/lib/pe-golang/
 

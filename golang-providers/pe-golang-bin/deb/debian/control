@@ -9,4 +9,5 @@ Package: pe-golang-bin
 Architecture: amd64
 Depends:
 Provides: pe-golang
+Conflicts: golang-virtual
 Description: Go compiler required for Pelion Edge compilation.
