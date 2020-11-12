@@ -6,10 +6,10 @@ Maintainer: Debian Go Packaging Team <pkg-go-maintainers@lists.alioth.debian.org
 Uploaders: Jamie Bliss <jamie@ivyleav.es>,
            Nicolas Braud-Santoni <nicoo@debian.org>,
            Dmitry Smirnov <onlyjob@debian.org>
-Build-Depends: debhelper-compat (= 12),
+Build-Depends: debhelper-compat (= 11),
                dh-golang,
                libc6,
-               golang-any:native,
+               pe-golang:native,
     golang-dbus-dev:native (>= 5.0.2~),
     golang-ginkgo-dev:native,
     golang-github-alexflint-go-filemutex-dev:native,
