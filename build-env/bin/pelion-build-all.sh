@@ -92,7 +92,7 @@ function pelion_parse_args() {
                 echo " --arch=<arch>       Set comma-separated list of target architectures."
                 echo " --help,-h           Print this message."
                 echo ""
-                echo "If none of '--source', '--build' or '--tar' options are specified,"
+                echo "If none of '--deps', '--source', '--build' or '--tar' options are specified,"
                 echo "all of them are activated."
                 echo ""
 

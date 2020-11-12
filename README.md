@@ -132,7 +132,7 @@ Options:
  --arch=<arch>       Set comma-separated list of target architectures.
  --help,-h           Print this message.
 
-If none of '--source', '--build' or '--tar' options are specified,
+If none of '--deps', '--source', '--build' or '--tar' options are specified,
 all of them are activated.
 
 ```
