@@ -2,7 +2,8 @@ Source: mbed-fcc
 Section: devel
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
-Build-Depends: debhelper (>=9), cmake (>=3.5), python:native, python-click:native, python-requests:native, libc6-dev, libstdc++6
+Build-Depends: debhelper (>=9), cmake (>=3.5), python:native|python3:native, python-click:native|python3-click:native,
+ python-requests:native|python3-requests:native, libc6-dev, libstdc++6
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 

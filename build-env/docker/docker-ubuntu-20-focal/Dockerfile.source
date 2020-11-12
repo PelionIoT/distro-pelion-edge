@@ -1,12 +1,12 @@
-FROM pelion-buster-build
+FROM pelion-focal-build
 
 USER root
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		apt-rdepends \
-		git \
+		git  \
 		lintian \
-		python \
+		python3 \
 		quilt \
 		ssh \
 		vim

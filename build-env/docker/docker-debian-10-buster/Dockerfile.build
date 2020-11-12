@@ -8,10 +8,11 @@ RUN addgroup --gid $GROUP_ID user
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
 
+RUN echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retries
 COPY $LOCAL_SRC_PATH/sources.list.buster /etc/apt/sources.list
 COPY $LOCAL_SRC_PATH/preferences /etc/apt/preferences
 COPY $LOCAL_SRC_PATH/apt.conf.d/10-no-check-valid-until /etc/apt/apt.conf.d/10-no-check-valid-until
-
+RUN mkdir -p /opt/apt-repo/pe-dependencies && echo -n| gzip >/opt/apt-repo/pe-dependencies/Packages.gz && find /opt && apt-get update
 
 RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armel
@@ -25,14 +26,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		crossbuild-essential-armhf \
 		fakeroot \
 		sudo \
-		wget
+		wget \
+        git
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
 COPY --chown=user ./common/.bash_aliases /home/user/
-
-COPY ./common/nodejs-apt-repo.sh /root/
-RUN /root/nodejs-apt-repo.sh && apt-get update
 
 # github.com ssh host key
 COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts

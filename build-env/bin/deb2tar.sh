@@ -48,8 +48,7 @@ relink() {
 # have a parameter.
 fix_shebang() {
     local hdr interp
-
-    read -r hdr <"$1"
+    read -r hdr <"$1" || true # allow read error - for one-line scripts
     hdr=(${hdr#'#!'})
     [[ ${#hdr[@]} -lt 1 ]] && return 0 # no interpreter after shebang
 
@@ -59,7 +58,8 @@ fix_shebang() {
 
     if [[ ${#hdr[@]} -gt 1 ]]; then
         echo "Error: unable to fix the shebang of $1: '#!${hdr[*]}' (parameter '${hdr[1]}' will be lost)"
-        return 1
+        echo "SKIPPING: shabang fix for $1"
+        return 0
     fi
 
     interp=${interp##*/}
@@ -134,12 +134,34 @@ fetch_deps() {
 
     local -a rewrite=(
         '/^pe-nodejs/d'
+        '/^pe-utils/d'
+        '/^edge-proxy/d'
+        '/^mbed-edge-core-devmode/d'
+        '/^maestro/d'
         '/^debconf/d'
         '/^dpkg/d'
         '/^tar\b/d'
         '/^perl-base\b/d'
         '/^base-files\b/d'
+        '/^netbase\b/d'
+        '/^libpam\b/d'
+        '/^libaudit\b/d'
+        '/^libsemanage\b/d'
+        '/^lsb-base\b/d'
+        '/^adduser\b/d'
+        '/^init-system-helpers\b/d'
         '/^awk\b/d'
+        '/^bash\b/d'
+        '/^ebtables\b/d'
+        '/^iptables\b/d'
+        '/^iproute2\b/d'
+        '/^ethtool/d'
+        '/^mount\b/d'
+        '/^docker\b/d'
+        '/^dmsetup\b/d'
+        '/^gcc\b/d'
+        '/^login\b/d'
+        '/^passwd\b/d'
         's/^(libldap-common):.*/\1:all/'
     )
 
@@ -167,15 +189,15 @@ fetch_deps() {
 usage=$(cat <<EOF
 ${0##*/} - converts a set of Debian packages into a portable tarball.
 
-Usage: ${0##*/} [-h|--help] [-a ARCH|--arch ARCH]
+Usage: ${0##*/} [-h|--help] [-a ARCH|--arch ARCH|-d DISTRO|--distro DISTRO]
  -h, --help
   Display this help message.
- -a ARCH, --arch ARCH
-  Set the host architecture of the tarball.
+ -a ARCH, --arch ARCH       Set the host architecture of the tarball.
+ -d DISTRO, --distro DISTRO Set Linux distro (eg. focal, buster...)
 EOF
 )
 
-opts=$(getopt -n "$0" -o 'ha:' -l 'help,arch:' -- "$@")
+opts=$(getopt -n "$0" -o 'ha:d:' -l 'help,arch:,distro:' -- "$@")
 eval set -- "$opts"
 while true; do
     case "$1" in
@@ -184,11 +206,26 @@ while true; do
         -a|--arch)
             host=$2
             shift 2 ;;
+        -d|--distro)
+            distro=$2
+            shift 2 ;;
         --) shift && break ;;
         *)  printf "%s\n%s\n" "$0: invalid arguments" "$usage"
             exit 2 ;;
     esac
 done
+
+if [ -z "$distro" ];then
+distro=$(cat /etc/os-release \
+    | grep VERSION_CODENAME | sed 's/VERSION_CODENAME=//g')
+fi
+
+if [ -z "$distro" ]; then
+    echo "Unable to determine distro codename, exiting"
+    exit 1
+fi
+
+echo "Build for \"$distro\" distro"
 
 eval "$(dpkg-architecture -s ${host:+--host-arch="$host"})"
 
@@ -197,12 +234,11 @@ cd "${0%/*}/../.."
 topdir=$(pwd)
 deploydir=$topdir/build/deploy/tar
 tarname=pelion-edge-$DEB_HOST_ARCH
-distro=bionic/main
 tarfile=$tarname.tar.gz
 workdir=$(mktemp -d)
 moshpit=$workdir/$tarname
 downloads=$workdir/downloads
-pkgs=("$topdir"/build/deploy/deb/"$distro"/binary-"$DEB_HOST_ARCH"/*.deb)
+pkgs=("$topdir"/build/deploy/deb/"${distro:-focal}"/main/binary-"$DEB_HOST_ARCH"/*.deb)
 
 echo "Downloading dependencies..."
 mkdir -p "$moshpit" "$downloads"

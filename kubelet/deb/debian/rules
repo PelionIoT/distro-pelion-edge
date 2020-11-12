@@ -1,7 +1,5 @@
 #!/usr/bin/make -f
 
-export PATH := /usr/lib/go-1.14/bin:${PATH}
-
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
 
