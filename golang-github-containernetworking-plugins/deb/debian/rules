@@ -6,14 +6,13 @@ export DH_GOLANG_GO_GENERATE := 1
 
 export DH_GOLANG_EXCLUDES := integration plugins/sample plugins/main/windows
 
+export GOCACHE=/tmp/
+
 %:
 	dh $@ --buildsystem=golang --with=golang --builddirectory=_build
 
 override_dh_clean:
 	dh_clean $(PB_GO_FILES)
-	## Remove Files-Excluded (when built from checkout or non-DFSG tarball):
-	$(RM) -rv `perl -0nE 'say $$1 if m{^Files\-Excluded\:\s*(.*?)(?:\n\n|Files:|Comment:)}sm;' debian/copyright`
-	-find vendor -mindepth 1 -type d -empty -delete -printf 'removed %p\n'
 
 override_dh_auto_test:
 	## Tests require root...
