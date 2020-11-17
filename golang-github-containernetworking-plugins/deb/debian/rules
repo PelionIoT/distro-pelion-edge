@@ -8,10 +8,17 @@ export DH_GOLANG_EXCLUDES := integration plugins/sample plugins/main/windows
 
 export GOCACHE=/tmp/
 
-%:
+golang.setup.env:
+	debian/goflags.guess $(DEB_HOST_ARCH) >$@
+
+-include golang.setup.env
+
+%: golang.setup.env
 	dh $@ --buildsystem=golang --with=golang --builddirectory=_build
 
+
 override_dh_clean:
+	rm golang.setup.env
 	dh_clean $(PB_GO_FILES)
 
 override_dh_auto_test:
