@@ -34,5 +34,8 @@ RUN chmod 644 /etc/ssh/ssh_known_hosts
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
 
+# use complete Go compiler instead of default golang-virtual
+ENV GO_COMPILER_PACKAGE=golang-providers/pe-golang-bin
+
 USER user
 WORKDIR /pelion-build
