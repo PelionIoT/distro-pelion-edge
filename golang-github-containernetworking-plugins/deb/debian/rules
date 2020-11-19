@@ -18,7 +18,7 @@ golang.setup.env:
 
 
 override_dh_clean:
-	rm golang.setup.env
+	rm -f golang.setup.env
 	dh_clean $(PB_GO_FILES)
 
 override_dh_auto_test:
