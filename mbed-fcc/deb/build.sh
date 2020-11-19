@@ -51,7 +51,7 @@ function pelion_mbed_fcc_origin_source_update_cb() {
     fi
 
     PYTHONUSERBASE="$PELION_TMP_BUILD_DIR/" \
-    $PYTHONCMD pal-platform/pal-platform.py -v deploy --target=Yocto_Generic_YoctoLinux_mbedtls generate
+    $PYTHONCMD pal-platform/pal-platform.py -v deploy --target=x86_x64_NativeLinux_mbedtls generate
 }
 
 pelion_main "$@"

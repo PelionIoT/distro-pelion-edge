@@ -7,20 +7,22 @@ export CC=${DEB_HOST_GNU_TYPE}-gcc
 export CXX=${DEB_HOST_GNU_TYPE}-g++
 export PKG_CONFIG=${DEB_HOST_GNU_TYPE}-pkg-config
 
+export FCC_TARGET=x86_x64_NativeLinux_mbedtls
+
 %:
-	dh $@ --buildsystem=cmake --builddirectory=__Yocto_Generic_YoctoLinux_mbedtls/
+	dh $@ --buildsystem=cmake --builddirectory=__${FCC_TARGET}/
 
 override_dh_auto_clean:
-	cd __Yocto_Generic_YoctoLinux_mbedtls/ && \
+	cd __${FCC_TARGET}/ && \
 	find ! \( -name 'CMakeLists.txt' -o -name 'autogen.cmake' \) -type f -exec rm -f {} \; && \
 	find -mindepth 1 -maxdepth 1 -type d -exec rm -r {} \;
 
 override_dh_auto_configure:
-	cd __Yocto_Generic_YoctoLinux_mbedtls/ && \
-	cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=../pal-platform/Toolchain/POKY-GLIBC/POKY-GLIBC.cmake -DEXTARNAL_DEFINE_FILE=../linux-config.cmake
+	cd __${FCC_TARGET}/ && \
+	cmake -G 'Unix Makefiles' -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=../pal-platform/Toolchain/GCC/GCC.cmake -DEXTERNAL_DEFINE_FILE=./../linux-config.cmake
 
 override_dh_auto_build:
-	cd __Yocto_Generic_YoctoLinux_mbedtls/ && \
+	cd __${FCC_TARGET}/ && \
 	make factory-configurator-client-example.elf
 
 override_dh_auto_install:
