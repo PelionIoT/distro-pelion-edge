@@ -1,4 +1,5 @@
-FROM pelion-buster-build
+ARG PREFIX
+FROM ${PREFIX}pelion-buster-build
 
 USER root
 

@@ -1,4 +1,5 @@
-FROM pelion-focal-build
+ARG PREFIX
+FROM ${PREFIX}pelion-focal-build
 
 USER root
 
