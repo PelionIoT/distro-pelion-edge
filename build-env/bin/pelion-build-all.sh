@@ -8,8 +8,9 @@ ROOT_DIR=$(realpath "$SCRIPT_DIR"/../..)
 source "${ROOT_DIR}"/build-env/docker/common/create-repo-lib.sh
 
 # build dependencies
+# variables are evaluated in selected environment (eg. docker)
 DEPENDS=(
-    ${GO_COMPILER_PACKAGE-golang-providers/golang-virtual}
+    '${GO_COMPILER_PACKAGE-golang-providers/golang-virtual}'
     'pe-nodejs'
 )
 
@@ -176,6 +177,8 @@ function ensure_container_created()
 
 pelion_parse_args "$@"
 
+ensure_container_created source
+
 echo ">> pelion-build-all started"
 if $PELION_BUILD_DEPS; then
     echo ">> Dependency build started"
@@ -186,7 +189,9 @@ if $PELION_BUILD_DEPS; then
 
     PACKAGES_GZ=$APT_REPO_NAME/Packages.gz
 
-    ensure_container_created source
+    # process DEPENDS inside docker if was set
+    # this is required to properly detect availability of Go
+    DEPENDS=( $(run_cmd source bash -c "echo ${DEPENDS[*]}") )
 
     # Create packages in target repository - empty required to not fail the build
     run_cmd source bash -c "cd $APT_REPO_PATH && dpkg-scanpackages --multiversion $APT_REPO_NAME | gzip >$PACKAGES_GZ"
@@ -199,7 +204,7 @@ if $PELION_BUILD_DEPS; then
 
     # Install deps to local repo
     for p in "${DEPENDS[@]}"; do
-        echo "Installing '$p' for '$arch'"
+        echo "Installing '$p'"
         echo "$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target
         TARGET_PACKAGE=$("$ROOT_DIR"/"$p"/deb/build.sh $PELION_BUILD_OPT --print-target)
         cp -f $TARGET_PACKAGE $APT_REPO_PATH/$APT_REPO_NAME
@@ -260,8 +265,6 @@ fi
 if $PELION_TARBALL; then
     echo ">> Tarball generation started"
     cd $ROOT_DIR
-
-    ensure_container_created source
 
     for arch in "${PELION_ARCHS[@]}"; do
         run_cmd source ./build-env/bin/deb2tar.sh --arch="$arch" --distro="$DIST_CODENAME"
