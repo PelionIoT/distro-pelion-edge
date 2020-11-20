@@ -10,5 +10,5 @@ DOCKER_FILE_PATH="$CTX_PATH"/docker-debian-9-stretch
 docker build --build-arg USER_ID=$(id -u) --build-arg GROUP_ID=$(id -g) \
     -t ${PELION_DOCKER_PREFIX}pelion-stretch-build -f "$DOCKER_FILE_PATH/Dockerfile.build" "$CTX_PATH"
 
-docker build \
+docker build --build-arg PREFIX=$PELION_DOCKER_PREFIX \
     -t ${PELION_DOCKER_PREFIX}pelion-stretch-source -f "$DOCKER_FILE_PATH/Dockerfile.source" "$CTX_PATH"

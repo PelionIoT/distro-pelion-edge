@@ -1,4 +1,5 @@
-FROM pelion-bionic-build
+ARG PREFIX
+FROM ${PREFIX}pelion-bionic-build
 
 USER root
 

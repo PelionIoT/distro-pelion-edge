@@ -1,4 +1,5 @@
-FROM pelion-stretch-build
+ARG PREFIX
+FROM ${PREFIX}pelion-stretch-build
 
 USER root
 
