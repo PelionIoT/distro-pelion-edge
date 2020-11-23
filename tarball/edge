@@ -141,8 +141,8 @@ run() {
     if [ ! -f "$maestroconf" ]; then
         sed "s:\b__PE_ROOT__\b:$pe_root:g" <"${maestroconf}.in" >"$maestroconf"
     fi
-
-    if [ "$opt_d" = true ] && [ ! -f "$cborfile" ]; then
+    
+    if [ -z "$opt_d" ] && [ ! -f "$cborfile" ]; then
         echo >&2 "$cborfile does not exist"
         exit 1
     fi
@@ -150,7 +150,12 @@ run() {
     cd "$peliondir"
     trap on_exit EXIT
 
-    launch edge-core${opt_d:+-devmode --cbor-conf "$cborfile"} --http-port 9101 &
+    if [ "$opt_d" = true ];then
+        launch edge-core-devmode --http-port 9101 &
+    else
+        launch edge-core --cbor-conf "$cborfile" --http-port 9101 &
+    fi
+
     launch -r24 generate-identity.sh '' 9101 "$peliondir"/edge_gw_config
     launch maestro -config "$maestroconf" &
 
