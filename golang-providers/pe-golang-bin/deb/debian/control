@@ -1,13 +1,13 @@
-Source: golang-virtual
+Source: pe-golang-bin
 Section: devel
 Priority: optional
 Maintainer: Krzysztof Bembnista <krzysztof.bembnista@globallogic.com>
-Build-Depends: debhelper (>=9)
+Build-Depends: debhelper (>=9), wget
 Standards-Version: 4.5.0.3
 
-Package: golang-virtual
-Architecture: all
-Depends: golang-1.14-go
+Package: pe-golang-bin
+Architecture: amd64
+Depends:
 Provides: pe-golang
-Conflicts: pe-golang-bin
+Conflicts: golang-virtual
 Description: Go compiler required for Pelion Edge compilation.

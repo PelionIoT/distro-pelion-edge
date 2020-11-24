@@ -1,3 +1,6 @@
+# Local packages highest priority
+deb [trusted=yes] file:///opt/apt-repo pe-dependencies/
+
 # See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to
 # newer versions of the distribution.
 deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ bionic main restricted

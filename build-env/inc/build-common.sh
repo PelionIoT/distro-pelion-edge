@@ -325,7 +325,12 @@ function pelion_generation_deb_metapackage() {
 function pelion_generation_deb_source_packages() {
     mkdir -p "$PELION_DEB_DEPLOY_DIR/source"
 
+    if [ -d "$PELION_TMP_BUILD_DIR" ]; then
+        chmod -Rf +w "$PELION_TMP_BUILD_DIR"
+    fi
+
     rm -rf "$PELION_TMP_BUILD_DIR"
+
     mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
     for COMPONENT in "${!PELION_PACKAGE_COMPONENTS[@]}"; do
@@ -361,6 +366,10 @@ function pelion_generation_deb_source_packages() {
 
 function pelion_building_deb_package() {
     mkdir -p "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
+
+    if [ -d "$PELION_TMP_BUILD_DIR" ]; then
+        chmod -Rf +w "$PELION_TMP_BUILD_DIR"
+    fi
 
     rm -rf "$PELION_TMP_BUILD_DIR"
     mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"

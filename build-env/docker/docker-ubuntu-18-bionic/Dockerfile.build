@@ -9,6 +9,7 @@ RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
 
 COPY $LOCAL_SRC_PATH/sources.list.bionic /etc/apt/sources.list
+RUN mkdir -p /opt/apt-repo/pe-dependencies && echo -n| gzip >/opt/apt-repo/pe-dependencies/Packages.gz && find /opt && apt-get update
 
 RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armhf
@@ -20,7 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		crossbuild-essential-armhf \
 		fakeroot \
 		sudo \
-		wget
+		wget \
+		git
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
@@ -31,6 +33,9 @@ COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts
 RUN chmod 644 /etc/ssh/ssh_known_hosts
 
 ENV LC_ALL=C.UTF-8 LANG=C.UTF-8
+
+# use complete Go compiler instead of default golang-virtual
+ENV GO_COMPILER_PACKAGE=golang-providers/pe-golang-bin
 
 USER user
 WORKDIR /pelion-build
