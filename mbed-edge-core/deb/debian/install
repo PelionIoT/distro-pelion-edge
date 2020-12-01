@@ -1,1 +1,2 @@
 build/bin/edge-core usr/bin
+debian/launch-edge-core.sh usr/bin
