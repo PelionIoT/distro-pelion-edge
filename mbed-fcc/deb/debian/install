@@ -1,1 +1,2 @@
 __Yocto_Generic_YoctoLinux_mbedtls/Release/factory-configurator-client-example.elf usr/bin
+debian/launch-fcc.sh usr/bin
