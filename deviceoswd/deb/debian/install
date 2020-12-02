@@ -1,6 +1,0 @@
-deviceOSWD             usr/bin/
-deviceOSWD_dummy       usr/bin/
-deviceOSWD_a10_debug   usr/bin/
-deviceOSWD_a10_relay   usr/bin/
-deviceOSWD_dummy_debug usr/bin/
-deviceOSWD_a10_tiny841 usr/bin/
