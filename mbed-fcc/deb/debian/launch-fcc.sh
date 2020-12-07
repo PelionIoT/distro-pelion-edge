@@ -33,10 +33,17 @@ fi
 cd $CREDS_FOLDER
 export ENTROPYSOURCE=/dev/random
 /usr/bin/factory-configurator-client-example.elf
-RET_CODE=$?
-if [ $RET_CODE -ne 0 ]; then
-	echo "/usr/bin/factory-configurator-client-example.elf returned code $RET_CODE"
-	exit $RET_CODE
+
+if [ ! -d $CREDS_FOLDER/pal/WORKING ]; then
+	echo "/usr/bin/factory-configurator-client-example.elf did not generate a pal folder"
+	exit 1
 fi
+
+FILE_COUNT=$(ls -A $CREDS_FOLDER/pal/WORKING | wc -l)
+if [ $FILE_COUNT -eq 0 ]; then
+	echo "/usr/bin/factory-configurator-client-example.elf did not populate the pal folder"
+	exit 2
+fi
+
 mkdir -p $MBED_FOLDER
 mv ./pal $MCC_CONFIG_FOLDER
