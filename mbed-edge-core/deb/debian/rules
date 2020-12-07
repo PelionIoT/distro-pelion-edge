@@ -7,7 +7,7 @@
 	dh $@ --builddirectory=build/ --with systemd
 
 override_dh_auto_configure:
-	dh_auto_configure -- -DFACTORY_MODE=ON -DFIRMWARE_UPDATE=ON
+	dh_auto_configure -- -DFACTORY_MODE=ON -DFIRMWARE_UPDATE=OFF
 
 override_dh_clean:
 	rm -rf build/*
