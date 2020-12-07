@@ -9,6 +9,7 @@ RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
 
 COPY $LOCAL_SRC_PATH/sources.list.bionic /etc/apt/sources.list
+RUN chmod 644 /etc/apt/sources.list
 RUN mkdir -p /opt/apt-repo/pe-dependencies && echo -n| gzip >/opt/apt-repo/pe-dependencies/Packages.gz && find /opt && apt-get update
 
 RUN dpkg --add-architecture arm64
