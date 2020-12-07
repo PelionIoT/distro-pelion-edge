@@ -138,6 +138,7 @@ fetch_deps() {
         '/^edge-proxy/d'
         '/^mbed-edge-core-devmode/d'
         '/^maestro/d'
+        '/^containernetworking-plugins/d'
         '/^debconf/d'
         '/^dpkg/d'
         '/^tar\b/d'
@@ -233,7 +234,7 @@ cwd=$(pwd)
 cd "${0%/*}/../.."
 topdir=$(pwd)
 deploydir=$topdir/build/deploy/tar
-tarname=pelion-edge-$DEB_HOST_ARCH
+tarname=pelion-edge-$distro-$DEB_HOST_ARCH
 tarfile=$tarname.tar.gz
 workdir=$(mktemp -d)
 moshpit=$workdir/$tarname
