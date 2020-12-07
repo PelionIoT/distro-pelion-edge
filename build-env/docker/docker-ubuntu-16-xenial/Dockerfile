@@ -9,6 +9,8 @@ RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
 
 COPY $LOCAL_SRC_PATH/sources.list.xenial /etc/apt/sources.list
+RUN chmod 644 /etc/apt/sources.list
+
 
 RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armhf

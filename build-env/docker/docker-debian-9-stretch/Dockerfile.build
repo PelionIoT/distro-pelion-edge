@@ -10,6 +10,7 @@ RUN usermod -aG sudo user
 
 COPY $LOCAL_SRC_PATH/sources.list.stretch /etc/apt/sources.list
 COPY $LOCAL_SRC_PATH/preferences /etc/apt/preferences
+RUN chmod 644 /etc/apt/sources.list /etc/apt/preferences
 
 RUN dpkg --add-architecture arm64
 RUN dpkg --add-architecture armel
