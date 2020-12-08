@@ -1,6 +1,7 @@
 #!/bin/sh
 
-DEVICE_ID=`jq -r .deviceID /var/lib/pelion/edge_gw_config/identity.json`
+IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
+DEVICE_ID=$(jq -r .deviceID ${IDENTITY_JSON})
 if [ $? -ne 0 ]; then
     echo "Unable to extract device ID from identity.json"
     exit 1
