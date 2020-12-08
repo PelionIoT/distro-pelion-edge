@@ -4,7 +4,7 @@ ARG USER_ID
 ARG GROUP_ID
 ARG LOCAL_SRC_PATH=./docker-debian-10-buster
 
-RUN addgroup --gid $GROUP_ID user
+RUN groupadd -o --gid $GROUP_ID user
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
 
