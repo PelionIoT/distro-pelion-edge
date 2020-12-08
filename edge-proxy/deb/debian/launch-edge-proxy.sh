@@ -17,9 +17,9 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
-IDENTITY_JSON=/var/lib/pelion/edge_gw_config/identity.json
+IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
 
-if [ ! -f${IDENTITY_JSON} ]; then
+if [ ! -f ${IDENTITY_JSON} ]; then
     echo "identity.json does not exist"
     exit 1
 fi
