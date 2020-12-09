@@ -10,7 +10,7 @@ mkdir -p $APT_REPO
 if [ -n "$SSH_AUTH_SOCK" ]; then
 	SSH_ARGS="-v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent"
 else
-	SSH_ARGS="-v \"$HOME/.ssh\":/home/user/.ssh"
+	SSH_ARGS="-v $HOME/.ssh:/home/user/.ssh"
 fi
 
 docker run -it \
