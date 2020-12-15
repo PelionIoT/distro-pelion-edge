@@ -25,7 +25,7 @@ source $SCRIPT_DIR/env-common.sh
 
 function update_pelion_variables
 {
-    PELION_PACKAGE_VERSION_CODENAME=${PELION_PACKAGE_VERSION_CODENAME:-$DOCKER_DIST}
+    PELION_PACKAGE_VERSION_CODENAME=${DOCKER_DIST:-$PELION_PACKAGE_VERSION_CODENAME}
 
     if [ -z "$PELION_PACKAGE_VERSION_CODENAME" ]; then
         echo "ERROR: unable to get build codename"
