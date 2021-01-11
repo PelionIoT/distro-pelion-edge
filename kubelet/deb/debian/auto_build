@@ -13,10 +13,13 @@ eval "$(debian/goflags.guess $DEB_HOST_ARCH)"
 
 package=k8s.io/kubernetes
 packagedir=$GOPATH/src/$package
+origpath="$(pwd)"
 
 rm -rf "$GOPATH"
 set -- *
 mkdir -p "$packagedir"
 cp -r "$@" "$packagedir"/
 
-go build -buildmode=pie "$package"/cmd/kubelet
+cd "$packagedir"/hack/make-rules
+KUBE_VERBOSE=0 ./build.sh "$package"/cmd/kubelet
+cp "$packagedir"/_output/local/go/bin/kubelet "$origpath"/
