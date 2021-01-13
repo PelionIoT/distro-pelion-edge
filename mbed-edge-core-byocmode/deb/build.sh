@@ -16,6 +16,7 @@ function pelion_mbed_edge_core_source_preparation_cb() {
     git submodule update --init --recursive
     cp "$PELION_PACKAGE_DIR/debian/files/sotp_fs_linux.h" "./config/sotp_fs_linux.h"
     cp "$PELION_PACKAGE_DIR/debian/files/osreboot.c" "./edge-core/osreboot.c"
+	sed -i 's!/dev/random!/dev/urandom!' lib/mbed-cloud-client/mbed-client-pal/Source/Port/Reference-Impl/OS_Specific/Linux/Board_Specific/TARGET_x86_x64/pal_plat_x86_x64.c
 }
 
 pelion_main "$@"
