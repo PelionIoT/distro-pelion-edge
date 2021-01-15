@@ -8,8 +8,15 @@ echo "Using APT repo dir: " $APT_REPO
 mkdir -p $APT_REPO
 
 if [ -n "$SSH_AUTH_SOCK" ]; then
-	SSH_ARGS="-v $SSH_AUTH_SOCK:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent"
-else
+	# Docker for Mac requires a magic string instead of the value of SSH_AUTH_SOCK - see https://github.com/docker/for-mac/issues/410#issuecomment-537127831
+	[[ $OSTYPE == darwin* ]] && SSH_AUTH_SOCK_SRC=/run/host-services/ssh-auth.sock || SSH_AUTH_SOCK_SRC=$SSH_AUTH_SOCK
+	if ssh-add -l >/dev/null 2>&1; then
+		SSH_ARGS="-v $SSH_AUTH_SOCK_SRC:/ssh-agent -e SSH_AUTH_SOCK=/ssh-agent"
+	else
+		echo "ssh-agent is running, but has no keys (run ssh-add to fix this). Falling back to .ssh mapping."
+	fi
+fi
+if [ -z "$SSH_ARGS" ]; then
 	SSH_ARGS="-v $HOME/.ssh:/home/user/.ssh"
 fi
 
