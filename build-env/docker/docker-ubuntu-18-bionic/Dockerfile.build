@@ -9,7 +9,9 @@ RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
 
 COPY $LOCAL_SRC_PATH/sources.list.bionic /etc/apt/sources.list
-RUN chmod 644 /etc/apt/sources.list
+COPY $LOCAL_SRC_PATH/focal.list /etc/apt/sources.list.d
+COPY $LOCAL_SRC_PATH/00_debhelper /etc/apt/preferences.d/
+RUN chmod 644 /etc/apt/sources.list /etc/apt/sources.list.d/focal.list /etc/apt/preferences.d/00_debhelper
 RUN mkdir -p /opt/apt-repo/pe-dependencies && echo -n| gzip >/opt/apt-repo/pe-dependencies/Packages.gz && find /opt && apt-get update
 
 RUN dpkg --add-architecture arm64
