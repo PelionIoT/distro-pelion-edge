@@ -1,0 +1,3 @@
+deb [arch=amd64] http://archive.ubuntu.com/ubuntu/ focal main
+deb [arch=armhf,arm64] http://ports.ubuntu.com/ubuntu-ports/ focal main
+
