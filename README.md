@@ -78,8 +78,16 @@ $ ./build-env/bin/docker-debian-buster-create.sh # Debian 10
 $ ./build-env/bin/docker-run.sh pelion-buster-source
 ```
 
-
 ## Building a single package
+
+Dependency packages must be built prior to building a single package.
+```
+$ ./build-env/bin/pelion-build-all.sh --deps --install --docker=<dist>
+```
+or
+```
+$ ./build-env/bin/docker-run.sh pelion-<dist>-source ./build-env/bin/pelion-build-all.sh --deps --install
+```
 
 The build scripts provide help information, for example:
 
