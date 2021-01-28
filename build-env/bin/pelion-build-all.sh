@@ -2,6 +2,11 @@
 
 set -e
 
+#type realpath >/dev/null 2>&1 || \
+#function realpath() {
+#    cd "$1" && pwd && cd - >/dev/null
+#}
+
 SCRIPT_DIR=$(dirname "$0")
 BASENAME=$(basename "$0")
 ROOT_DIR=$(realpath "$SCRIPT_DIR"/../..)
@@ -229,6 +234,7 @@ if $PELION_PACKAGE_SOURCE; then
         else
             "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source
         fi
+        echo ">> Done with source for $p"
     done
     echo ">> Source creation finished"
 fi

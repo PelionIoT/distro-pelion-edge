@@ -15,13 +15,20 @@ declare -A PELION_PACKAGE_COMPONENTS=(
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function pelion_global_node_modules_source_update_cb() {
+    echo '*** Entering pelion_global_node... ***'
+
     sudo apt update && sudo apt install -y pe-nodejs
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules"
-    npm --loglevel silly install --production --ignore-scripts >> npm-second.log 2>&1
+    npm --loglevel silly install --production --ignore-scripts > npm-second.log 2>&1
+
     pelion_update_too_old_files "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules/node_modules"
     mv "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME/edge-node-modules"/* "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
     cd "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME" && \
     rm -rf edge-node-modules
+
+    echo -e '*** Done with pelion_global_node... ***\n\n'
 }
 
+echo '*** Entering pelion_main ***'
 pelion_main "$@"
+echo '*** Done with pelion_main ***'
