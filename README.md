@@ -7,7 +7,15 @@
     * [Build results](#build-results)
     * [APT repository](#apt-repository)
 
-# Build scripts for Pelion Edge
+# distro-pelion-edge - deb/rpm build scripts for Pelion Edge
+
+These are scripts to build Pelion Edge as deb/rpm packages for the following distros:
+
+   * Debian Buster (10).
+   * Ubuntu Bionic (18.04).
+   * Ubuntu Focal (20.04).
+   * Redhat Enterprise Linux 8.
+   * CentOS 8.
 
 The  folder `build-env`  contains helper  or common  scripts. Other  directories
 contain build scripts specific for each package:
