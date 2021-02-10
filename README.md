@@ -28,6 +28,27 @@ python environments).
 
 Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 
+## Quickstart
+
+Here's how to quickly build Pelion Edge Packages for Ubuntu Focal amd64
+
+```
+# create the docker container to build packages for Ubuntu 20
+./build-env/bin/docker-ubuntu-focal-create.sh
+# copy your mbed_cloud_dev_credentials.c file in place so that the edge devmode package will build with your dev credentials
+cp ~/Downloads/mbed_cloud_dev_credentials.c .
+# use manifest tool to create an update_default_resources.c so that you'll be ready to perform an over-the-air-update
+# copy the generated update_default_resources.c into place
+cp /path/to/update_default_resources.c .
+# build all the Ubuntu 20 packages for arm64 using the docker container created above
+./build-env/bin/docker-run.sh pelion-focal-source ./build-env/bin/pelion-build-all.sh --deps --install --build --source --arch=arm64
+# deb packages will be available in ./build/deploy/deb/focal/main/
+
+
+# then if you'd like to rebuild an individual package (ex: mbed-edge-core-devmode)
+./build-env/bin/docker-run.sh pelion-focal-source ./mbed-edge-core-devmode/deb/build.sh --install --build --source --arch=arm64
+```
+
 ## Build environment
 
 1. Scripts for creating clean build docker images:
