@@ -11,6 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		python \
 		quilt \
 		ssh \
-		vim
+		vim \
+		rsync \
+		docker.io
 
 USER user

@@ -2,11 +2,14 @@ FROM debian:9
 
 ARG USER_ID
 ARG GROUP_ID
+ARG DOCKER_GROUP_ID
 ARG LOCAL_SRC_PATH=./docker-debian-9-stretch
 
 RUN groupadd -o --gid $GROUP_ID user
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
+RUN addgroup --gid $DOCKER_GROUP_ID docker
+RUN usermod -aG docker user
 
 COPY $LOCAL_SRC_PATH/sources.list.stretch /etc/apt/sources.list
 COPY $LOCAL_SRC_PATH/preferences /etc/apt/preferences

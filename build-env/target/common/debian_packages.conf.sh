@@ -52,6 +52,7 @@ function debian_rebuild_packages_gz {
 function env_load_docker {
     REPO_DIR="$ROOT_DIR"/build/repo/$ENV_OS_NAME
     DOCKER_VOLUMES+=( "$REPO_DIR":/opt/apt-repo )
+    DOCKER_VOLUMES+=( /var/run/docker.sock:/var/run/docker.sock )
 
     # prepare repo directory with required files (eg Package.gz or similar)
     if [ ! -d "$REPO_DIR" ]; then

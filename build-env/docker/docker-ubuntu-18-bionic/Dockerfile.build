@@ -2,11 +2,14 @@ FROM ubuntu:18.04
 
 ARG USER_ID
 ARG GROUP_ID
+ARG DOCKER_GROUP_ID
 ARG LOCAL_SRC_PATH=./docker-ubuntu-18-bionic
 
 RUN groupadd -o --gid $GROUP_ID user
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
+RUN addgroup --gid $DOCKER_GROUP_ID docker
+RUN usermod -aG docker user
 
 COPY $LOCAL_SRC_PATH/sources.list.bionic /etc/apt/sources.list
 COPY $LOCAL_SRC_PATH/focal.list /etc/apt/sources.list.d
@@ -26,6 +29,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		sudo \
 		wget \
 		git
+
+#install tzdata package
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+# set your timezone
+RUN ln -fs /usr/share/zoneinfo/America/Chicago /etc/localtime
+RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 

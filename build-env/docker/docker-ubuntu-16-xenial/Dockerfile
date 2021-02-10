@@ -2,11 +2,14 @@ FROM ubuntu:16.04
 
 ARG USER_ID
 ARG GROUP_ID
+ARG DOCKER_GROUP_ID
 ARG LOCAL_SRC_PATH=./docker-ubuntu-16-xenial
 
 RUN groupadd -o --gid $GROUP_ID user
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
+RUN addgroup --gid $DOCKER_GROUP_ID docker
+RUN usermod -aG docker user
 
 COPY $LOCAL_SRC_PATH/sources.list.xenial /etc/apt/sources.list
 RUN chmod 644 /etc/apt/sources.list
@@ -25,7 +28,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		ssh \
 		sudo \
 		vim \
-		wget
+		wget \
+		rsync \
+		docker.io
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
