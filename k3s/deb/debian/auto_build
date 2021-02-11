@@ -1,0 +1,34 @@
+#!/bin/bash
+
+# !!! This file is a work in progress and not complete !!!
+#
+# This build package is going to be done in 3 stages over the course of our k3s epic.
+#
+# Works      - use the standard k3s build using docker in docker as it's the easiest to implement and already done.
+# Works Well - make our linux-pelion-edge debian-buster docker able to call and build their scripts. (probably with some of their dapper magic? and codegen scripts)
+# Works Fast - now that our docker can build their scripts directly speed it up (prebuilt binary options and less autogen code stuff???)
+
+set -e
+
+export PKG_CONFIG="${DEB_HOST_GNU_TYPE}"-pkg-config
+
+#export CGO_ENABLED=1
+export GOPATH="$(pwd)/go-workspace"
+
+package=k3s.io/k3s
+packagedir=$GOPATH/src/$package
+origpath="$(pwd)"
+
+rm -rf "$GOPATH"
+set -- *
+mkdir -p "$packagedir"
+cp -r "$@" "$packagedir"/
+
+cd "$packagedir"
+
+SKIP_VALIDATE=true make
+
+from_path="$packagedir/dist/artifacts/k3s"
+
+echo "cp $from_path $origpath/"
+cp "$from_path" "$origpath"/
