@@ -7,7 +7,7 @@ export PKG_CONFIG="${DEB_HOST_GNU_TYPE}"-pkg-config
 #export CGO_ENABLED=1
 export GOPATH="$(pwd)/go-workspace"
 
-package=k8s.io/kubernetes
+package=k3s.io/k3s
 packagedir=$GOPATH/src/$package
 origpath="$(pwd)"
 
@@ -20,19 +20,9 @@ cd "$packagedir"
 sudo chmod 666 /var/run/docker.sock
 
 echo "building for $OS_CPU"
-build/run.sh make kubelet KUBE_BUILD_PLATFORMS="$OS_CPU"
+SKIP_VALIDATE=true make
 
-from_path=""
-
-if [[ $OS_CPU == "linux/arm" ]]; then
-    from_path="$packagedir/_output/dockerized/bin/linux/arm/kubelet"
-else
-    if [[ $OS_CPU == "linux/arm64" ]]; then
-        from_path="$packagedir/_output/dockerized/bin/linux/arm64/kubelet"
-    else
-        from_path="$packagedir/_output/dockerized/bin/linux/amd64/kubelet"
-    fi
-fi
+from_path="$packagedir/dist/artifacts/k3s"
 
 echo "cp $from_path $origpath/"
 cp "$from_path" "$origpath"/
