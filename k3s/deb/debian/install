@@ -1,0 +1,3 @@
+k3s usr/bin
+debian/k3s_config.yaml /etc/pelion
+debian/launch-k3s.sh usr/bin

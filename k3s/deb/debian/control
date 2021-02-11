@@ -1,0 +1,14 @@
+Source: k3s
+Section: utils
+Priority: optional
+Maintainer: Michael Ray <michael.ray@pelion.com>
+Build-Depends: debhelper (>=9), pe-golang:native, libc6, curl, rsync, docker.io
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: k3s
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, conntrack, docker.io | docker-ce, ebtables, ethtool, iproute2, iptables (>=1.4.21), mount, socat, containernetworking-plugins
+Description: talks to k3s service
+ Repository https://github.com/k3s-io/k3s
