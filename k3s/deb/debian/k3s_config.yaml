@@ -1,0 +1,5 @@
+# address to edge proxy
+server: https://127.0.0.1:8080
+# Shared secret used to join a server or agent to a cluster
+# https://rancher.com/docs/k3s/latest/en/installation/install-options/server-config/
+token: "mytoken"
