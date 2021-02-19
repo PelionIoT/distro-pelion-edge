@@ -1,5 +1,6 @@
 [Unit]
 Description=Kubelet
+Requires=edge.proxy.service
 After=edge-proxy.service
 
 [Service]
@@ -8,4 +9,4 @@ RestartSec=5s
 ExecStart=/usr/bin/launch-kubelet.sh
 
 [Install]
-RequiredBy=network.target
+WantedBy=multi-user.target

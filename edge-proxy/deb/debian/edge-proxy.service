@@ -1,5 +1,6 @@
 [Unit]
 Description=Edge Proxy
+Requires=wait-for-pelion-identity.service
 After=wait-for-pelion-identity.service
 
 [Service]
@@ -8,4 +9,4 @@ RestartSec=5s
 ExecStart=/usr/bin/launch-edge-proxy.sh
 
 [Install]
-RequiredBy=network.target
+WantedBy=multi-user.target

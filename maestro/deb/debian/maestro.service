@@ -1,6 +1,7 @@
 [Unit]
 Description=Maestro: Network, Config, DeviceJS manager
-After=wait-for-pelion-identity.service edge-proxy.service
+Requires=edge-proxy.service
+After=edge-proxy.service
 
 [Service]
 Restart=always
@@ -10,4 +11,4 @@ ExecStart=/usr/bin/maestro -config /etc/pelion/pelion-base-config.yaml
 StandardOutput=tty
 
 [Install]
-RequiredBy=network.target
+WantedBy=multi-user.target

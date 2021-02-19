@@ -1,6 +1,6 @@
 [Unit]
 Description=Edge Core
-After=systemd-networkd-wait-online.service
+After=network-online.target
 
 [Service]
 Restart=always
@@ -9,4 +9,4 @@ WorkingDirectory=/var/lib/pelion/mbed
 ExecStart=/usr/bin/edge-core --http-port 9101
 
 [Install]
-RequiredBy=network.target
+WantedBy=multi-user.target
