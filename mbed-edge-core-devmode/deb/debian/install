@@ -1,3 +1,1 @@
 build/bin/edge-core usr/bin
-debian/launch-edge-core.sh usr/bin
-../../../../mbed-edge-core-devmode/deb/debian/files/arm_update*.sh usr/lib/pelion/scripts
