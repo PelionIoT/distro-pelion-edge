@@ -6,6 +6,7 @@
     * [Generating tar archives](#generating-tar-archives)
     * [Build results](#build-results)
     * [APT repository](#apt-repository)
+    * [Firmware Over-The-Air(FOTA)](#fota)
 
 # Build scripts for Pelion Edge
 
@@ -312,3 +313,7 @@ Then import the GPG key the repository was signed with:
 ```
 wget -q -O - http://<ip address>/key.gpg | sudo apt-key add -
 ```
+
+## FOTA
+
+Firmware Over-The-Air(FOTA) behavior is currently undefined
