@@ -17,47 +17,39 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
-IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
+ARGS=
 
+IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
 if [ ! -f ${IDENTITY_JSON} ]; then
-    echo "identity.json does not exist"
-    exit 1
+    echo "WARNING: ${IDENTITY_JSON} does not exist"
+else
+    DEVICE_ID=$(jq -r .deviceID ${IDENTITY_JSON})
+    if ! grep -q "$DEVICE_ID" /etc/hosts; then
+        echo "127.0.0.1 $DEVICE_ID" >> /etc/hosts
+    fi
+
+    EDGE_K8S_ADDRESS=$(jq -r .edgek8sServicesAddress ${IDENTITY_JSON})
+    ARGS="${ARGS} -proxy-uri=${EDGE_K8S_ADDRESS}"
+
+    GATEWAYS_ADDRESS=$(jq -r .gatewayServicesAddress ${IDENTITY_JSON})
+    ARGS="${ARGS} -forwarding-addresses={\"gateways.local\":\"${GATEWAYS_ADDRESS#"https://"}\"}"
 fi
 
-EDGE_K8S_ADDRESS=$(jq -r .edgek8sServicesAddress ${IDENTITY_JSON})
-GATEWAYS_ADDRESS=$(jq -r .gatewayServicesAddress ${IDENTITY_JSON})
-DEVICE_ID=$(jq -r .deviceID ${IDENTITY_JSON})
 EDGE_PROXY_URI_RELATIVE_PATH=$(jq -r .edge_proxy_uri_relative_path /etc/pelion/edge-proxy.conf.json)
 
 if ! grep -q "gateways.local" /etc/hosts; then
     echo "127.0.0.1 gateways.local" >> /etc/hosts
 fi
 
-if ! grep -q "$DEVICE_ID" /etc/hosts; then
-    echo "127.0.0.1 $DEVICE_ID" >> /etc/hosts
+if [[ -n "$HTTP_PROXY" ]]; then
+    ARGS="${ARGS} -extern-http-proxy-uri=$HTTP_PROXY"
 fi
-
-if [[ $HTTP_PROXY = "" ]]; then
-    EXTERN_ARG=
-else
-    EXTERN_ARG=-extern-http-proxy-uri=$HTTP_PROXY
-fi
-
-
-#if [[ $(snapctl get edge-proxy.debug) = "false" ]]; then
-#    echo "edge-proxy logging is disabled.  To see logs, run \"snap set pelion-edge edge-proxy.debug=true\" and restart edge-proxy"
-#    # this is known as bash exec redirection.
-#    # see https://www.tldp.org/LDP/abs/html/x17974.html
-#    exec >/dev/null 2>&1
-#fi
 
 exec /usr/bin/edge-proxy \
-    -proxy-uri=${EDGE_K8S_ADDRESS} \
+    ${ARGS} \
     -tunnel-uri=ws://gateways.local$EDGE_PROXY_URI_RELATIVE_PATH \
     -cert-strategy=tpm \
     -cert-strategy-options=socket=/tmp/edge.sock \
     -cert-strategy-options=path=/1/pt \
     -cert-strategy-options=device-cert-name=mbed.LwM2MDeviceCert \
-    -cert-strategy-options=private-key-name=mbed.LwM2MDevicePrivateKey \
-    $EXTERN_ARG \
-    -forwarding-addresses={\"gateways.local\":\"${GATEWAYS_ADDRESS#"https://"}\"}
+    -cert-strategy-options=private-key-name=mbed.LwM2MDevicePrivateKey
