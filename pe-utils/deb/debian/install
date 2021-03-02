@@ -1,2 +1,3 @@
 identity-tools/generate-identity.sh usr/bin
 identity-tools/developer_identity   usr/lib/pelion
+debian/launch-wait-for-pelion-identity.sh usr/bin
