@@ -1,6 +1,6 @@
 [Unit]
 Description=Kubelet
-Requires=edge.proxy.service
+Requires=edge-proxy.service
 After=edge-proxy.service
 
 [Service]
