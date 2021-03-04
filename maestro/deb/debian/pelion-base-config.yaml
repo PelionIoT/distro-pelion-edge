@@ -8,10 +8,6 @@ scratchPath: /tmp/maestro/scratch
 clientId: "{{ARCH_SERIAL_NUMBER}}"
 network:
   disable: true
-platform_readers:
-  - platform: "fsonly"
-    params:
-      identityPath: "/var/lib/pelion/edge_gw_config/identity.json"
 var_defs:
   - key: "TMP_DIR"
     value: "/tmp"
