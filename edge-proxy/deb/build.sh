@@ -5,7 +5,7 @@ PELION_PACKAGE_NAME="edge-proxy"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["https://github.com/armPelionEdge/edge-proxy.git"]="7e70a2f1cc32e7cd732d5abfa41857da017abb24")
+    ["https://github.com/armPelionEdge/edge-proxy.git"]="8073dda0f9fc0c0906493089792faa48dc27a569")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
