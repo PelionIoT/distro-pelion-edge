@@ -1,0 +1,5 @@
+[pelionbuilddeps]
+name=pelionbuilddeps
+baseurl=file:///opt/repo/
+enabled=1
+gpgcheck=0
