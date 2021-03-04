@@ -13,7 +13,7 @@ License:        Apache-2.0
 URL:            %{forgeurl}
 Source0:        %{forgesource}
 
-BuildRequires:  cmake glib2-devel mosquitto-devel
+BuildRequires:  cmake glib2-devel mosquitto-devel python2 doxygen
 
 %description
 The  protocol translator  acts as  a bridge  between Edge  Core and  the device.

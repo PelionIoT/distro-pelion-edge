@@ -8,9 +8,9 @@ EOF
 
 override_download() {
     download "https://github.com/armPelionEdge/devjs-production-tools" \
-             "9f795d20bc68b0a49f4e1b004429aed6ba073a4b"
+             "master"
     download "https://github.com/armPelionEdge/edge-node-modules" \
-             "122835410976f23b6694d925d993e72c50ced053"
+             "a70efd3dd4c35904937c2707403313cc3023b025"
 }
 
 override_conjure_sources() {
@@ -25,7 +25,7 @@ override_conjure_sources() {
     sed -i '/isc-dhclient/d' ./package.json
     sed -i '/node-hotplug/d' ./package.json
 
-    npm install --loglevel silly node-expat iconv bufferutil@3.0.5 --production --ignore-scripts
+    npm install --loglevel silly node-pre-gyp node-expat iconv bufferutil@3.0.5 --production --ignore-scripts
     npm --loglevel silly install --production --ignore-scripts
 
     tar --xform "s/^\./edge-node-modules/" \

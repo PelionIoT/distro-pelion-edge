@@ -1,5 +1,5 @@
 %global forgeurl https://github.com/ARMmbed/mbed-edge
-%global tag      0.10.0
+%global tag      0.13.0
 %global debug_package %{nil}
 %forgemeta
 
@@ -12,6 +12,9 @@ URL:            %{forgeurl}
 Source0:        %{forgesource}
 Conflicts:      mbed-edge-core-devmode
 BuildRequires:  cmake doxygen graphviz mosquitto-devel
+Requires(post): systemd-units
+Requires(preun): systemd-units
+Requires(postun): systemd-units
 
 %description
 Device Management Edge (from now on, just Edge) is a product that
@@ -40,11 +43,35 @@ cmake . -DFACTORY_MODE=ON -DFIRMWARE_UPDATE=ON \
 %make_build
 
 %install
+install -vdm 0755				                    %{buildroot}/var/lib/pelion/mbed/
+
 install -vdm 0755               %{buildroot}/%{_bindir}
 install -vpm 0755 bin/edge-core %{buildroot}/%{_bindir}
+install -vpm 0755 %{_filesdir}/launch-edge-core.sh  %{buildroot}/%{_bindir}
+
+install -vdm 0755				                    %{buildroot}/%{_unitdir}
+install -vpm 0755 %{_filesdir}/edge-core.service    %{buildroot}/%{_unitdir}
+
+install -vdm 0755 %{buildroot}/%{_sysconfdir}/logrotate.d
+install -vpm 0755 %{_filesdir}/edge-core.logrotate	%{buildroot}/%{_sysconfdir}/logrotate.d/edge-core
 
 %files
 %{_bindir}/edge-core
+%{_bindir}/launch-edge-core.sh
+%{_unitdir}/edge-core.service
+%{_sysconfdir}/logrotate.d/edge-core
+
+%dir
+/var/lib/pelion/mbed/
+
+%post
+%systemd_post edge-core.service
+
+%preun
+%systemd_preun edge-core.service
+
+%postun
+%systemd_postun_with_restart edge-core.service
 
 %changelog
 * Mon May 18 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
