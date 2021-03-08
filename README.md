@@ -7,6 +7,7 @@
     * [Build results](#build-results)
     * [APT repository](#apt-repository)
     * [Firmware Over-The-Air(FOTA)](#fota)
+    * [Red Hat Enterprise Linux support](README.rhel.md)
 
 # Build scripts for Pelion Edge
 
