@@ -131,6 +131,25 @@ sudo yum install *.rpm
 ```
 Please note that `mbed-edge-core` and `mbed-edge-core-devmode` cannot be installed simultaneously.
 
+4. Enable systemd services. After installation there are following services:
+```
+devicedb.service
+edge-core.service
+edge-proxy.service
+kubelet.service
+maestro.service
+mbed-fcc.service
+pelion-relay-term.service
+wait-for-pelion-identity.service
+```
+
+To enable all services, run:
+```bash
+sudo systemctl enable devicedb.service edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
+```
+
+Dependent services are enabled implicitly. For example `wait-for-pelion-identity.service` is enabled when `maestro.service` is enabled; `edge-core.service` is enabled when `wait-for-pelion-identity.service` is enabled so enabling `maestro.service` will also enable `wait-for-pelion-identity.service` and `edge-core.service`.
+
 ## Development notes
 Each environment configuration file can/should implement below listed callbacks.
 
