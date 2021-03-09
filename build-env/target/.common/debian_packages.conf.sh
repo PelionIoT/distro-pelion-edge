@@ -105,6 +105,19 @@ function run_build {
     run_command_build "$(path_package_script $package)" "${args[@]}" "$@"
 }
 
+function run_verify {
+    local package="$1"
+    shift
+    local -a args=('--verify')
+
+    # use ARCH only for regular packages verification, meta does not use ARCH
+    if [ -n "$ARCH" ] && [[ ! $package =~ ^metapackages/ ]] ; then
+        args+=( --arch=$ARCH )
+    fi
+
+    run_command_build "$(path_package_script $package)" "${args[@]}"
+}
+
 # arg1: package name
 function run_deploy_deps {
     local package=$1

@@ -164,16 +164,35 @@ if $arg_build; then
         echo ">> building binary packages for $ARCH"
         LOG_STR=">> building %s binary package" run_group PACKAGES run_build
     done
+
+    if [ -v METAPACKAGES ]; then
+        for ARCH in "${opt_meta_arch[@]}"; do
+            echo ">> building metapackages using $ARCH"
+            LOG_STR=">> building %s metapackage" run_group METAPACKAGES run_build_metapackage
+        done
+    fi
+
+    # Verification 
+    for ARCH in "${opt_build_arch[@]}"; do
+        echo ">> verifying binary packages for $ARCH"
+        LOG_STR=">> verifying %s binary package" run_group PACKAGES run_verify
+    done
+
+    if [ -v METAPACKAGES ]; then
+        for ARCH in "${opt_meta_arch[@]}"; do
+            echo ">> verifying metapackages using $ARCH"
+            LOG_STR=">> verifying %s metapackage" run_group METAPACKAGES run_verify_metapackage
+        done
+    fi
+
 fi
 
-if $arg_build && [ -v METAPACKAGES ]; then
-    for ARCH in "${opt_meta_arch[@]}"; do
-        echo ">> building metapackages for $ARCH"
-        LOG_STR=">> building %s metapackage" run_group METAPACKAGES run_build_metapackage
+if $arg_tar; then
+    for ARCH in "${opt_build_arch[@]}"; do
+        echo ">> building tarball for $ARCH"
+        run_tar_build
     done
 fi
-
-# TODO tarball
 
 echo ">>> build finished <<<"
 
