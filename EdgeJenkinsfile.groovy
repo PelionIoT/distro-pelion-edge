@@ -1,4 +1,4 @@
 #!/usr/bin/env groovy
-@Library('edge-ci@lpeUpdate') _
+@Library('edge-ci') _
 
 linuxPelionEdge()
