@@ -83,8 +83,7 @@ For example:
 $ ./build-env/bin/docker-run.sh pelion-bionic-source
 ```
 
-The script mounts the user `.ssh` directory  to share git ssh keys.  The root of
-this repo is mounted to `/pelion-build`.
+The root of this repo is mounted to `/pelion-build`.
 
 Please note that `docker-run.sh` script does not use `PELION_DOCKER_PREFIX`.
 
