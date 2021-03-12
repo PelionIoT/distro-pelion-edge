@@ -35,6 +35,7 @@ python environments) and does not require setting up local packages repository.
 Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 
 ## Quickstart
+First make sure your system is configured correctly (see [requirements](#requirements))
 
 Here's how to quickly build Pelion Edge Packages for Ubuntu Focal amd64.
 
@@ -71,74 +72,67 @@ Alternative way to run build scripts:
 ./mbed-edge-core-devmode/deb/build.sh --docker=focal --install --build --source --arch=amd64
 ```
 
-To get list of all supported target distributions run:
+## Build environment
+
+To access  build environment console `docker-run-env.sh`  script was introduced.
+The script accepts options until first positional argument (which is environment
+name).
+
+Example usage:
+```bash
+# run new rhel/8 image for host arch:
+./build-env/bin/docker-run-env.sh rhel
+
+# run centos container (attach to existing)
+./build-env/bin/docker-run-env.sh -c centos
+
+# run 'ls' in centos container
+./build-env/bin/docker-run-env.sh -c centos ls
+
+# run fresh container (and allow later attaching to it)
+./build-env/bin/docker-run-env.sh -c clean centos ls
+
+# recreate docker image and container and run shell in new container
+./build-env/bin/docker-run-env.sh -r -c clean centos
+
+# run new arm64 container
+./build-env/bin/docker-run-env.sh -c=clean -a arm64 centos
+```
+
+The  above script  also creates  docker images  with build  essentials and  with
+additional packages  required for generating  source packages (for  example git,
+npm, python) depending on selected environment.
+
+To  add prefix  to docker  images and  containers export  `PELION_DOCKER_PREFIX`
+variable in your shell with your prefix:
+```
+export PELION_DOCKER_PREFIX=${USER}-
+```
+
+The system in docker image is configured to use `sudo` without a password.
+
+The root of this repo is mounted to `/pelion-build`.
+
+To get list of all supported target distributions, run:
 ```bash
 ./build-env/bin/build-all.sh -l env
 ```
 
 It is  not required to  specify full  name of environment  (eg. `ubuntu/focal`).
-Partial, unique match would also work (like in exampled above: `focal`).
-
-## Build environment
-
-1. Scripts for creating clean build docker images:
-```bash
-$ ./build-env/bin/docker-ubuntu-bionic-create.sh # Ubuntu 18.04
-```
-
-The  above  script  creates   docker  images  `pelion-bionic-build`  with  build
-essentials  and `pelion-bionic-source`  with  additional  packages required  for
-generating source packages (for example git, npm, python).
-
-To build packages for other distributions, replace `pelion-bionic` with the name
-of the distribution.  For example, to build for Debian 10, use `debian-buster`.
-
-To add prefix to docker images export `PELION_DOCKER_PREFIX`  variable  in  your
-shell with your prefix:
-```
-export PELION_DOCKER_PREFIX=${USER}-
-```
-
-The system is configured to use `sudo` without a password.
-
-
-2. Run docker image:
-```
-$ ./build-env/bin/docker-run.sh <image name>
-```
-
-For example:
-```
-$ ./build-env/bin/docker-run.sh pelion-bionic-source
-```
-
-The root of this repo is mounted to `/pelion-build`.
-
-Please note that `docker-run.sh` script does not use `PELION_DOCKER_PREFIX`.
-
-### Build environment for debian-10
-
-1. Scripts for creating clean build docker images:
-```
-$ ./build-env/bin/docker-debian-buster-create.sh # Debian 10
-```
-
-2. Run docker image:
-```
-$ ./build-env/bin/docker-run.sh pelion-buster-source
-```
+Partial, unique match would also work (like in quickstart example: `focal`).
 
 ## Building a single package
 
 Dependency packages must be built prior to building a single package.
-```
-$ ./build-env/bin/pelion-build-all.sh --deps --install --docker=<dist>
+```bash
+./build-env/bin/build-all.sh --deps --install --docker=<dist>
 ```
 or
-```
-$ ./build-env/bin/docker-run.sh pelion-<dist>-source ./build-env/bin/pelion-build-all.sh --deps --install
+```bash
+./build-env/bin/docker-run-env.sh <dist> ./build-env/bin/build-all.sh --deps --install
 ```
 
+### Build single package for Debian and Ubuntu
 The build scripts provide help information, for example:
 
 ```
@@ -161,7 +155,6 @@ Available architectures:
   amd64
   arm64
   armhf
-  armel
 
 Default mode: maestro/deb/build.sh --arch=amd64 --source --build --verify
 ```
@@ -169,10 +162,10 @@ Default mode: maestro/deb/build.sh --arch=amd64 --source --build --verify
 These scripts can be used to generate both source and binary packages.
 
 It is possible to  use these scripts without the option  `--docker` if docker is
-run manually by `docker-run.sh`.  The option  `--docker` will make all tasks run
-in appropriate containers automatically:
-* source packages will be generated in `pelion-<DISTRO>-source`
-* binary packages in `pelion-<DISTRO>-build`
+run manually by  `docker-run-env.sh`. The option `--docker` will  make all tasks
+run in appropriate containers automatically (using source of build images):
+
+### Build single package for RedHat and Centos
 
 ## Building all packages
 
