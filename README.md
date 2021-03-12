@@ -24,26 +24,32 @@ and for RedHat-based distributions:
 ```
 
 The build scripts `build.sh`  or `build-env/bin/build-all.sh` can build packages
-directly on Ubuntu 18.04 system or in docker container. The docker container can
+directly on supported  systems or in docker container. The  docker container can
 be launched manually, for example as an interactive session, or the scripts will
 run docker automatically if the argument `--docker` is provided.
 
 It  is recommended  to use  docker  since it  will provide  a clean  environment
 without interference with local user settings  (for example, with user nodejs or
-python environments).
+python environments) and does not require setting up local packages repository.
 
 Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 
 ## Quickstart
 
-Here's how to quickly build Pelion Edge Packages for Ubuntu Focal amd64
+Here's how to quickly build Pelion Edge Packages for Ubuntu Focal amd64.
 
+1. Prepare `mbed_cloud_dev_credentials.c` and `update_default_resources.c`
+files:
 ```bash
 # copy your mbed_cloud_dev_credentials.c file in place so that the edge devmode package will build with your dev credentials
 cp ~/Downloads/mbed_cloud_dev_credentials.c .
 # use manifest tool to create an update_default_resources.c so that you'll be ready to perform an over-the-air-update
 # copy the generated update_default_resources.c into place
 cp /path/to/update_default_resources.c .
+```
+
+2. Run build scripts:
+```bash
 # build all the Ubuntu 20 packages for amd64 using docker container
 ./build-env/bin/docker-run-env.sh focal ./build-env/bin/build-all.sh --deps --install --build --source --arch=amd64
 # deb packages will be available in ./build/deploy/deb/focal/main/
@@ -53,10 +59,30 @@ cp /path/to/update_default_resources.c .
 ./build-env/bin/docker-run-env.sh focal ./mbed-edge-core-devmode/deb/build.sh --install --build --source --arch=amd64
 ```
 
+Alternative way to run build scripts:
+
+```bash
+# build all the Ubuntu 20 packages for amd64 using docker container
+./build-env/bin/build-all.sh --docker=focal --deps --install --build --source --arch=amd64
+# deb packages will be available in ./build/deploy/deb/focal/main/
+
+
+# then if you'd like to rebuild an individual package (ex: mbed-edge-core-devmode)
+./mbed-edge-core-devmode/deb/build.sh --docker=focal --install --build --source --arch=amd64
+```
+
+To get list of all supported target distributions run:
+```bash
+./build-env/bin/build-all.sh -l env
+```
+
+It is  not required to  specify full  name of environment  (eg. `ubuntu/focal`).
+Partial, unique match would also work (like in exampled above: `focal`).
+
 ## Build environment
 
 1. Scripts for creating clean build docker images:
-```
+```bash
 $ ./build-env/bin/docker-ubuntu-bionic-create.sh # Ubuntu 18.04
 ```
 
