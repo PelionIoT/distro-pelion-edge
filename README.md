@@ -1,5 +1,6 @@
 
   * [Build scripts for Pelion Edge](#build-scripts-for-pelion-edge)
+    * [Quickstart](#quickstart)
     * [Build environment](#build-environment)
     * [Building a single package](#building-a-single-package)
     * [Building all packages](#building-all-packages)
@@ -12,17 +13,20 @@
 # Build scripts for Pelion Edge
 
 The  folder `build-env`  contains helper  or common  scripts. Other  directories
-contain build scripts specific for each package:
+contain build scripts specific for each package, for Debian-based distributions:
 ```
 <package name>/deb/build.sh
 metapackages/<package name>/deb/build.sh
 ```
+and for RedHat-based distributions:
+```
+<package name>/rpm/build.sh
+```
 
-The build  scripts `build.sh`  or `build-env/bin/pelion-build-all.sh`  can build
-packages directly  on Ubuntu  18.04 system  or in  docker container.  The docker
-container can  be launched manually, for  example as an interactive  session, or
-the  scripts  will  run  docker  automatically if  the  argument  `--docker`  is
-provided.
+The build scripts `build.sh`  or `build-env/bin/build-all.sh` can build packages
+directly on Ubuntu 18.04 system or in docker container. The docker container can
+be launched manually, for example as an interactive session, or the scripts will
+run docker automatically if the argument `--docker` is provided.
 
 It  is recommended  to use  docker  since it  will provide  a clean  environment
 without interference with local user settings  (for example, with user nodejs or
@@ -34,21 +38,19 @@ Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 
 Here's how to quickly build Pelion Edge Packages for Ubuntu Focal amd64
 
-```
-# create the docker container to build packages for Ubuntu 20
-./build-env/bin/docker-ubuntu-focal-create.sh
+```bash
 # copy your mbed_cloud_dev_credentials.c file in place so that the edge devmode package will build with your dev credentials
 cp ~/Downloads/mbed_cloud_dev_credentials.c .
 # use manifest tool to create an update_default_resources.c so that you'll be ready to perform an over-the-air-update
 # copy the generated update_default_resources.c into place
 cp /path/to/update_default_resources.c .
-# build all the Ubuntu 20 packages for amd64 using the docker container created above
-./build-env/bin/docker-run.sh pelion-focal-source ./build-env/bin/pelion-build-all.sh --deps --install --build --source --arch=amd64
+# build all the Ubuntu 20 packages for amd64 using docker container
+./build-env/bin/docker-run-env.sh focal ./build-env/bin/build-all.sh --deps --install --build --source --arch=amd64
 # deb packages will be available in ./build/deploy/deb/focal/main/
 
 
 # then if you'd like to rebuild an individual package (ex: mbed-edge-core-devmode)
-./build-env/bin/docker-run.sh pelion-focal-source ./mbed-edge-core-devmode/deb/build.sh --install --build --source --arch=amd64
+./build-env/bin/docker-run-env.sh focal ./mbed-edge-core-devmode/deb/build.sh --install --build --source --arch=amd64
 ```
 
 ## Build environment
