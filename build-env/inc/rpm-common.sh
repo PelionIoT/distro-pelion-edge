@@ -191,6 +191,11 @@ arg_build=false # build binary package
 arg_source=false # build source package
 arg_recreate=false # recreate container
 
+cd "${0%/*}"
+specdir=$(pwd)
+package=$(pkgname_from_specdir "$specdir")
+cd - >/dev/null
+
 opt_usage="${0##*/} - builds $package RPM package
 
 Usage: ${0##*/} [-h|--help] [--install]
@@ -264,8 +269,6 @@ else
 fi
 
 cd "${0%/*}"
-specdir=$(pwd)
-package=$(pkgname_from_specdir "$specdir")
 tarname=$package
 tarver=master
 topdir=$specdir/../..
