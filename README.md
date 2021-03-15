@@ -166,53 +166,99 @@ run manually by  `docker-run-env.sh`. The option `--docker` will  make all tasks
 run in appropriate containers automatically (using source of build images):
 
 ### Build single package for RedHat and Centos
+The build scripts for RPM-based distributions are similar to Debian's:
+
+```
+$ ./maestro/rpm/build.sh --help
+build.sh - builds maestro RPM package
+
+Usage: build.sh [-h|--help] [--install]
+ -h, --help                 display this help message.
+ -i, --install              install dependencies
+ -b, --build                build package
+ -s, --source               prepare sources
+ -d, --docker=<name>        use docker container to build RPM
+ -a, --arch=<name>          build for selected architecture
+ -c, --container=[opts]     reuse container; opts can be (comma separated):
+                            - clean - create new container before first use
+ -r, --recreate             forcibly recreate docker images (implies -c=clean)
+ -o, --deploy=<path>        set target directory for RPMs
+
+```
+
+Additionally  these  scripts supports  Docker  image  creation when  needed  and
+container re-usage.
 
 ## Building all packages
 
 ```
-$ ./build-env/bin/pelion-build-all.sh --help
-Usage: pelion-build-all.sh [Options]
+$ ./build-env/bin/build-all.sh --help
+build-all.sh - build all packages:
 
-Options:
- --deps              Create build dependency packages.
- --source            Generate source package.
- --build             Build binary from source generated with --source option.
- --tar               Build a tarball from Debian packages.
- --docker=<DISTRO>   Use docker containers.
- --install           Install build dependencies.
- --arch=<arch>       Set comma-separated list of target architectures.
- --help,-h           Print this message.
+USAGE: 
+-a, --arch=<name>       run build for <name> architecture
+-d, --docker=<name>     run build in docker (name=docker environment)
+-h, --help              print this help text
+-i, --install           install dependencies
+-e, --print-env=[what]  print environment setup: packages, meta, deps
+                        (deps packages)
+-l, --print-list        print list: env (list of available environments)
+-c, --container=[opts]  use one container per kind instead of container
+                        per package; opts can be (comma separated):
+                        - clean - create new container before first use
+-r, --recreate          forcibly recreate docker images (implies -c=clean)
 
-If none of '--deps', '--source', '--build' or '--tar' options are specified,
-all of them are activated.
+Build elements:
+-b, --build             run build stage
+-s, --source            run source stage
+-t, --tar               run tarball creation stage
+-p, --deps              run dependency compilation stage
 
+When no -b, -s, -t or -p are set, all are enabled. Setting one of them will
+disable unset parameters (eg. setting -b -s will run only source and build
+stage).
+
+If --docker is set, build process will run in new container. By adding --container
+scripts will use one container to build all packages (instead of container
+per package)
 ```
 
 This script  will run build of  each package in new  docker container installing
 all build dependencies each time (with `--docker` option), for example:
 ```
-./build-env/bin/pelion-build-all.sh --docker=focal --arch=amd64,armhf,arm64
+./build-env/bin/build-all.sh --docker=focal --arch=amd64,armhf,arm64
 ```
+
+By adding `--container`  option, one container will be used  if possible. Adding
+`--container clean` will remove existing container before build.
 
 It  is  possible to  manually  run  docker and  then  build  everything in  this
 container:
 ```
-$ ./build-env/bin/docker-run.sh pelion-bionic-source
-user@95a30883d637:/pelion-build$ ./build-env/bin/pelion-build-all.sh --install --arch=amd64
+$ ./build-env/bin/docker-run-env.sh bionic
+user@95a30883d637:/pelion-build$ ./build-env/bin/build-all.sh --install --arch=amd64
 ```
 
-The option `--install` is required when the script is executed manually in clear
-docker container, otherwise it will fail due to missing build dependencies.
+When   build   requires  different   architecture   to   build  natively   (when
+cross-compilation is  not available,  like for Red  Hat) `--arch=<architecture>`
+has to be added to `docker-run-env.sh` before specifying target environment:
+```bash
+./build-env/bin/docker-run-env.sh --arch arm64 rhel
+```
 
-To provide  build  dependency  use  `--deps`  switch.  This  will  create  build
-dependencies  and  put  into local apt repository. This is enabled by default if
-not build/source/tar is set.
+The option `--install`  is required when the script is  executed in clear docker
+container, otherwise it will fail due to missing build dependencies.
+
+To  provide  build  dependency  use  `--deps` switch.  This  will  create  build
+dependencies and  put into local repository.  This is enabled by  default if not
+build/source/tar is set.
 
 ## Generating tar archives
 
-A tar archive can be created from a binary release for Debian.  One option is to
-use the `pelion-build-all.sh`  script as described above.  Another  option is to
-invoke `build-env/bin/deb2tar.sh` directly.
+Tar  archives  are now  generated  for  Debian  and  Ubuntu only. A  tar  archive
+can  be  created  from a  binary  release  for  Debian.  One option  is  to  use
+the  `build-all.sh` script  as  described  above. Another  option  is to  invoke
+`build-env/bin/deb2tar.sh` directly.
 
 ```
 $ build-env/bin/deb2tar.sh --help
@@ -235,7 +281,7 @@ created automatically.
 
 There is a reusable git cache in the directory `build/downloads`.
 
-Final Debian  packages are created in  `build/deploy/deb/bionic/main`, organized
+Final Debian packages are created in `build/deploy/deb/<DISTRO>/main`, organized
 in subdirectories per architecture:
 * `binary-amd64`
 * `binary-arm64`
@@ -243,6 +289,10 @@ in subdirectories per architecture:
 * `source`
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
+
+Red Hat and Centos packages are created in `build/deploy/rpm/<DISTRO>`:
+* source packages are on top of this directory
+* `noarch`, `x86_64` and `aarch64` directories contains final packages
 
 ## Installing packages
 
