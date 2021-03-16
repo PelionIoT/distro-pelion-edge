@@ -1,3 +1,2 @@
 greaselib-autoreconf.diff
 gperftools-enable-unwind.diff
-eventfd.diff
