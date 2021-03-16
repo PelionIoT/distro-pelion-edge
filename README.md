@@ -18,7 +18,7 @@ contain build scripts specific for each package, for Debian-based distributions:
 <package name>/deb/build.sh
 metapackages/<package name>/deb/build.sh
 ```
-and for RedHat-based distributions:
+and for *Red Hat*-based distributions:
 ```
 <package name>/rpm/build.sh
 ```
@@ -37,7 +37,7 @@ Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 ## Quickstart
 First make sure your system is configured correctly (see [requirements](#requirements))
 
-Here's how to quickly build Pelion Edge Packages for Ubuntu Focal amd64.
+Here's how to quickly build Pelion Edge Packages for *Ubuntu Focal* amd64.
 
 1. Prepare `mbed_cloud_dev_credentials.c` and `update_default_resources.c`
 files:
@@ -165,7 +165,7 @@ It is possible to  use these scripts without the option  `--docker` if docker is
 run manually by  `docker-run-env.sh`. The option `--docker` will  make all tasks
 run in appropriate containers automatically (using source of build images):
 
-### Build single package for RedHat and Centos
+### Build single package for Red Hat and Centos
 The build scripts for RPM-based distributions are similar to Debian's:
 
 ```
@@ -240,7 +240,7 @@ user@95a30883d637:/pelion-build$ ./build-env/bin/build-all.sh --install --arch=a
 ```
 
 When   build   requires  different   architecture   to   build  natively   (when
-cross-compilation is  not available,  like for Red  Hat) `--arch=<architecture>`
+cross-compilation is  not available,  like for *Red  Hat*) `--arch=<architecture>`
 has to be added to `docker-run-env.sh` before specifying target environment:
 ```bash
 ./build-env/bin/docker-run-env.sh --arch arm64 rhel
@@ -290,40 +290,68 @@ in subdirectories per architecture:
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
 
-Red Hat and Centos packages are created in `build/deploy/rpm/<DISTRO>`:
+*Red Hat* and *Centos* packages are created in `build/deploy/rpm/<DISTRO>`:
 * source packages are on top of this directory
 * `noarch`, `x86_64` and `aarch64` directories contains final packages
 
 ## Installing packages
 
-Build results can be installed onto a target system either by manually
-copying the packages to a target system and installing via apt or by
-making the packages available in an APT repository on a server and installing
-on the target via apt. The instructions in this section show how to install
-the packages manually.  See the next section for setting up an APT repository.
+Build results can  be installed onto a target system  either by manually copying
+the packages  to a  target system and  installing via apt/yum  or by  making the
+packages available  in an package repository  on a server and  installing on the
+target via  apt/yum. The instructions  in this section  show how to  install the
+packages  manually. See  the  next  section for  setting  up  an APT  repository
+(Debian/Ubuntu only).
 
-Copy the debian packages found in `build/deploy/deb/` to the
-target system and install with `apt`.
+### Installing on Debian or Ubuntu
+
+Copy  the debian  packages found  in `build/deploy/deb/<DISTRO>`  to the  target
+system and install with `apt`.
 
 Install all packages with the following command.
-```
+```bash
 $ sudo apt install -y ./*.deb
 ```
 
 Or, install a single package by specifying its deb file name.
-```
+```bash
 $ sudo apt install -y ./devicedb_<version>_<arch>.deb
 ```
 
-## Removing packages
+### Installing on Red Hat or Centos
+Copy the rpm packages found  in `build/deploy/rpm/<DISTRO>` to the target system
+and install with `yum`.
 
-To remove use command:
+Install all packages with the following command.
+```bash
+$ sudo yum install -y ./*.deb
 ```
+
+Or, install a single package by specifying its RPM file name.
+```bash
+$ sudo yum install -y ./devicedb_<version>_<arch>.rpm
+```
+
+## Removing packages
+List  of packages  can  be  printed with  following  command  (here example  for
+packages in *Ubuntu Focal*):
+```bash
+$ ./build-env/bin/build-all.sh -d focal -l packages
+```
+
+To remove package on Debian/Ubuntu use command:
+```bash
 $ sudo apt remove -y <package name> --autoremove --purge
 ```
 
-After remove all package, manually remove credentials and config files:
+or on *Red Hat*/*Centos*:
+
+```bash
+$ sudo yum remove -y <package name>
 ```
+
+After removing all packages, manually remove credentials and config files:
+```bash
 $ sudo rm -rf /var/lib/pelion/
 $ sudo rm -rf /etc/pelion/
 ```
