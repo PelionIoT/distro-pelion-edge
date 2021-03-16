@@ -25,5 +25,6 @@ docker run -it \
     -v "$HOME":/mnt/home \
     -v "$ROOT_DIR":/pelion-build \
     -v "$APT_REPO":/opt/apt-repo \
-	-v /var/run/docker.sock:/var/run/docker.sock \
     -ti "$@"
+
+#	-v /var/run/docker.sock:/var/run/docker.sock \

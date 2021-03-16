@@ -8,8 +8,7 @@ ARG LOCAL_SRC_PATH=./docker-debian-10-buster
 RUN groupadd -o --gid $GROUP_ID user
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
-RUN addgroup --gid $DOCKER_GROUP_ID docker
-RUN usermod -aG docker user
+RUN addgroup --gid $DOCKER_GROUP_ID docker && usermod -aG docker user || true
 
 RUN echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retries
 COPY $LOCAL_SRC_PATH/sources.list.buster /etc/apt/sources.list
