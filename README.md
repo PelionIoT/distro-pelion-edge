@@ -72,6 +72,62 @@ Alternative way to run build scripts:
 ./mbed-edge-core-devmode/deb/build.sh --docker=focal --install --build --source --arch=amd64
 ```
 
+
+## Selecting target distribution with `--docker` switch
+
+The  `--docker` switch  (or short  `-d`) is  used to  select build  environment.
+Environment  configurations   are  stored  in  `./build-env/target/`.   To  list
+available environments run:
+```bash
+./build-env/bin/build-all.sh -l env
+```
+
+The `-d`  accepts also  partial environments  names (`-d  rh`, `-d  rhel/8`, `-d
+rhel-8`,  `-d  rhel`  -  all  are  valid).  When  name  matches  more  than  one
+environment, script will print error:
+```bash
+$ ./build-env/bin/build-all.sh -d 8
+Unable to load environment: ambiguous environment name, matches:
+centos/8 rhel/8
+
+```
+
+## Preparing host to compile packages
+### System requirements
+The `build-all.sh` Script requires docker, bash 4.2+ and gnu-getopt.
+
+To  build  arm64  packages for  *Red  Hat*  or  *Centos*  `qemu` is  required  and
+qemu-docker integration.
+
+To enable qemu-docker integration on Linux `binfmt` has to be enabled using this
+image before using arm64 compilation:
+```bash
+docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+```
+
+The `binfmt` has to be executed once after every reboot.
+
+Build on MacOS is not tested.
+
+### Red Hat Enterprise Linux (RHEL) subscription
+RHEL  images  does  not  include  subscription  credentials.  `RH_USERNAME`  and
+`RH_PASSWORD` variables  with your  Red Hat  subscription credentials  should be
+exported as environment variables before running build scripts:
+
+```bash
+export RH_USERNAME="Your Red Hat username"
+export RH_PASSWORD="Your Red Hat password"
+```
+
+Variables will be used to create docker image. If any of the variables would not
+be set, scripts  will interactively ask for them. Credentials  will be stored in
+docker image. Note that for free development subscription only 16 systems can be
+registered (registered  systems can be  removed on RHEL  subscription management
+page).
+
+To create Red Hat account visit: https://www.redhat.com/wapps/ugc/register.html
+
+
 ## Build environment
 
 To access  build environment console `docker-run-env.sh`  script was introduced.
@@ -120,6 +176,11 @@ To get list of all supported target distributions, run:
 
 It is  not required to  specify full  name of environment  (eg. `ubuntu/focal`).
 Partial, unique match would also work (like in quickstart example: `focal`).
+
+### *Container* `-c` and *image* `-r` flags
+The `-c` flag enables reusing of docker *containers* - only one container will be used. This speeds up whole build when `--docker` (or `-d`) switch is used especially for arm64 on amd64 build. If container gets corrupted for some reason using `-c=clean` will create fresh container before build.
+
+As script now automatically creates required images, `-r` flag was introduced. The `-r` flag forces script to recreate docker *images*.
 
 ## Building a single package
 
@@ -239,9 +300,9 @@ $ ./build-env/bin/docker-run-env.sh bionic
 user@95a30883d637:/pelion-build$ ./build-env/bin/build-all.sh --install --arch=amd64
 ```
 
-When   build   requires  different   architecture   to   build  natively   (when
-cross-compilation is  not available,  like for *Red  Hat*) `--arch=<architecture>`
-has to be added to `docker-run-env.sh` before specifying target environment:
+When  build  requires  different  architecture (when  cross-compilation  is  not
+available,  like for  *Red  Hat*)  `--arch=<architecture>` has  to  be added  to
+`docker-run-env.sh` before specifying target environment:
 ```bash
 ./build-env/bin/docker-run-env.sh --arch arm64 rhel
 ```
@@ -255,9 +316,9 @@ build/source/tar is set.
 
 ## Generating tar archives
 
-Tar  archives  are now  generated  for  Debian  and  Ubuntu only. A  tar  archive
-can  be  created  from a  binary  release  for  Debian.  One option  is  to  use
-the  `build-all.sh` script  as  described  above. Another  option  is to  invoke
+A tar archive can  be created from a binary release for  Debian and Ubuntu only.
+One  option is  to use  the `build-all.sh`  script as  described above.  Another
+option is to invoke
 `build-env/bin/deb2tar.sh` directly.
 
 ```
@@ -294,6 +355,35 @@ Tarballs can be found in `build/deploy/tar`, one archive per architecture.
 * source packages are on top of this directory
 * `noarch`, `x86_64` and `aarch64` directories contains final packages
 
+## Preparing Red Hat system before installation
+Here are notes for installation compiled packages on target system.
+
+### RHEL Repositories
+CodeReady and EPEL have to be  enabled before installation EPEL is required only
+for mbed-edge-example package.
+
+```bash
+sudo subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+```
+
+### Docker
+RHEL 8 does not support Docker, to  use kubelet it is required to install Docker
+from  external repository.  This is  required only  to run  built binaries  (not
+required to do the actual build). To add the repository, run:
+
+```bash
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+```
+
+### SELinux
+SELinux is not  currently supported: `pelion-relay-term` service  will be killed
+when SELinux is enabled.
+
+SELinux  has to  be  disabled, set  to  permissive or  `node`  binary should  be
+excluded. More details about SELinux and its configuration here:
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_selinux/index
+
 ## Installing packages
 
 Build results can  be installed onto a target system  either by manually copying
@@ -319,18 +409,42 @@ $ sudo apt install -y ./devicedb_<version>_<arch>.deb
 ```
 
 ### Installing on Red Hat or Centos
-Copy the rpm packages found  in `build/deploy/rpm/<DISTRO>` to the target system
-and install with `yum`.
+1.  Before installing  packages make  sure  that you  have subscription  enabled
+and   EPEL,  CodeReady   and  Docker   repositories  are   enabled  (see   [RHEL
+repositories](#rhel-Repositories) and [Docker](#docker)).
 
-Install all packages with the following command.
+2.      Copy     content      of     `build/deploy/rpm/<distro>/<arch>`      and
+`build/deploy/rpm/<distro>/noarch/` to target system  (where `<arch>` is `amd64`
+or `arm64` and `<distro>` is `rhel8` or `centos8`).
+
+3. To  install use  `yum` command, for  example if all  packages are  in current
+directory run:
 ```bash
-$ sudo yum install -y ./*.deb
+sudo yum install *.rpm
 ```
 
-Or, install a single package by specifying its RPM file name.
-```bash
-$ sudo yum install -y ./devicedb_<version>_<arch>.rpm
+Please  note  that  `mbed-edge-core`   and  `mbed-edge-core-devmode`  cannot  be
+installed simultaneously.
+
+4. Enable `systemd` services. After installation there are following services:
 ```
+devicedb.service
+edge-core.service
+edge-proxy.service
+kubelet.service
+maestro.service
+mbed-fcc.service
+pelion-relay-term.service
+wait-for-pelion-identity.service
+```
+
+To enable all services, run:
+```bash
+sudo systemctl enable devicedb.service edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
+```
+
+Dependent services are enabled implicitly. For example `wait-for-pelion-identity.service` is enabled when `maestro.service` is enabled; `edge-core.service` is enabled when `wait-for-pelion-identity.service` is enabled so enabling `maestro.service` will also enable `wait-for-pelion-identity.service` and `edge-core.service`.
+
 
 ## Removing packages
 List  of packages  can  be  printed with  following  command  (here example  for
