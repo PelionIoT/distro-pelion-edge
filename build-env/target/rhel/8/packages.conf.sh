@@ -65,7 +65,7 @@ function env_load_docker {
 
     # create empty package repository
     if [ ! -d "$REPO_DIR" ]; then
-        mkdir -p "$REPO_DIR"
+        mkdir -m 0755 -p "$REPO_DIR"
         docker_image_run build createrepo /opt/repo
     fi
 }
