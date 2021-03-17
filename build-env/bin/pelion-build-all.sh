@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "WARNING: this script is deprecated. Use build-all.sh instead"
+
 set -e
 
 SCRIPT_DIR=$(dirname "$0")

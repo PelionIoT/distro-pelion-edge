@@ -1,4 +1,5 @@
 #!/bin/sh
+echo "WARNING: this script is deprecated. Use docker-run-env.sh instead"
 
 ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
 
