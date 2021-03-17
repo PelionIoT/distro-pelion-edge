@@ -55,7 +55,7 @@ function env_load_docker {
 
     # prepare repo directory with required files (eg Package.gz or similar)
     if [ ! -d "$REPO_DIR" ]; then
-        mkdir -p "$REPO_DIR"
+        mkdir -m 755 -p "$REPO_DIR"
         debian_rebuild_packages_gz
     fi
 }
