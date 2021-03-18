@@ -67,7 +67,7 @@ of the distribution.  For example, to build for Debian 10, use `debian-buster`.
 To add prefix to docker images export `PELION_DOCKER_PREFIX`  variable  in  your
 shell with your prefix:
 ```
-export PELION_DOCKER_PREFIX=${USER}-
+export PELION_DOCKER_PREFIX=${USER}/
 ```
 
 The system is configured to use `sudo` without a password.
