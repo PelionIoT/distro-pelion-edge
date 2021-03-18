@@ -194,9 +194,13 @@ It is  not required to  specify full  name of environment  (eg. `ubuntu/focal`).
 Partial, unique match would also work (like in quickstart example: `focal`).
 
 ### *Container* `-c` and *image* `-r` flags
-The `-c` flag enables reusing of docker *containers* - only one container will be used. This speeds up whole build when `--docker` (or `-d`) switch is used especially for arm64 on amd64 build. If container gets corrupted for some reason using `-c=clean` will create fresh container before build.
+The `-c` flag  enables reusing of docker *containers* -  only one container will
+be used.  This speeds up  whole build when `--docker`  (or `-d`) switch  is used
+especially for arm64 on amd64 build. If container gets corrupted for some reason
+using `-c=clean` will create fresh container before build.
 
-As script now automatically creates required images, `-r` flag was introduced. The `-r` flag forces script to recreate docker *images*.
+As script now  automatically creates required images, `-r`  flag was introduced.
+The `-r` flag forces script to recreate docker *images*.
 
 ## Building a single package
 
@@ -459,7 +463,11 @@ To enable all services, run:
 sudo systemctl enable devicedb.service edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
 ```
 
-Dependent services are enabled implicitly. For example `wait-for-pelion-identity.service` is enabled when `maestro.service` is enabled; `edge-core.service` is enabled when `wait-for-pelion-identity.service` is enabled so enabling `maestro.service` will also enable `wait-for-pelion-identity.service` and `edge-core.service`.
+Dependent     services      are     enabled     implicitly.      For     example
+`wait-for-pelion-identity.service`   is   enabled  when   `maestro.service`   is
+enabled; `edge-core.service` is  enabled when `wait-for-pelion-identity.service`
+is    enabled     so    enabling    `maestro.service`    will     also    enable
+`wait-for-pelion-identity.service` and `edge-core.service`.
 
 
 ## Removing packages
