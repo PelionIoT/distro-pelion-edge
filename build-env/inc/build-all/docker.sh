@@ -223,7 +223,8 @@ function docker_container_run {
 # arg1: Dockerfile
 # arg2: image type: build or source (to resolve image name)
 # ENV:
-# - CTX_PATH - build context root directory, default: Dockerfile directory
+# - CTX_PATH - build context root directory, default: ENV_TARGET_ROOT, or Dockerfile directory if ENV_TARGET_ROOT was not set
+# - ENV_TARGET_ROOT - build context if CTX_PATH is not set
 # - PELION_DOCKER_PREFIX - prefix to image name (passed as PREFIX arg to the build instance)
 # - DOCKER_BUILD_ARGS - list build arguments (will prepend --build-arg on each element)
 # - PLATFORM_ARCH - --platform=$PLATFORM_ARCH passed to docker if set
@@ -233,7 +234,7 @@ function docker_container_run {
 # - GROUP_ID
 # - PREFIX
 function docker_build_image {
-    local CTX_PATH=${CTX_PATH:-$(dirname $(realpath $1))}
+    local CTX_PATH=${CTX_PATH:-${ENV_TARGET_ROOT:-$(dirname $(realpath $1))}}
 
     docker_pre_run
 

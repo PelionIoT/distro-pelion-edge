@@ -15,13 +15,16 @@ RUN groupadd -f -o --gid $GROUP_ID user
 RUN useradd -p '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG wheel user
 
-COPY pelionbuilddeps.repo /etc/yum.repos.d/pelionbuilddeps.repo
+COPY .common/pelionbuilddeps.repo /etc/yum.repos.d/pelionbuilddeps.repo
 RUN chmod 644 /etc/yum.repos.d/pelionbuilddeps.repo && \
 	mkdir -p /opt/repo && \
 	createrepo /opt/repo && \
 	yum clean all && \
 	yum update -y && \
 	yum clean expire-cache
+
+COPY .common/ssh_known_hosts /etc/ssh/ssh_known_hosts
+RUN chmod 644 /etc/ssh/ssh_known_hosts
 
 USER user
 WORKDIR /pelion-build

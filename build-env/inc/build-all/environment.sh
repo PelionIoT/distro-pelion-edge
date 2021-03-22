@@ -137,14 +137,15 @@ function env_prepare_containers {
             return 1
         fi
 
-        if $arg_recreate; then
-            docker_image_remove "$1"
-        fi
-
         # prepare docker container
         if [ "$arg_container" == "clean" ] || $arg_recreate && docker_container_available "$1"; then
             docker_container_remove "$1"
         fi
+
+        if $arg_recreate; then
+            docker_image_remove "$1"
+        fi
+
     done
 }
 
