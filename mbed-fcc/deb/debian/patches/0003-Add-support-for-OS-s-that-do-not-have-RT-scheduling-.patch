@@ -1,0 +1,66 @@
+From dbe7fec3da32fef1ad1ae944b7c0f74528fe7996 Mon Sep 17 00:00:00 2001
+From: Michael Ray <michael.ray@arm.com>
+Date: Tue, 23 Mar 2021 15:28:48 -0500
+Subject: [PATCH] Add support for OS's that do not have RT scheduling support
+
+For any OS that doesn't have real-time scheduling support, threading priority
+and policy settings should not be set.
+
+Create a macro that turns on or off these settings.
+Macro is enabled by default, but can be turned off in the config file for Linux
+---
+ mbed-cloud-client/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h              | 4 ++++
+ .../Source/Port/Reference-Impl/OS_Specific/Linux/RTOS/pal_plat_rtos.c | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/mbed-cloud-client/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h b/mbed-cloud-client/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h
+index 818f7df..f3d3505 100644
+--- a/mbed-cloud-client/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h
++++ b/mbed-cloud-client/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h
+@@ -192,6 +192,10 @@
+     #define PAL_USE_FILESYSTEM 1
+ #endif
+ 
++// Enable real-time scheduling thread settings
++#ifndef REAL_TIME_SCHEDULING_ENABLED
++    #define REAL_TIME_SCHEDULING_ENABLED 1
++#endif
+ 
+ // Sanity check for defined stack sizes
+ #if (PAL_NET_TEST_ASYNC_SOCKET_MANAGER_THREAD_STACK_SIZE < PTHREAD_STACK_MIN)
+diff --git a/mbed-cloud-client/mbed-client-pal/Source/Port/Reference-Impl/OS_Specific/Linux/RTOS/pal_plat_rtos.c b/mbed-cloud-client/mbed-client-pal/Source/Port/Reference-Impl/OS_Specific/Linux/RTOS/pal_plat_rtos.c
+index 8c94312..2ffc158 100644
+--- a/mbed-cloud-client/mbed-client-pal/Source/Port/Reference-Impl/OS_Specific/Linux/RTOS/pal_plat_rtos.c
++++ b/mbed-cloud-client/mbed-client-pal/Source/Port/Reference-Impl/OS_Specific/Linux/RTOS/pal_plat_rtos.c
+@@ -269,11 +269,13 @@ palStatus_t pal_plat_osThreadCreate(palThreadFuncPtr function, void* funcArgumen
+         goto finish;
+     }
+ 
++#if REAL_TIME_SCHEDULING_ENABLED
+     err = pthread_attr_setschedpolicy(ptrAttr, SCHED_RR);
+     if (0 != err)
+     {
+         goto finish;
+     }
++#endif
+ 
+ #if (PAL_SIMULATOR_TEST_ENABLE == 0) // disable ONLY for Linux PC simulator 
+     err = pthread_attr_setinheritsched(ptrAttr, PTHREAD_EXPLICIT_SCHED);
+@@ -289,12 +291,14 @@ palStatus_t pal_plat_osThreadCreate(palThreadFuncPtr function, void* funcArgumen
+         goto finish;
+     }    
+     
++#if REAL_TIME_SCHEDULING_ENABLED
+     schedParam.sched_priority = PAL_THREAD_PRIORITY_TRANSLATE(priority);
+     err = pthread_attr_setschedparam(ptrAttr, &schedParam);
+     if (0 != err)
+     {
+         goto finish;
+     }
++#endif
+ 
+     threadData = (palThreadData_t*)malloc(sizeof(palThreadData_t));
+     if (NULL == threadData)
+-- 
+2.10.1.windows.1
+
