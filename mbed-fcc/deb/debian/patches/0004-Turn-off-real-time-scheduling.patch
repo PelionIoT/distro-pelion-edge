@@ -1,0 +1,27 @@
+From b1b6c242a33bcb88fba657463a1a6d9d29aa9f8b Mon Sep 17 00:00:00 2001
+From: Michael Ray <michael.ray@arm.com>
+Date: Tue, 23 Mar 2021 16:14:19 -0500
+Subject: [PATCH] Turn off real-time scheduling
+
+Look at this later to see if there is a more elegant solution
+---
+ mbed-client-pal/Configs/pal_config/Linux/Linux_default.h | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h b/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h
+index f3d3505..6f3ca7a 100644
+--- a/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h
++++ b/mbed-client-pal/Configs/pal_config/Linux/Linux_default.h
+@@ -214,6 +214,9 @@
+ #warning "PAL_NOISE_TRNG_THREAD_STACK_SIZE stack size is less than PTHREAD_STACK_MIN"
+ #endif
+ 
++// Turn off real-time scheduling
++#undef REAL_TIME_SCHEDULING_ENABLED
++
+ // Define this to use static memory buffer for mbedtls, instead of standard mbedtls memory system (default is using heap).
+ //#undef PAL_USE_STATIC_MEMBUF_FOR_MBEDTLS
+ 
+-- 
+2.10.1.windows.1
+

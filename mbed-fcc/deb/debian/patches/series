@@ -1,3 +1,4 @@
 0001-fix-build-getting-cross-compiler-iface-setting-to-et.patch
 0002-Modified-FCCE-to-take-in-CBOR-file-to-generate-the-s.patch
 0003-Add-support-for-OS-s-that-do-not-have-RT-scheduling-.patch
+0004-Turn-off-real-time-scheduling.patch
