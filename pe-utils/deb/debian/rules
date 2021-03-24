@@ -11,3 +11,7 @@ override_dh_systemd_enable:
 
 override_dh_systemd_start:
 	dh_systemd_start --name=wait-for-pelion-identity wait-for-pelion-identity.service
+
+override_dh_auto_install:
+	dh_auto_install
+	install -D -m 755 debian/pelion.sh $(CURDIR)/debian/pe-utils/usr/bin/pelion
