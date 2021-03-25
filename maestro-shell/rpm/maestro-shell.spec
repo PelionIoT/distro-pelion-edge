@@ -31,12 +31,14 @@ An interactive shell for controlling maestro locally on deviceOS.
 %gobuild -o %{gobuilddir}/bin/%{name} %{goipath}
 
 %install
-install -vdm 0755                            %{buildroot}/%{_bindir}/pelion/
-install -vpm 0755 %{gobuilddir}/bin/*        %{buildroot}/%{_bindir}/pelion/
+install -vdm 0755                            %{buildroot}/usr/lib/pelion/bin
+install -vpm 0755 %{gobuilddir}/bin/*        %{buildroot}/usr/lib/pelion/bin/
+install -vdm 0755                            %{buildroot}/%{_bindir}
 install -vpm 0755 %{_filesdir}/maestro-shell %{buildroot}/%{_bindir}/
 
 %files
 %{_bindir}/*
+/usr/lib/pelion/bin/*
 
 %changelog
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
