@@ -1,5 +1,5 @@
 %global goipath github.com/armPelionEdge/maestro-shell
-%global commit  6453fba93557fc7c4593c48022cf88395bd23a57
+%global commit  2c90fbe2552c58ec5121b75a08718be6ebe5a791
 %gometa
 
 Name:           maestro-shell
@@ -10,19 +10,30 @@ Summary:        Shell access to maestro
 License:        Apache-2.0
 URL:            %{gourl}
 Source0:        %{gosource}
+Patch0:         greaselib-autoreconf.patch
+Patch1:         gperftools-enable-unwind.patch
+
+Requires:       maestro
+BuildRequires:  m4 python27 gcc-c++ golang < 1.15 golang >= 1.14 libunwind-devel
+
+%global __requires_exclude (libgrease\\.so\\.1|libtcmalloc_minimal\\.so\\.4)
 
 %description
 An interactive shell for controlling maestro locally on deviceOS.
 
 %prep
 %goprep -k
+%patch0 -p1
+%patch1 -p1
 
 %build
+./build-deps.sh
 %gobuild -o %{gobuilddir}/bin/%{name} %{goipath}
 
 %install
-install -vdm 0755                     %{buildroot}/%{_bindir}
-install -vpm 0755 %{gobuilddir}/bin/* %{buildroot}/%{_bindir}/
+install -vdm 0755                            %{buildroot}/%{_bindir}/pelion/
+install -vpm 0755 %{gobuilddir}/bin/*        %{buildroot}/%{_bindir}/pelion/
+install -vpm 0755 %{_filesdir}/maestro-shell %{buildroot}/%{_bindir}/
 
 %files
 %{_bindir}/*

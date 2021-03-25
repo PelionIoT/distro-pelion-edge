@@ -1,0 +1,34 @@
+FROM registry.access.redhat.com/ubi8/ubi
+
+ARG USER_ID
+ARG GROUP_ID
+ARG RH_USERNAME
+ARG RH_PASSWORD
+
+RUN subscription-manager register --username $RH_USERNAME --password $RH_PASSWORD && subscription-manager attach --auto
+RUN subscription-manager repos --enable codeready-builder-for-rhel-8-aarch64-rpms
+RUN yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+
+RUN yum install -y createrepo_c yum-utils sudo && \
+	yum groupinstall -y 'Development Tools'
+
+RUN userdel -f user || true
+RUN groupadd -f -o --gid $GROUP_ID user
+RUN useradd -p '' --uid $USER_ID --gid $GROUP_ID user
+RUN usermod -aG wheel user
+
+COPY .common/pelionbuilddeps.repo /etc/yum.repos.d/pelionbuilddeps.repo
+RUN chmod 644 /etc/yum.repos.d/pelionbuilddeps.repo && \
+	mkdir -p /opt/repo && \
+	createrepo /opt/repo && \
+	yum clean all && \
+	yum update -y && \
+	yum clean expire-cache
+
+RUN subscription-manager refresh && subscription-manager release --set 8
+
+COPY .common/ssh_known_hosts /etc/ssh/ssh_known_hosts
+RUN chmod 644 /etc/ssh/ssh_known_hosts
+
+USER user
+WORKDIR /pelion-build

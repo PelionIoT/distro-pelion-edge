@@ -1,0 +1,12 @@
+[Unit]
+Description=Kubelet
+After=edge-proxy.service docker.service
+Wants=edge-proxy.service docker.service
+
+[Service]
+Restart=always
+RestartSec=5s
+ExecStart=/usr/bin/launch-kubelet.sh
+
+[Install]
+RequiredBy=multi-user.target
