@@ -8,3 +8,4 @@ patch-mbed-edge-with-the-ability-to-override-pelion-.patch
 Remove-Version.patch
 Fix-CPU-Temp-Path.patch
 Add-support-for-network-proxy.patch
+Read-platform-version-files-into-LWM2M-resources.patch
