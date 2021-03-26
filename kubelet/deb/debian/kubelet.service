@@ -1,7 +1,9 @@
 [Unit]
 Description=Kubelet
-Requires=edge-proxy.service
+PartOf=pelion.service
+After=pelion.service
 After=edge-proxy.service
+After=docker.service
 
 [Service]
 Restart=always
@@ -9,4 +11,4 @@ RestartSec=5s
 ExecStart=/usr/bin/launch-kubelet.sh
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=pelion.service

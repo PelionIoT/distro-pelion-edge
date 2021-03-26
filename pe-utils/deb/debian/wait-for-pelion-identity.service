@@ -1,6 +1,7 @@
 [Unit]
 Description=Wait for a connection to Pelion and create cridentials
-Requires=edge-core.service
+PartOf=pelion.service
+After=pelion.service
 After=edge-core.service
 
 [Service]
@@ -10,4 +11,4 @@ RemainAfterExit=true
 ExecStart=/usr/bin/launch-wait-for-pelion-identity.sh
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=pelion.service

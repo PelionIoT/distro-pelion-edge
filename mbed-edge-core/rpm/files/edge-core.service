@@ -1,6 +1,7 @@
 [Unit]
 Description=Edge Core
-After=network-online.target
+PartOf=pelion.service
+After=pelion.service
 
 [Service]
 Restart=always
@@ -9,4 +10,4 @@ WorkingDirectory=/var/lib/pelion/mbed
 ExecStart=/usr/bin/launch-edge-core.sh
 
 [Install]
-RequiredBy=multi-user.target
+WantedBy=pelion.service
