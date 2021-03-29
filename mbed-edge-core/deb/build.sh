@@ -15,6 +15,7 @@ function pelion_mbed_edge_core_source_preparation_cb() {
     cd "$PELION_SOURCE_DIR/$PELION_PACKAGE_NAME/mbed-edge"
     git submodule update --init --recursive
     cp "$PELION_PACKAGE_DIR/debian/files/sotp_fs_linux.h" "./config/sotp_fs_linux.h"
+    cp "$PELION_PACKAGE_DIR/debian/files/osreboot.c" "./edge-core/osreboot.c"
     cp "$PELION_PACKAGE_DIR/debian/files/mbed_cloud_client_user_config.h" "./config/mbed_cloud_client_user_config.h"
 }
 
