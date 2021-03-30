@@ -155,7 +155,7 @@ fi
 if $arg_source; then
     for ARCH in "${opt_build_arch[@]}"; do
         echo ">> building source packages for $ARCH"
-        LOG_STR=">> building %s soruce package" run_group PACKAGES run_source
+        LOG_STR=">> building %s source package" run_group PACKAGES run_source
     done
 fi
 
