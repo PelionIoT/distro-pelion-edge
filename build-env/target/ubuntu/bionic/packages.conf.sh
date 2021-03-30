@@ -1,4 +1,4 @@
-source $ENV_TARGET_ROOT/.common/debian_packages.conf.sh
+source $ENV_TARGET_ROOT/common/debian_packages.conf.sh
 
 DEPENDS=(
     'golang-providers/pe-golang-bin'

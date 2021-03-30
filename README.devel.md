@@ -3,6 +3,9 @@ Scripts are located in `build-env/inc/build-all/`.
 Target definitions are located in `build-env/target/`.
 Each environment configuration file can/should implement below listed callbacks.
 
+Directory is  identified as  environment (target)  if it  has `packages.conf.sh`
+file inside and directory is not hidden.
+
 `ARCH` variable is exported before calling `run_*` callbacks.
 
 ## Environment callbacks

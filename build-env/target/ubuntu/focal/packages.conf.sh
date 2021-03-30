@@ -1,4 +1,4 @@
-source $ENV_TARGET_ROOT/.common/debian_packages.conf.sh
+source $ENV_TARGET_ROOT/common/debian_packages.conf.sh
 
 ENV_OS_NAME=focal
 
