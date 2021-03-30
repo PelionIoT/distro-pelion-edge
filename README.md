@@ -112,8 +112,9 @@ centos/8 rhel/8
 ### System requirements
 The `build-all.sh` Script requires docker, bash 4.2+ and gnu-getopt.
 
-To  build  arm64  packages for  *Red  Hat*  or  *Centos*  `qemu` is  required  and
-qemu-docker integration.
+To  build arm64  packages  for *Red  Hat*  or *Centos*  `qemu`  is required  and
+qemu-docker  integration  because  *Red  Hat*/*Centos* does  not  support  cross
+compiling.
 
 To enable qemu-docker integration on Linux `binfmt` has to be enabled using this
 image before using arm64 compilation:
@@ -327,7 +328,7 @@ available,  like for  *Red  Hat*)  `--arch=<architecture>` has  to  be added  to
 ./build-env/bin/docker-run-env.sh --arch arm64 rhel
 ```
 
-The option `--install`  is required when the script is  executed in clear docker
+The option  `--install` is required  when the script  is executed in  new docker
 container, otherwise it will fail due to missing build dependencies.
 
 To  provide  build  dependency  use  `--deps` switch.  This  will  create  build
