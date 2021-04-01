@@ -1,7 +1,8 @@
 [Unit]
 Description=Edge Proxy
-PartOf=pelion.service
-After=pelion.service
+PartOf=pelion.target
+After=pelion.target
+Wants=edge-core.service
 
 [Service]
 Restart=always
@@ -9,4 +10,4 @@ RestartSec=5s
 ExecStart=/usr/bin/launch-edge-proxy.sh
 
 [Install]
-WantedBy=pelion.service
+WantedBy=pelion.target

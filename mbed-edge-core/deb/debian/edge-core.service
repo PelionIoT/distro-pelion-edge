@@ -1,7 +1,7 @@
 [Unit]
 Description=Edge Core
-PartOf=pelion.service
-After=pelion.service
+PartOf=pelion.target
+After=pelion.target
 
 [Service]
 Restart=always
@@ -10,4 +10,4 @@ WorkingDirectory=/var/lib/pelion/mbed
 ExecStart=/usr/bin/launch-edge-core.sh
 
 [Install]
-WantedBy=pelion.service
+WantedBy=pelion.target

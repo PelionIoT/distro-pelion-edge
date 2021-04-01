@@ -1,9 +1,9 @@
 [Unit]
 Description=K3S
-PartOf=pelion.service
-After=pelion.service
-After=edge-proxy.service
-After=docker.service
+PartOf=pelion.target
+After=pelion.target
+Requires=edge-proxy.service docker.service
+After=edge-proxy.service docker.service
 
 [Service]
 Restart=always
@@ -11,4 +11,4 @@ RestartSec=5s
 ExecStart=/usr/bin/launch-k3s.sh
 
 [Install]
-WantedBy=pelion.service
+WantedBy=pelion.target
