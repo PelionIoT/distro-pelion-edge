@@ -156,13 +156,13 @@ Example usage:
 # run new rhel/8 image for host arch:
 ./build-env/bin/docker-run-env.sh rhel
 
-# run centos container (attach to existing)
+# run centos container (exec in existing)
 ./build-env/bin/docker-run-env.sh -c centos
 
 # run 'ls' in centos container
 ./build-env/bin/docker-run-env.sh -c centos ls
 
-# run fresh container (and allow later attaching to it)
+# run fresh container (and allow later executing in it)
 ./build-env/bin/docker-run-env.sh -c clean centos ls
 
 # recreate docker image and container and run shell in new container
@@ -199,6 +199,50 @@ The `-c` flag  enables reusing of docker *containers* -  only one container will
 be used.  This speeds up  whole build when `--docker`  (or `-d`) switch  is used
 especially for arm64 on amd64 build. If container gets corrupted for some reason
 using `-c=clean` will create fresh container before build.
+
+When `build-all.sh` is run:
+- without `-c`  - new container is  created on each element  (each package build
+and source stage). Container is removed after each element is done:
+	```
+	# create and run temporary container
+	[docker run --rm] pe-nodejs source
+	# container is automatically removed
+	# create and run temporary container
+	[docker run --rm] devicedb source
+	# container is automatically removed
+	...
+	```
+
+- with `-c`  script checks if there  is a container, creates it  if missing, and
+uses it for each element:
+	```
+	[check if container exists => create if missing]
+	[if stopped => docker start]
+	[docker exec] pe-nodejs source
+	[docker exec] devicedb source
+	...
+	[docker exec] pe-nodejs build
+	```
+
+- with  `-c=clean` removes existing container  and creates new one  before first
+use in script:
+	```
+	# clean part
+	[docker container remove]
+	# create new container
+	[docker container create]
+	[docker start]
+	[docker exec] pe-nodejs source
+	[docker exec] devicedb source
+	...
+	[docker exec] pe-nodejs build
+	...
+	```
+
+When `-c`  flag is used  in `build-all.sh`, the  container can be  accessed with
+`docker-run-env.sh -c` command.  It can be run multiple times  so multiple shell
+sessions can be created  in one container. It also allow  to reboot host machine
+and attach to previously used session.
 
 As script now  automatically creates required images, `-r`  flag was introduced.
 The `-r` flag forces script to recreate docker *images*.

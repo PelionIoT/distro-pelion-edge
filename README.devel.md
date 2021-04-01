@@ -8,6 +8,18 @@ file inside and directory is not hidden.
 
 `ARCH` variable is exported before calling `run_*` callbacks.
 
+## Target definitions
+Directory is  identified as  target environment if  it is  in `build-env/target`
+directory  and there  is `packages.conf.sh`  file  in that  directory. Name  for
+target  environment  is  generated  from   directory  names,  for  example  from
+`build-env/target/centos/8/packages.conf.sh` the  generated target name  will be
+`centos/8`  ( instead  of `/`,  also  `-` can  be  used, so  `centos-8` is  also
+correct).
+
+The `common` directory in  `build-env/target` should not have `packages.conf.sh`
+as this  directory is not target  environment but contains files  shared between
+other targets.
+
 ## Environment callbacks
 ### `env_load`
 Is called when environment is loaded (once per session)
