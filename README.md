@@ -478,7 +478,7 @@ $ sudo apt install -y ./devicedb_<version>_<arch>.deb
 and   EPEL,  CodeReady   and  Docker   repositories  are   enabled  (see   [RHEL
 repositories](#rhel-Repositories) and [Docker](#docker)).
 
-2.      Copy     content      of     `build/deploy/rpm/<distro>/<arch>`      and
+2. Copy      content       of       `build/deploy/rpm/<distro>/<arch>`       and
 `build/deploy/rpm/<distro>/noarch/` to target system  (where `<arch>` is `amd64`
 or `arm64` and `<distro>` is `rhel8` or `centos8`).
 
