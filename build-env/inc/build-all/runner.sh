@@ -24,6 +24,12 @@ function run_build {
     ! :
 }
 
+# verify package after build; optional
+# arg1: package name to verify
+function run_verify {
+    :
+}
+
 # arg1: package name
 function run_build_deps {
     run_build "$@"
@@ -42,6 +48,16 @@ function run_build_metapackage {
     local PACKAGE=${1/#/metapackages\/}
     shift
     run_build $PACKAGE "$@"
+}
+
+# run verify on metapackage, by default same as run_verify but adds
+# metapackages/ prefix to the package path. Override per env if needed.
+# arg1: package
+# arg2-N: args passed to run_build
+function run_verify_metapackage {
+    local PACKAGE=${1/#/metapackages\/}
+    shift
+    run_verify $PACKAGE "$@"
 }
 
 # build tarball from all packages
@@ -103,7 +119,6 @@ function run_command_generic {
     fi
 }
 
-# TODO :cleanup ensure
 # run commands in build container (actual build)
 function run_command_build {
     run_command_generic build "$@"

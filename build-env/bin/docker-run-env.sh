@@ -89,6 +89,6 @@ env_load_by_name "$arg_docker"
 # selecting architecture
 ARCH=${arg_arch[0]}
 PLATFORM_ARCH=linux/$ARCH
-DOCKER_OPTS=-it
+DOCKER_OPTS=${DOCKER_OPTS:--it}
 
 run_command_source "${@-bash}"

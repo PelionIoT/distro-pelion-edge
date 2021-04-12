@@ -198,7 +198,7 @@ function docker_container_exec {
     local CONTAINER=$1
     shift
 
-    $DOCKER exec -it $DOCKER_OPTS $(docker_container_name_processed "$CONTAINER") "$@"
+    $DOCKER exec $DOCKER_OPTS $(docker_container_name_processed "$CONTAINER") "$@"
 }
 
 # run in docker container

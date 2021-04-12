@@ -1,116 +1,264 @@
-
-  * [Build scripts for Pelion Edge](#build-scripts-for-pelion-edge)
-    * [Build environment](#build-environment)
-    * [Building a single package](#building-a-single-package)
-    * [Building all packages](#building-all-packages)
-    * [Generating tar archives](#generating-tar-archives)
-    * [Build results](#build-results)
-    * [APT repository](#apt-repository)
-    * [Firmware Over-The-Air(FOTA)](#fota)
-    * [Red Hat Enterprise Linux support](README.rhel.md)
+# Table of contents
+* [Build scripts for Pelion Edge](#build-scripts-for-pelion-edge)
+  * [Quickstart](#quickstart)
+  * [Selecting target distribution with `--docker` switch](#selecting-target-distribution-with---docker-switch)
+  *  [Preparing host to compile packages](#preparing-host-to-compile-packages)
+    - [System requirements](#system-requirements)
+    - [Red Hat Enterprise Linux (RHEL) subscription](#red-hat-enterprise-linux-rhel-subscription)
+  * [Build environment](#build-environment)
+    - [*Container* `-c` and *image* `-r` flags](#container--c-and-image--r-flags)
+  * [Building a single package](#building-a-single-package)
+    - [Build single package for Debian and Ubuntu](#build-single-package-for-debian-and-ubuntu)
+    - [Build single package for Red Hat and Centos](#build-single-package-for-red-hat-and-centos)
+  * [Building all packages](#building-all-packages)
+  * [Generating tar archives](#generating-tar-archives)
+  * [Build results](#build-results)
+  * [Preparing Red Hat system before installation](#preparing-red-hat-system-before-installation)
+    - [RHEL Repositories](#rhel-repositories)
+    - [Docker](#docker)
+    - [SELinux](#selinux)
+  * [Installing packages](#installing-packages)
+    - [Installing on Debian or Ubuntu](#installing-on-debian-or-ubuntu)
+    - [Installing on Red Hat or Centos](#installing-on-red-hat-or-centos)
+  * [Removing packages](#removing-packages)
+  * [APT repository](#apt-repository)
+    - [GPG key pair generation](#gpg-key-pair-generation)
+    - [APT repository usage](#apt-repository-usage)
+  * [FOTA](#fota)
 
 # Build scripts for Pelion Edge
 
 The  folder `build-env`  contains helper  or common  scripts. Other  directories
-contain build scripts specific for each package:
+contain build scripts specific for each package, for Debian-based distributions:
 ```
 <package name>/deb/build.sh
 metapackages/<package name>/deb/build.sh
 ```
+and for *Red Hat*-based distributions:
+```
+<package name>/rpm/build.sh
+```
 
-The build  scripts `build.sh`  or `build-env/bin/pelion-build-all.sh`  can build
-packages directly  on Ubuntu  18.04 system  or in  docker container.  The docker
-container can  be launched manually, for  example as an interactive  session, or
-the  scripts  will  run  docker  automatically if  the  argument  `--docker`  is
-provided.
+The build scripts `build.sh`  or `build-env/bin/build-all.sh` can build packages
+directly on supported  systems or in docker container. The  docker container can
+be launched manually, for example as an interactive session, or the scripts will
+run docker automatically if the argument `--docker` is provided.
 
 It  is recommended  to use  docker  since it  will provide  a clean  environment
 without interference with local user settings  (for example, with user nodejs or
-python environments).
+python environments) and does not require setting up local packages repository.
 
 Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 
 ## Quickstart
+First make sure your system is configured correctly (see [requirements](#requirements))
 
-Here's how to quickly build Pelion Edge Packages for Ubuntu Focal amd64
+Here's how to quickly build Pelion Edge Packages for *Ubuntu Focal* amd64.
 
-```
-# create the docker container to build packages for Ubuntu 20
-./build-env/bin/docker-ubuntu-focal-create.sh
+1. Prepare `mbed_cloud_dev_credentials.c` and `update_default_resources.c`
+files:
+```bash
 # copy your mbed_cloud_dev_credentials.c file in place so that the edge devmode package will build with your dev credentials
 cp ~/Downloads/mbed_cloud_dev_credentials.c .
 # use manifest tool to create an update_default_resources.c so that you'll be ready to perform an over-the-air-update
 # copy the generated update_default_resources.c into place
 cp /path/to/update_default_resources.c .
-# build all the Ubuntu 20 packages for amd64 using the docker container created above
-./build-env/bin/docker-run.sh pelion-focal-source ./build-env/bin/pelion-build-all.sh --deps --install --build --source --arch=amd64
+```
+
+2. Run build scripts:
+```bash
+# build all the Ubuntu 20 packages for amd64 using docker container
+./build-env/bin/docker-run-env.sh focal ./build-env/bin/build-all.sh --deps --install --build --source --arch=amd64
 # deb packages will be available in ./build/deploy/deb/focal/main/
 
 
 # then if you'd like to rebuild an individual package (ex: mbed-edge-core-devmode)
-./build-env/bin/docker-run.sh pelion-focal-source ./mbed-edge-core-devmode/deb/build.sh --install --build --source --arch=amd64
+./build-env/bin/docker-run-env.sh focal ./mbed-edge-core-devmode/deb/build.sh --install --build --source --arch=amd64
 ```
+
+Alternative way to run build scripts:
+
+```bash
+# build all the Ubuntu 20 packages for amd64 using docker container
+./build-env/bin/build-all.sh --docker=focal --deps --install --build --source --arch=amd64
+# deb packages will be available in ./build/deploy/deb/focal/main/
+
+
+# then if you'd like to rebuild an individual package (ex: mbed-edge-core-devmode)
+./mbed-edge-core-devmode/deb/build.sh --docker=focal --install --build --source --arch=amd64
+```
+
+
+## Selecting target distribution with `--docker` switch
+
+The  `--docker` switch  (or short  `-d`) is  used to  select build  environment.
+Environment  configurations   are  stored  in  `./build-env/target/`.   To  list
+available environments run:
+```bash
+./build-env/bin/build-all.sh -l env
+```
+
+The `-d`  accepts also  partial environments  names (`-d  rh`, `-d  rhel/8`, `-d
+rhel-8`,  `-d  rhel`  -  all  are  valid).  When  name  matches  more  than  one
+environment, script will print error:
+```bash
+$ ./build-env/bin/build-all.sh -d 8
+Unable to load environment: ambiguous environment name, matches:
+centos/8 rhel/8
+
+```
+
+## Preparing host to compile packages
+### System requirements
+The `build-all.sh` Script requires docker, bash 4.2+ and gnu-getopt.
+
+To  build arm64  packages  for *Red  Hat*  or *Centos*  `qemu`  is required  and
+qemu-docker  integration  because  *Red  Hat*/*Centos* does  not  support  cross
+compiling.
+
+To enable qemu-docker integration on Linux `binfmt` has to be enabled using this
+image before using arm64 compilation:
+```bash
+docker run --rm --privileged docker/binfmt:a7996909642ee92942dcd6cff44b9b95f08dad64
+```
+
+The `binfmt` has to be executed once after every reboot.
+
+Build on MacOS is not tested.
+
+### Red Hat Enterprise Linux (RHEL) subscription
+RHEL  images  does  not  include  subscription  credentials.  `RH_USERNAME`  and
+`RH_PASSWORD` variables  with your  Red Hat  subscription credentials  should be
+exported as environment variables before running build scripts:
+
+```bash
+export RH_USERNAME="Your Red Hat username"
+export RH_PASSWORD="Your Red Hat password"
+```
+
+Variables will be used to create docker image. If any of the variables would not
+be set, scripts  will interactively ask for them. Credentials  will be stored in
+docker image. Note that for free development subscription only 16 systems can be
+registered (registered  systems can be  removed on RHEL  subscription management
+page).
+
+To create Red Hat account visit: https://www.redhat.com/wapps/ugc/register.html
+
 
 ## Build environment
 
-1. Scripts for creating clean build docker images:
+To access  build environment console `docker-run-env.sh`  script was introduced.
+The script accepts options until first positional argument (which is environment
+name).
+
+Example usage:
+```bash
+# run new rhel/8 image for host arch:
+./build-env/bin/docker-run-env.sh rhel
+
+# run centos container (exec in existing)
+./build-env/bin/docker-run-env.sh -c centos
+
+# run 'ls' in centos container
+./build-env/bin/docker-run-env.sh -c centos ls
+
+# run fresh container (and allow later executing in it)
+./build-env/bin/docker-run-env.sh -c clean centos ls
+
+# recreate docker image and container and run shell in new container
+./build-env/bin/docker-run-env.sh -r -c clean centos
+
+# run new arm64 container
+./build-env/bin/docker-run-env.sh -c=clean -a arm64 centos
 ```
-$ ./build-env/bin/docker-ubuntu-bionic-create.sh # Ubuntu 18.04
-```
 
-The  above  script  creates   docker  images  `pelion-bionic-build`  with  build
-essentials  and `pelion-bionic-source`  with  additional  packages required  for
-generating source packages (for example git, npm, python).
+The  above script  also creates  docker images  with build  essentials and  with
+additional packages  required for generating  source packages (for  example git,
+npm, python) depending on selected environment.
 
-To build packages for other distributions, replace `pelion-bionic` with the name
-of the distribution.  For example, to build for Debian 10, use `debian-buster`.
-
-To add prefix to docker images export `PELION_DOCKER_PREFIX`  variable  in  your
-shell with your prefix:
+To  add prefix  to docker  images and  containers export  `PELION_DOCKER_PREFIX`
+variable in your shell with your prefix:
 ```
 export PELION_DOCKER_PREFIX=${USER}-
 ```
 
-The system is configured to use `sudo` without a password.
-
-
-2. Run docker image:
-```
-$ ./build-env/bin/docker-run.sh <image name>
-```
-
-For example:
-```
-$ ./build-env/bin/docker-run.sh pelion-bionic-source
-```
+The system in docker image is configured to use `sudo` without a password.
 
 The root of this repo is mounted to `/pelion-build`.
 
-Please note that `docker-run.sh` script does not use `PELION_DOCKER_PREFIX`.
-
-### Build environment for debian-10
-
-1. Scripts for creating clean build docker images:
-```
-$ ./build-env/bin/docker-debian-buster-create.sh # Debian 10
+To get list of all supported target distributions, run:
+```bash
+./build-env/bin/build-all.sh -l env
 ```
 
-2. Run docker image:
-```
-$ ./build-env/bin/docker-run.sh pelion-buster-source
-```
+It is  not required to  specify full  name of environment  (eg. `ubuntu/focal`).
+Partial, unique match would also work (like in quickstart example: `focal`).
+
+### *Container* `-c` and *image* `-r` flags
+The `-c` flag  enables reusing of docker *containers* -  only one container will
+be used.  This speeds up  whole build when `--docker`  (or `-d`) switch  is used
+especially for arm64 on amd64 build. If container gets corrupted for some reason
+using `-c=clean` will create fresh container before build.
+
+When `build-all.sh` is run:
+- without `-c`  - new container is  created on each element  (each package build
+and source stage). Container is removed after each element is done:
+	```
+	# create and run temporary container
+	[docker run --rm] pe-nodejs source
+	# container is automatically removed
+	# create and run temporary container
+	[docker run --rm] devicedb source
+	# container is automatically removed
+	...
+	```
+
+- with `-c`  script checks if there  is a container, creates it  if missing, and
+uses it for each element:
+	```
+	[check if container exists => create if missing]
+	[if stopped => docker start]
+	[docker exec] pe-nodejs source
+	[docker exec] devicedb source
+	...
+	[docker exec] pe-nodejs build
+	```
+
+- with  `-c=clean` removes existing container  and creates new one  before first
+use in script:
+	```
+	# clean part
+	[docker container remove]
+	# create new container
+	[docker container create]
+	[docker start]
+	[docker exec] pe-nodejs source
+	[docker exec] devicedb source
+	...
+	[docker exec] pe-nodejs build
+	...
+	```
+
+When `-c`  flag is used  in `build-all.sh`, the  container can be  accessed with
+`docker-run-env.sh -c` command.  It can be run multiple times  so multiple shell
+sessions can be created  in one container. It also allow  to reboot host machine
+and attach to previously used session.
+
+As script now  automatically creates required images, `-r`  flag was introduced.
+The `-r` flag forces script to recreate docker *images*.
 
 ## Building a single package
 
 Dependency packages must be built prior to building a single package.
-```
-$ ./build-env/bin/pelion-build-all.sh --deps --install --docker=<dist>
+```bash
+./build-env/bin/build-all.sh --deps --install --docker=<dist>
 ```
 or
-```
-$ ./build-env/bin/docker-run.sh pelion-<dist>-source ./build-env/bin/pelion-build-all.sh --deps --install
+```bash
+./build-env/bin/docker-run-env.sh <dist> ./build-env/bin/build-all.sh --deps --install
 ```
 
+### Build single package for Debian and Ubuntu
 The build scripts provide help information, for example:
 
 ```
@@ -133,7 +281,6 @@ Available architectures:
   amd64
   arm64
   armhf
-  armel
 
 Default mode: maestro/deb/build.sh --arch=amd64 --source --build --verify
 ```
@@ -141,57 +288,103 @@ Default mode: maestro/deb/build.sh --arch=amd64 --source --build --verify
 These scripts can be used to generate both source and binary packages.
 
 It is possible to  use these scripts without the option  `--docker` if docker is
-run manually by `docker-run.sh`.  The option  `--docker` will make all tasks run
-in appropriate containers automatically:
-* source packages will be generated in `pelion-<DISTRO>-source`
-* binary packages in `pelion-<DISTRO>-build`
+run manually by  `docker-run-env.sh`. The option `--docker` will  make all tasks
+run in appropriate containers automatically (using source of build images):
+
+### Build single package for Red Hat and Centos
+The build scripts for RPM-based distributions are similar to Debian's:
+
+```
+$ ./maestro/rpm/build.sh --help
+build.sh - builds maestro RPM package
+
+Usage: build.sh [-h|--help] [--install]
+ -h, --help                 display this help message.
+ -i, --install              install dependencies
+ -b, --build                build package
+ -s, --source               prepare sources
+ -d, --docker=<name>        use docker container to build RPM
+ -a, --arch=<name>          build for selected architecture
+ -c, --container=[opts]     reuse container; opts can be (comma separated):
+                            - clean - create new container before first use
+ -r, --recreate             forcibly recreate docker images (implies -c=clean)
+ -o, --deploy=<path>        set target directory for RPMs
+
+```
+
+Additionally  these  scripts supports  Docker  image  creation when  needed  and
+container re-usage.
 
 ## Building all packages
 
 ```
-$ ./build-env/bin/pelion-build-all.sh --help
-Usage: pelion-build-all.sh [Options]
+$ ./build-env/bin/build-all.sh --help
+build-all.sh - build all packages:
 
-Options:
- --deps              Create build dependency packages.
- --source            Generate source package.
- --build             Build binary from source generated with --source option.
- --tar               Build a tarball from Debian packages.
- --docker=<DISTRO>   Use docker containers.
- --install           Install build dependencies.
- --arch=<arch>       Set comma-separated list of target architectures.
- --help,-h           Print this message.
+USAGE: 
+-a, --arch=<name>       run build for <name> architecture
+-d, --docker=<name>     run build in docker (name=docker environment)
+-h, --help              print this help text
+-i, --install           install dependencies
+-e, --print-env=[what]  print environment setup: packages, meta, deps
+                        (deps packages)
+-l, --print-list        print list: env (list of available environments)
+-c, --container=[opts]  use one container per kind instead of container
+                        per package; opts can be (comma separated):
+                        - clean - create new container before first use
+-r, --recreate          forcibly recreate docker images (implies -c=clean)
 
-If none of '--deps', '--source', '--build' or '--tar' options are specified,
-all of them are activated.
+Build elements:
+-b, --build             run build stage
+-s, --source            run source stage
+-t, --tar               run tarball creation stage
+-p, --deps              run dependency compilation stage
 
+When no -b, -s, -t or -p are set, all are enabled. Setting one of them will
+disable unset parameters (eg. setting -b -s will run only source and build
+stage).
+
+If --docker is set, build process will run in new container. By adding --container
+scripts will use one container to build all packages (instead of container
+per package)
 ```
 
 This script  will run build of  each package in new  docker container installing
 all build dependencies each time (with `--docker` option), for example:
 ```
-./build-env/bin/pelion-build-all.sh --docker=focal --arch=amd64,armhf,arm64
+./build-env/bin/build-all.sh --docker=focal --arch=amd64,armhf,arm64
 ```
+
+By adding `--container`  option, one container will be used  if possible. Adding
+`--container clean` will remove existing container before build.
 
 It  is  possible to  manually  run  docker and  then  build  everything in  this
 container:
 ```
-$ ./build-env/bin/docker-run.sh pelion-bionic-source
-user@95a30883d637:/pelion-build$ ./build-env/bin/pelion-build-all.sh --install --arch=amd64
+$ ./build-env/bin/docker-run-env.sh bionic
+user@95a30883d637:/pelion-build$ ./build-env/bin/build-all.sh --install --arch=amd64
 ```
 
-The option `--install` is required when the script is executed manually in clear
-docker container, otherwise it will fail due to missing build dependencies.
+When  build  requires  different  architecture (when  cross-compilation  is  not
+available,  like for  *Red  Hat*)  `--arch=<architecture>` has  to  be added  to
+`docker-run-env.sh` before specifying target environment:
+```bash
+./build-env/bin/docker-run-env.sh --arch arm64 rhel
+```
 
-To provide  build  dependency  use  `--deps`  switch.  This  will  create  build
-dependencies  and  put  into local apt repository. This is enabled by default if
-not build/source/tar is set.
+The option  `--install` is required  when the script  is executed in  new docker
+container, otherwise it will fail due to missing build dependencies.
+
+To  provide  build  dependency  use  `--deps` switch.  This  will  create  build
+dependencies and  put into local repository.  This is enabled by  default if not
+build/source/tar is set.
 
 ## Generating tar archives
 
-A tar archive can be created from a binary release for Debian.  One option is to
-use the `pelion-build-all.sh`  script as described above.  Another  option is to
-invoke `build-env/bin/deb2tar.sh` directly.
+A tar archive can  be created from a binary release for  Debian and Ubuntu only.
+One  option is  to use  the `build-all.sh`  script as  described above.  Another
+option is to invoke
+`build-env/bin/deb2tar.sh` directly.
 
 ```
 $ build-env/bin/deb2tar.sh --help
@@ -214,7 +407,7 @@ created automatically.
 
 There is a reusable git cache in the directory `build/downloads`.
 
-Final Debian  packages are created in  `build/deploy/deb/bionic/main`, organized
+Final Debian packages are created in `build/deploy/deb/<DISTRO>/main`, organized
 in subdirectories per architecture:
 * `binary-amd64`
 * `binary-arm64`
@@ -223,36 +416,125 @@ in subdirectories per architecture:
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
 
+*Red Hat* and *Centos* packages are created in `build/deploy/rpm/<DISTRO>`:
+* source packages are on top of this directory
+* `noarch`, `x86_64` and `aarch64` directories contains final packages
+
+## Preparing Red Hat system before installation
+Here are notes for installation compiled packages on target system.
+
+### RHEL Repositories
+CodeReady and EPEL have to be  enabled before installation EPEL is required only
+for mbed-edge-example package.
+
+```bash
+sudo subscription-manager repos --enable codeready-builder-for-rhel-8-x86_64-rpms
+sudo yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+```
+
+### Docker
+RHEL 8 does not support Docker, to  use kubelet it is required to install Docker
+from  external repository.  This is  required only  to run  built binaries  (not
+required to do the actual build). To add the repository, run:
+
+```bash
+sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+```
+
+### SELinux
+SELinux is not  currently supported: `pelion-relay-term` service  will be killed
+when SELinux is enabled.
+
+SELinux  has to  be  disabled, set  to  permissive or  `node`  binary should  be
+excluded. More details about SELinux and its configuration here:
+https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/using_selinux/index
+
 ## Installing packages
 
-Build results can be installed onto a target system either by manually
-copying the packages to a target system and installing via apt or by
-making the packages available in an APT repository on a server and installing
-on the target via apt. The instructions in this section show how to install
-the packages manually.  See the next section for setting up an APT repository.
+Build results can  be installed onto a target system  either by manually copying
+the packages  to a  target system and  installing via apt/yum  or by  making the
+packages available  in an package repository  on a server and  installing on the
+target via  apt/yum. The instructions  in this section  show how to  install the
+packages  manually. See  the  next  section for  setting  up  an APT  repository
+(Debian/Ubuntu only).
 
-Copy the debian packages found in `build/deploy/deb/` to the
-target system and install with `apt`.
+### Installing on Debian or Ubuntu
+
+Copy  the debian  packages found  in `build/deploy/deb/<DISTRO>`  to the  target
+system and install with `apt`.
 
 Install all packages with the following command.
-```
+```bash
 $ sudo apt install -y ./*.deb
 ```
 
 Or, install a single package by specifying its deb file name.
-```
+```bash
 $ sudo apt install -y ./devicedb_<version>_<arch>.deb
 ```
 
-## Removing packages
+### Installing on Red Hat or Centos
+1.  Before installing  packages make  sure  that you  have subscription  enabled
+and   EPEL,  CodeReady   and  Docker   repositories  are   enabled  (see   [RHEL
+repositories](#rhel-Repositories) and [Docker](#docker)).
 
-To remove use command:
+2. Copy      content       of       `build/deploy/rpm/<distro>/<arch>`       and
+`build/deploy/rpm/<distro>/noarch/` to target system  (where `<arch>` is `amd64`
+or `arm64` and `<distro>` is `rhel8` or `centos8`).
+
+3. To  install use  `yum` command, for  example if all  packages are  in current
+directory run:
+```bash
+sudo yum install *.rpm
 ```
+
+Please  note  that  `mbed-edge-core`   and  `mbed-edge-core-devmode`  cannot  be
+installed simultaneously.
+
+4. Enable `systemd` services. After installation there are following services:
+```
+devicedb.service
+edge-core.service
+edge-proxy.service
+kubelet.service
+maestro.service
+mbed-fcc.service
+pelion-relay-term.service
+wait-for-pelion-identity.service
+```
+
+To enable all services, run:
+```bash
+sudo systemctl enable devicedb.service edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
+```
+
+Dependent     services      are     enabled     implicitly.      For     example
+`wait-for-pelion-identity.service`   is   enabled  when   `maestro.service`   is
+enabled; `edge-core.service` is  enabled when `wait-for-pelion-identity.service`
+is    enabled     so    enabling    `maestro.service`    will     also    enable
+`wait-for-pelion-identity.service` and `edge-core.service`.
+
+
+## Removing packages
+List  of packages  can  be  printed with  following  command  (here example  for
+packages in *Ubuntu Focal*):
+```bash
+$ ./build-env/bin/build-all.sh -d focal -l packages
+```
+
+To remove package on Debian/Ubuntu use command:
+```bash
 $ sudo apt remove -y <package name> --autoremove --purge
 ```
 
-After remove all package, manually remove credentials and config files:
+or on *Red Hat*/*Centos*:
+
+```bash
+$ sudo yum remove -y <package name>
 ```
+
+After removing all packages, manually remove credentials and config files:
+```bash
 $ sudo rm -rf /var/lib/pelion/
 $ sudo rm -rf /etc/pelion/
 ```
