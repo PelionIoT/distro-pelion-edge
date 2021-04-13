@@ -110,7 +110,8 @@ centos/8 rhel/8
 
 ## Preparing host to compile packages
 ### System requirements
-The `build-all.sh` Script requires docker, bash 4.2+ and gnu-getopt.
+The  `build-all.sh`  script  requires   docker,  bash  4.2+,  gnu-findutils  and
+gnu-getopt.
 
 To  build arm64  packages  for *Red  Hat*  or *Centos*  `qemu`  is required  and
 qemu-docker  integration  because  *Red  Hat*/*Centos* does  not  support  cross
