@@ -599,3 +599,19 @@ wget -q -O - http://<ip address>/key.gpg | sudo apt-key add -
 ## FOTA
 
 Firmware Over-The-Air(FOTA) behavior is currently undefined
+
+## Known Issues
+
+### iptables versioning
+
+There is a bug in iptables versions 1.8.0->1.8.2 that causes kubelet to create duplicate firewall rules.
+
+For more information, see the following known issues:
+* https://github.com/kubernetes/kubernetes/issues/71305
+* https://github.com/kubernetes/kubernetes/issues/76431
+
+Some suggested workarounds include:
+* Running the following command on the host: `update-alternatives --set iptables /usr/sbin/iptables-legacy`
+
+A possible fix includes:
+* Upgrade iptable to version 1.8.3+
