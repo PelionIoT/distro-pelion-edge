@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 source ${BASH_SOURCE[0]%/*}/../inc/build-all/runner.sh
 
 opt_usage="${0##*/} - build all packages:
