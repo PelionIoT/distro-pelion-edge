@@ -1,5 +1,5 @@
 #!/usr/bin/env groovy
-@Library('edge-ci@new_build_process') _
+@Library('edge-ci@rhel') _
 
 //linuxPelionEdge Function is implemented in edge-ci library which is currently a private repo and used for internal testing only
 linuxPelionEdge()
