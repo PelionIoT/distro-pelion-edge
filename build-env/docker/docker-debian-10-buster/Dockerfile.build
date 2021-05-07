@@ -31,7 +31,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		fakeroot \
 		sudo \
 		wget \
-        git
+        git \
+		rsync \
+		docker.io
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
