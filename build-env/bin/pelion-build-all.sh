@@ -126,7 +126,7 @@ function pelion_parse_args() {
     fi
 
     # relative path to repo
-    APT_REPO_PATH=build/apt/$DIST_CODENAME
+    APT_REPO_PATH=build/repo/$DIST_CODENAME
 }
 
 # run command in docker

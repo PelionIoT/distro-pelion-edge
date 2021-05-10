@@ -430,7 +430,7 @@ function pelion_docker_build() {
     SCRIPT_PATH=$(cd "`dirname \"$0\"`" && pwd)
     DOCKER_ROOT_DIR="/pelion-build"
     DOCKER_SCRIPT_PATH=$(echo $SCRIPT_PATH | sed "s:^$ROOT_DIR:$DOCKER_ROOT_DIR:")
-    APT_REPO="$ROOT_DIR"/build/apt/$DOCKER_DIST
+    APT_REPO="$ROOT_DIR"/build/repo/$DOCKER_DIST
     mkdir -p $APT_REPO
 
     # Use separate docker containers for source generation and package build.
@@ -439,6 +439,7 @@ function pelion_docker_build() {
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --source
@@ -448,6 +449,7 @@ function pelion_docker_build() {
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --build
@@ -457,6 +459,7 @@ function pelion_docker_build() {
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --build
@@ -467,6 +470,7 @@ function pelion_docker_build() {
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                --arch=$PELION_PACKAGE_TARGET_ARCH --verify
