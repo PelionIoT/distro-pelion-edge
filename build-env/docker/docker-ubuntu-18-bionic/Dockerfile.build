@@ -28,7 +28,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		fakeroot \
 		sudo \
 		wget \
-		git
+		git \
+		rsync \
+		docker.io
 
 #install tzdata package
 RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata

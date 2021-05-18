@@ -4,7 +4,7 @@ echo "WARNING: this script is deprecated. Use docker-run-env.sh instead"
 ROOT_DIR=$(cd "`dirname \"$0\"`"/../.. && pwd)
 
 DOCKER_DIST=$(echo $1 | cut -d- -f2)
-APT_REPO="$ROOT_DIR"/build/apt/$DOCKER_DIST
+APT_REPO="$ROOT_DIR"/build/repo/$DOCKER_DIST
 echo "Using APT repo dir: " $APT_REPO
 mkdir -p -m 755 $APT_REPO
 
