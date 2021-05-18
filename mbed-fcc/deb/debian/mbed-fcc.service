@@ -4,6 +4,7 @@ After=network-online.target
 
 [Service]
 ExecStart=/usr/bin/launch-fcc.sh
+EnvironmentFile=-/etc/default/mbed-fcc
 
 [Install]
 WantedBy=multi-user.target

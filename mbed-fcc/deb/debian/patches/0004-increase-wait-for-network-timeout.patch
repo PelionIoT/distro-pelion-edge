@@ -1,0 +1,34 @@
+From 5d596338b7770b8c79daa142775607028c6984f3 Mon Sep 17 00:00:00 2001
+From: Krzysztof Bembnista <krzysztof.bembnista@globallogic.com>
+Date: Tue, 18 May 2021 12:40:58 +0200
+Subject: [PATCH] increase wait for network timeout
+
+---
+ .../ftcd-comm-socket/source/ftcd_comm_socket.cpp              | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mbed-cloud-client/factory-configurator-client/ftcd-comm-socket/source/ftcd_comm_socket.cpp b/mbed-cloud-client/factory-configurator-client/ftcd-comm-socket/source/ftcd_comm_socket.cpp
+index dfd3462..9e88b04 100644
+--- a/mbed-cloud-client/factory-configurator-client/ftcd-comm-socket/source/ftcd_comm_socket.cpp
++++ b/mbed-cloud-client/factory-configurator-client/ftcd-comm-socket/source/ftcd_comm_socket.cpp
+@@ -27,7 +27,7 @@
+ #include "fcc_malloc.h"
+ 
+ #define NUM_OF_PENDING_CONNECTIONS 1
+-#define NUM_OF_TRIES_TO_GET_INTERFACE_INFO 5
++#define NUM_OF_TRIES_TO_GET_INTERFACE_INFO 10
+ #define TRACE_GROUP "fcsk"
+ #define RANDOM_PORT_MIN 1024
+ #define RANDOM_PORT_MAX 65535
+@@ -204,7 +204,7 @@ bool FtcdCommSocket::init()
+         mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "\n Trying receive interface ...");
+         result = pal_getNetInterfaceInfo(_interface_index, _net_interface_info);
+         if (result != 0) {
+-            pal_osDelay(200);
++            pal_osDelay(1000);
+         } else {//In case we have interface info we print it
+             if (_required_domain_type != FTCD_IPV4) {
+                 mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "\n Illegal domain type");
+-- 
+2.31.1
+

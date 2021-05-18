@@ -19,19 +19,16 @@
 MBED_FOLDER=/var/lib/pelion/mbed
 MCC_CONFIG_FOLDER=$MBED_FOLDER/mcc_config
 
-CREDS_FOLDER=/var/lib/creds
-CREDS_CBOR_FILE=$CREDS_FOLDER/device.cbor
+CREDS_FOLDER=/var/lib/pelion/creds
 
 if [ -e ${MCC_CONFIG_FOLDER} ]; then
     echo "mcc_config exists. Success!"
     exit 0
-elif [ ! -f ${CREDS_CBOR_FILE} ]; then
-	echo "edge-core launch failure: please verify $CREDS_CBOR_FILE"
-	exit 1
 fi
 
 cd $CREDS_FOLDER
 export ENTROPYSOURCE=/dev/random
+
 /usr/bin/factory-configurator-client-example.elf
 
 if [ ! -d $CREDS_FOLDER/pal/WORKING ]; then
