@@ -1,0 +1,37 @@
+From edd2da2c0c1ae535ff7e106bebf6edade85c2dba Mon Sep 17 00:00:00 2001
+From: Krzysztof Bembnista <krzysztof.bembnista@globallogic.com>
+Date: Fri, 14 May 2021 18:07:13 +0200
+Subject: [PATCH] add ETHERNET_LINUX_TCP_PORT env to override server tcp port
+
+---
+ source/fce_linux_socket_helper.cpp | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/source/fce_linux_socket_helper.cpp b/source/fce_linux_socket_helper.cpp
+index 7950295..5240d3e 100644
+--- a/source/fce_linux_socket_helper.cpp
++++ b/source/fce_linux_socket_helper.cpp
+@@ -41,7 +41,19 @@ FtcdCommBase *fce_create_comm_interface(void)
+         g_socket_iface = env_socket_iface;
+     }
+ 
+-    return new FtcdCommSocket(g_socket_iface, FTCD_IPV4, FTD_SERVER_TCP_PORT, FTCD_COMM_NET_ENDIANNESS_LITTLE, msg_header_token, true);
++	uint16_t tcp_port = FTD_SERVER_TCP_PORT;
++
++	const char * tcp_port_env_str = std::getenv("ETHERNET_LINUX_TCP_PORT");
++
++	if (tcp_port_env_str) {
++		unsigned long tcp_port_long = std::strtoul(tcp_port_env_str, nullptr, 10);
++
++		if (tcp_port_long < 65535) {
++			tcp_port = (uint16_t) tcp_port_long;
++		}
++	}
++
++    return new FtcdCommSocket(g_socket_iface, FTCD_IPV4, tcp_port, FTCD_COMM_NET_ENDIANNESS_LITTLE, msg_header_token, true);
+ }
+ 
+ void fce_destroy_comm_interface(void)
+-- 
+2.31.1
+
