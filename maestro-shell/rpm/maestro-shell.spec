@@ -14,7 +14,7 @@ Patch0:         greaselib-autoreconf.patch
 Patch1:         gperftools-enable-unwind.patch
 
 Requires:       maestro
-BuildRequires:  m4 python27 gcc-c++ golang < 1.15 golang >= 1.14 libunwind-devel
+BuildRequires:  m4 python27 gcc-c++ golang < 1.15 libunwind-devel
 
 %global __requires_exclude (libgrease\\.so\\.1|libtcmalloc_minimal\\.so\\.4)
 

@@ -11,7 +11,7 @@ License:        Apache-2.0
 URL:            %{gourl}
 Source0:        %{gosource}
 
-BuildRequires:  golang >= 1.14, golang < 1.15
+BuildRequires:  golang < 1.15
 Requires:		conntrack-tools docker-ce containernetworking-plugins containernetworking-plugin-c2d ebtables ethtool iproute iptables util-linux socat
 Requires:       edge-proxy pe-utils
 Requires(post): systemd-units
