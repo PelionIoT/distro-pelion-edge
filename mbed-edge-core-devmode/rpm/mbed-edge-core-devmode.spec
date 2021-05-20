@@ -1,5 +1,5 @@
 %global forgeurl https://github.com/ARMmbed/mbed-edge
-%global tag      0.13.0
+%global tag      0.17.0
 %global debug_package %{nil}
 %forgemeta
 
@@ -15,14 +15,6 @@ BuildRequires:  cmake doxygen graphviz mosquitto-devel systemd systemd-rpm-macro
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
-Patch0: fix-calculation-of-remaining-buffer-size-when-callin.patch
-Patch1: fix-bug-dynamic-resources-should-be-updatable-by-the.patch
-Patch2: Fixed-edge-cloud-write-errors.patch
-Patch3: Broadcast-gateway-stats-to-LWM2M-resources.patch
-Patch4: allow-resources-to-be-named.patch
-Patch5: patch-mbed-edge-with-the-ability-to-override-pelion-.patch
-Patch6: Remove-Version.patch
-Patch7: Fix-CPU-Temp-Path.patch
 
 %description
 Device Management Edge (from now on, just Edge) is a product that
@@ -44,14 +36,6 @@ with and without Device Management connectivity.
 
 %prep
 %setup -q %{forgesetupargs}
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-%patch4 -p1
-%patch5 -p1
-%patch6 -p1
-%patch7 -p1
 
 %build
 cmake . -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DDEVELOPER_MODE=ON \

@@ -1,5 +1,5 @@
 %global forgeurl https://github.com/ARMmbed/mbed-edge-examples
-%global tag      0.10.0
+%global tag      0.16.0
 %forgemeta
 %global builddir %{_builddir}/%{archivename}
 %global debug_package %{nil}
