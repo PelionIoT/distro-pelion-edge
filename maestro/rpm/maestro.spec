@@ -16,7 +16,7 @@ Patch1:        greaselib-autoreconf.patch
 Patch2:        gperftools-enable-unwind.patch
 Patch3:        eventfd.patch
 
-BuildRequires: m4 python27 gcc-c++ golang < 1.15 golang >= 1.14 libunwind-devel
+BuildRequires: m4 python27 gcc-c++ golang < 1.15 libunwind-devel
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
