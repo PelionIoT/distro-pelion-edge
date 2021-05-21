@@ -23,6 +23,7 @@ PACKAGES=(
 DISTNAME=rhel8
 
 #METAPACKAGES=(
+#    'pelion'
 #    'pelion-base'
 #    'pelion-container-orchestration'
 #    'pelion-protocol-engine'

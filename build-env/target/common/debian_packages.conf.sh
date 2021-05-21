@@ -21,6 +21,7 @@ PACKAGES=(
 )
 
 METAPACKAGES=(
+    'pelion'
     'pelion-base'
     'pelion-container-orchestration'
     'pelion-protocol-engine'
