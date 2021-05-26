@@ -1,4 +1,4 @@
-Source: pelion
+Source: pelion-edge
 Section: metapackages
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
@@ -6,7 +6,7 @@ Build-Depends: debhelper (>=9)
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
-Package: pelion
+Package: pelion-edge
 Architecture: all
 Depends: pelion-base, mbed-edge-core, pelion-container-orchestration, mbed-fcc
 Description: Pelion Edge full package set
