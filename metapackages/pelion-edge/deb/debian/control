@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: pelion-edge
 Architecture: all
-Depends: pelion-base, mbed-edge-core, pelion-container-orchestration, mbed-fcc
+Depends: pelion-edge-base, mbed-edge-core, pelion-edge-container-orchestration, mbed-fcc
 Description: Pelion Edge full package set
  Combine pelion base packages and pelion container orchestration packages.

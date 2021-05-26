@@ -24,9 +24,9 @@ DISTNAME=rhel8
 
 #METAPACKAGES=(
 #    'pelion-edge'
-#    'pelion-base'
-#    'pelion-container-orchestration'
-#    'pelion-protocol-engine'
+#    'pelion-edge-base'
+#    'pelion-edge-container-orchestration'
+#    'pelion-edge-protocol-engine'
 #)
 
 

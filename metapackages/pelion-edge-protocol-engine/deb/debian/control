@@ -1,4 +1,4 @@
-Source: pelion-protocol-engine
+Source: pelion-edge-protocol-engine
 Section: metapackages
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
@@ -6,7 +6,7 @@ Build-Depends: debhelper (>=9)
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
-Package: pelion-protocol-engine
+Package: pelion-edge-protocol-engine
 Architecture: all
 Depends: devicedb, global-node-modules, mbed-edge-examples, mbed-edge-core-devmode | mbed-edge-core
 Description: protocol-engine package group
