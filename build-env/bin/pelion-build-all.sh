@@ -34,7 +34,7 @@ PACKAGES=(
 )
 
 METAPACKAGES=(
-    'pelion'
+    'pelion-edge'
     'pelion-base'
     'pelion-container-orchestration'
     'pelion-protocol-engine'
