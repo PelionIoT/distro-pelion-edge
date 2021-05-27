@@ -16,6 +16,7 @@ PELION_APT_REPO_DIR=$PELION_DEB_DEPLOY_DIR/apt-repo
 PELION_GPG_KEYNAME=Pelion_GPG_key_private.gpg
 PELION_GPG_KEY_ID=""
 PELION_GPG_KEY_PATH=$PELION_DEB_DEPLOY_DIR/gpg
+PELION_GPG_ENABLE_SIGNING=true
 
 PELION_APT_REPO_INSTALL=false
 
@@ -45,6 +46,10 @@ function pelion_apt_repo_parse_args() {
                 PELION_APT_REPO_INSTALL=true
                 ;;
 
+            --no-sign)
+                PELION_GPG_ENABLE_SIGNING=false
+                ;;
+
             --help|-h)
                 echo "Usage: $(basename "$0") [Options]"
                 echo ""
@@ -52,6 +57,7 @@ function pelion_apt_repo_parse_args() {
                 echo " --key-name=<name>         Filename of secret GPG key."
                 echo " --key-[id|path]=<id|path> Use key id of existing GPG key or path where private key is placed."
                 echo " --install                 Installs the necessary tools to create structure for apt repository."
+                echo " --no-sign                 Don't sign any files with GPG"
                 echo " --help,-h                 Print this message."
                 echo ""
                 echo "Default mode: $(basename "$0") --key-name=$PELION_GPG_KEYNAME --key-path=$PELION_GPG_KEY_PATH"
@@ -246,13 +252,19 @@ function pelion_apt_repo_update() {
         sudo apt-get install -y gnupg devscripts dpkg-sig apt-utils
     fi
 
-    pelion_apt_repo_gpg_import
+    if $PELION_GPG_ENABLE_SIGNING; then
+        pelion_apt_repo_gpg_import
+    fi
 
     pelion_apt_repo_pool_update
-    pelion_apt_repo_pool_sign_with_gpg_key
+    if $PELION_GPG_ENABLE_SIGNING; then
+        pelion_apt_repo_pool_sign_with_gpg_key
+    fi
 
     pelion_apt_repo_dists_update
-    pelion_apt_repo_dists_sign_with_gpg_key
+    if $PELION_GPG_ENABLE_SIGNING; then
+        pelion_apt_repo_dists_sign_with_gpg_key
+    fi
 }
 
 # Entry point
