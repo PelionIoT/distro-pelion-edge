@@ -50,6 +50,10 @@ function pelion_apt_repo_parse_args() {
                 PELION_GPG_ENABLE_SIGNING=false
                 ;;
 
+            --distro)
+                PELION_PACKAGES_SUPPORTED_DIST=($1)
+                ;;
+
             --help|-h)
                 echo "Usage: $(basename "$0") [Options]"
                 echo ""
@@ -58,6 +62,7 @@ function pelion_apt_repo_parse_args() {
                 echo " --key-[id|path]=<id|path> Use key id of existing GPG key or path where private key is placed."
                 echo " --install                 Installs the necessary tools to create structure for apt repository."
                 echo " --no-sign                 Don't sign any files with GPG"
+                echo " --distro=<distro-list>    Replace list of supported distros"
                 echo " --help,-h                 Print this message."
                 echo ""
                 echo "Default mode: $(basename "$0") --key-name=$PELION_GPG_KEYNAME --key-path=$PELION_GPG_KEY_PATH"
