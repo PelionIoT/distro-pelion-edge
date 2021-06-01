@@ -50,8 +50,8 @@ function pelion_apt_repo_parse_args() {
                 PELION_GPG_ENABLE_SIGNING=false
                 ;;
 
-            --distro)
-                PELION_PACKAGES_SUPPORTED_DIST=($1)
+            --distro=*)
+                PELION_PACKAGES_SUPPORTED_DIST=(${opt#*=})
                 ;;
 
             --help|-h)
