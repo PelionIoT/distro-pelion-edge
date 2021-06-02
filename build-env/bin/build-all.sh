@@ -138,6 +138,13 @@ if [ -v arg_print_env ]; then
     exit 0
 fi
 
+# set --install if --docker is in use (and container is not reused)
+if $arg_install || [[ -v arg_docker  &&  ! -v arg_container ]]; then
+    opt_install=true
+else
+    opt_install=false
+fi
+
 # go to root: same for docker and native build
 cd $ROOT_DIR
 

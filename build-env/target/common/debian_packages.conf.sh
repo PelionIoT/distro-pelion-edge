@@ -76,7 +76,7 @@ function run_source {
     shift
     local -a args=('--source')
 
-    if $arg_install; then
+    if $opt_install; then
         args+=('--install')
     fi
 
@@ -96,7 +96,7 @@ function run_build {
     shift
     local -a args=('--build')
 
-    if $arg_install; then
+    if $opt_install; then
         args+=('--install')
     fi
 

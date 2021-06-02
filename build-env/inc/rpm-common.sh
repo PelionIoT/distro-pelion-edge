@@ -176,7 +176,7 @@ deploy() {
 # Overridable.
 all() {
     dispatch download
-    $arg_install && dispatch install_deps
+    $opt_install && dispatch install_deps
     dispatch conjure_sources
     dispatch conjure_spec_files
     dispatch conjure_files
@@ -250,6 +250,13 @@ if [ -v arg_arch ] && [ ! -v arg_docker ]; then
     exit 1
 fi
 
+# set --install if --docker is in use (and container is not reused)
+if $arg_install || [[ -v arg_docker  &&  ! -v arg_container ]]; then
+    opt_install=true
+else
+    opt_install=false
+fi
+
 }
 
 opt_dispatch=parse_args
@@ -292,7 +299,7 @@ if [ -v arg_docker ];then
             args+=( --source )
         fi
 
-        if $arg_install; then
+        if $opt_install; then
             args+=( --install )
         fi
 
