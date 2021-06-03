@@ -1,3 +1,9 @@
+mbed-edge-core (0.13.0-1) stable; urgency=medium
+
+  * Set the package version to 0.13.0-1
+
+ -- Nic Costa <nic.costa@gmail.com>  Thu, 03 Jun 2021 18:18:03 +0000
+
 mbed-edge-core (0.0.1-1) unstable; urgency=medium
 
   * Initial release
