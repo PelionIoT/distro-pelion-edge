@@ -1,263 +1,250 @@
-From 4de4ab711fd8265fcbd5b43ca4a0a46e4d3071ea Mon Sep 17 00:00:00 2001
-From: Yash Goyal <yash.goyal@arm.com>
-Date: Tue, 17 Nov 2020 10:35:17 -0600
+From 6be2728b0165722906be2e24c712da6892541de9 Mon Sep 17 00:00:00 2001
+From: Nic Costa <nic.costa@gmail.com>
+Date: Thu, 3 Jun 2021 16:07:05 -0500
 Subject: [PATCH] Modified FCCE to take in CBOR file to generate the secure
  storage
 
+Added a -f flag to take a device.cbor file as input instead of
+listening on a TCP socket.
 ---
- source/factory_client_example.cpp | 129 ++++++++++++------------------
- 1 file changed, 52 insertions(+), 77 deletions(-)
+ source/factory_client_example.cpp | 160 +++++++++++++++++++++++-------
+ 1 file changed, 123 insertions(+), 37 deletions(-)
 
 diff --git a/source/factory_client_example.cpp b/source/factory_client_example.cpp
-index 218d0fe..5df7512 100644
+index 12d929d..0e5091a 100644
 --- a/source/factory_client_example.cpp
 +++ b/source/factory_client_example.cpp
-@@ -13,17 +13,14 @@
- // See the License for the specific language governing permissions and
- // limitations under the License.
- // ----------------------------------------------------------------------------
-- 
- // Note: this macro is needed on armcc to get the the PRI*32 macros
- // from inttypes.h in a C++ code.
- #ifndef __STDC_FORMAT_MACROS
- #define __STDC_FORMAT_MACROS
- #endif
--
+@@ -23,6 +23,7 @@
  #include <stdio.h>
  #include <stdlib.h>
  #include <inttypes.h>
--
- #include "mcc_common_setup.h"
++#include <unistd.h>
+ 
  #include "factory_configurator_client.h"
  #include "ftcd_comm_base.h"
-@@ -37,9 +34,7 @@
- #include "mcc_se_init.h"
- #endif 
+@@ -38,54 +39,37 @@
  #define TRACE_GROUP     "fce"  // Maximum 4 characters
--
+ 
  static int factory_example_success = EXIT_FAILURE;
--
- /**
- * Device factory flow
- * - Runs in a task of its own
-@@ -48,7 +43,6 @@ static void factory_flow_task()
++static enum {
++    TCP_MODE,
++    CBOR_MODE
++} factory_flow_mode;
++static char *cbor_file_path;
+ 
+-/**
+-* Device factory flow
+-* - Runs in a task of its own
+-*/
+-static void factory_flow_task()
++static void factory_flow_task_tcp()
  {
      bool success;
-     fcc_status_e fcc_status = FCC_STATUS_SUCCESS;
+-    fcc_status_e fcc_status = FCC_STATUS_SUCCESS;
 -
-     FtcdCommBase *ftcd_comm = NULL;
-     ftcd_comm_status_e ftcd_comm_status = FTCD_COMM_STATUS_SUCCESS;
-     ftcd_comm_status_e ftcd_comm_status_first_err = FTCD_COMM_STATUS_SUCCESS;
-@@ -57,50 +51,41 @@ static void factory_flow_task()
+-    FtcdCommBase *ftcd_comm = NULL;
+-    ftcd_comm_status_e ftcd_comm_status = FTCD_COMM_STATUS_SUCCESS;
+-    ftcd_comm_status_e ftcd_comm_status_first_err = FTCD_COMM_STATUS_SUCCESS;
++    bool is_storage_deleted = false;
+     uint8_t *input_message = NULL;
+     uint32_t input_message_size = 0;
      uint8_t *response_message = NULL;
      size_t response_message_size = 0;
-     bool is_storage_deleted = false;
+-    bool is_storage_deleted = false;
 -
- #if defined(__SXOS__)
-     mcc_platform_do_wait(3000);
- #else
-     setvbuf(stdout, (char *)NULL, _IONBF, 0); /* Avoid buffering on test output */
- #endif
+-    setvbuf(stdout, (char *)NULL, _IONBF, 0); /* Avoid buffering on test output */
 -
-     mcc_platform_sw_build_info();
+-    fcc_platform_sw_build_info();
 -
-     // Initialize storage
-     success = mcc_platform_storage_init() == 0;
-     if (success != true) {
-         tr_error("Failed initializing mcc platform storage\n");
-         return;
-     }
--
-     fcc_status = fcc_init();
-     if (fcc_status != FCC_STATUS_SUCCESS) {
-         tr_error("Failed initializing factory configurator client\n");
-         return;
-     }
--
-     // Create communication interface object
--    ftcd_comm = fce_create_comm_interface();
--    if (ftcd_comm == NULL) {
--        tr_error("Failed creating communication object\n");
--        goto out1;
--    }
--
--    //init ftcd_comm object
--    success = ftcd_comm->init();
+-    // Initialize storage
+-    success = fcc_platform_storage_init();
 -    if (success != true) {
--        tr_error("Failed instantiating communication object\n");
--        goto out2;
+-        tr_error("Failed initializing mcc platform storage\n");
+-        return;
 -    }
 -
-+    // ftcd_comm = fce_create_comm_interface();
-+    // if (ftcd_comm == NULL) {
-+    //     tr_error("Failed creating communication object\n");
-+    //     // goto out1;
-+    // }
-+    // //init ftcd_comm object
-+    // success = ftcd_comm->init();
-+    // if (success != true) {
-+    //     tr_error("Failed instantiating communication object\n");
-+    //     // goto out2;
-+    // }
+-    fcc_status = fcc_init();
+-    if (fcc_status != FCC_STATUS_SUCCESS) {
+-        tr_error("Failed initializing factory configurator client\n");
+-        return;
+-    }
++    FtcdCommBase *ftcd_comm = NULL;
++    ftcd_comm_status_e ftcd_comm_status = FTCD_COMM_STATUS_SUCCESS;
++    ftcd_comm_status_e ftcd_comm_status_first_err = FTCD_COMM_STATUS_SUCCESS;
++    fcc_status_e fcc_status = FCC_STATUS_SUCCESS;
+ 
+     // Create communication interface object
+     ftcd_comm = fce_create_comm_interface();
+     if (ftcd_comm == NULL) {
+         tr_error("Failed creating communication object\n");
+-        goto out1;
++        return;
+     }
+ 
+     //init ftcd_comm object
+     success = ftcd_comm->init();
+     if (success != true) {
+         tr_error("Failed instantiating communication object\n");
+-        goto out2;
++        goto out;
+     }
+ 
      mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Factory flow begins...");
--
--    while (true) {
-+    // while (true) {
-         factory_example_success = EXIT_FAILURE;
-         // wait for message from communication layer
--        ftcd_comm_status = ftcd_comm->wait_for_message(&input_message, &input_message_size);
--        if (ftcd_comm_status == FTCD_COMM_STATUS_SUCCESS) {
--
-+        // ftcd_comm_status = ftcd_comm->wait_for_message(&input_message, &input_message_size);
-+        // if (ftcd_comm_status == FTCD_COMM_STATUS_SUCCESS) {
-             // If this is the first message and the storage wasn't deleted yet, delete the storage.
-             // The call to this function should be after wait_for_message success, to prevent a case when the storage is deleted after resetting the board.
-             // This way we make sure that the storage is deleted only when factory flow is actually running.
-@@ -108,78 +93,74 @@ static void factory_flow_task()
+@@ -103,7 +87,7 @@ static void factory_flow_task()
                  fcc_status = fcc_storage_delete();
                  if (fcc_status != FCC_STATUS_SUCCESS) {
                      tr_error("Failed to reset storage\n");
 -                    goto out2;
-+                    // goto out2;
++                    break;
                  }
                  is_storage_deleted = true;
                  mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Storage is erased");
--
- #ifdef MBED_CONF_MBED_CLOUD_CLIENT_SECURE_ELEMENT_SUPPORT
-                 //Initialize secure element
+@@ -113,7 +97,7 @@ static void factory_flow_task()
                  int res = mcc_se_init();
                  if (res != 0) {
                      tr_error("Failed to initialize secure element\n");
 -                    goto out1;
-+                    // goto out1;
++                    break;
                  }
  #endif
              }
--
-             // process request and get back response
--            fcc_status = fcc_bundle_handler(input_message, input_message_size, &response_message, &response_message_size);
-+            FILE *f = fopen("device.cbor", "rb");
-+            fseek(f, 0, SEEK_END);
-+            long fsize = ftell(f);
-+            fseek(f, 0 , SEEK_SET);
-+            uint8_t *string = (uint8_t*)malloc(fsize + 1);
-+            fread(string, 1, fsize, f);
-+            fclose(f);
-+            tr_info("Read %d from file", fsize);
-+            fcc_status = fcc_bundle_handler(string, fsize, &response_message, &response_message_size);
-             if ((fcc_status == FCC_STATUS_BUNDLE_RESPONSE_ERROR) || (response_message == NULL) || (response_message_size == 0)) {
--                ftcd_comm_status = FTCD_COMM_FAILED_TO_PROCESS_DATA;
-+                // ftcd_comm_status = FTCD_COMM_FAILED_TO_PROCESS_DATA;
-                 mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Failed to process data");
-             }
--        } else {
--            tr_error("Failed getting factory message");
--        }
--
--        ftcd_comm_status_first_err = ftcd_comm_status;
--        ftcd_comm_status = ftcd_comm->send_response(response_message, response_message_size, ftcd_comm_status);
--        if (ftcd_comm_status != FTCD_COMM_STATUS_SUCCESS) {
--            ftcd_comm->send_response(NULL, 0, ftcd_comm_status);
--            if (ftcd_comm_status_first_err == FTCD_COMM_STATUS_SUCCESS) {
--                ftcd_comm_status_first_err = ftcd_comm_status;
--            }
--        }
--
-+        // } else {
-+        //     tr_error("Failed getting factory message");
-+        // }
-+        // ftcd_comm_status_first_err = ftcd_comm_status;
-+        // ftcd_comm_status = ftcd_comm->send_response(response_message, response_message_size, ftcd_comm_status);
-+        // if (ftcd_comm_status != FTCD_COMM_STATUS_SUCCESS) {
-+        //     ftcd_comm->send_response(NULL, 0, ftcd_comm_status);
-+        //     if (ftcd_comm_status_first_err == FTCD_COMM_STATUS_SUCCESS) {
-+        //         ftcd_comm_status_first_err = ftcd_comm_status;
-+        //     }
-+        // }
-         if (input_message) {
-             fcc_free(input_message);
+@@ -155,12 +139,100 @@ static void factory_flow_task()
          }
-         if (response_message) {
-             fcc_free(response_message);
-         }
--
--        if (ftcd_comm_status_first_err == FTCD_COMM_STATUS_SUCCESS) {
--            // Success
--            mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Successfully processed comm message");
--            factory_example_success = EXIT_SUCCESS;
--        }
--
--        if (fcc_is_session_finished()) {
--            break;
--        }
--    }
--
+     }
+ 
 -out2:
--    ftcd_comm->finish();
--    delete ftcd_comm;
--    fce_destroy_comm_interface();
--
++out:
+     ftcd_comm->finish();
+     delete ftcd_comm;
+     fce_destroy_comm_interface();
++}
++
++static void factory_flow_task_cbor()
++{
++    uint8_t *response_message = NULL;
++    size_t response_message_size = 0;
++    fcc_status_e fcc_status = FCC_STATUS_SUCCESS;
++
++    mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Factory flow begins...");
++    factory_example_success = EXIT_FAILURE;
++
++    fcc_status = fcc_storage_delete();
++    if (fcc_status != FCC_STATUS_SUCCESS) {
++        tr_error("Failed to reset storage\n");
++        return;
++    }
++    mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Storage is erased");
++
++#ifdef MBED_CONF_MBED_CLOUD_CLIENT_SECURE_ELEMENT_SUPPORT
++    // Initialize secure element
++    int res = mcc_se_init();
++    if (res != 0) {
++        tr_error("Failed to initialize secure element\n");
++        return;
++    }
++#endif
++
++    FILE *f = NULL;
++    f = fopen(cbor_file_path, "rb");
++    fseek(f, 0, SEEK_END);
++    long fsize = ftell(f);
++    fseek(f, 0 , SEEK_SET);
++
++    uint8_t *cbor_data = (uint8_t*)fcc_malloc(fsize + 1);
++    if (cbor_data == NULL) {
++        tr_error("Failed to allocate cbor file read buffer\n");
++        return;
++    }
++
++    size_t cbor_data_size = fread(cbor_data, 1, fsize, f);
++    fclose(f);
++    tr_info("Read %d from file", cbor_data_size);
++
++    fcc_status = fcc_bundle_handler(cbor_data, cbor_data_size, &response_message, &response_message_size);
++    if ((fcc_status == FCC_STATUS_BUNDLE_RESPONSE_ERROR) || (response_message == NULL) || (response_message_size == 0)) {
++        mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Failed to process data");
++    }
++    factory_example_success = EXIT_SUCCESS;
++
++    if (cbor_data) {
++        fcc_free(cbor_data);
++    }
++    if (response_message) {
++        fcc_free(response_message);
++    }
++}
+ 
 -out1:
--
-+        // if (ftcd_comm_status_first_err == FTCD_COMM_STATUS_SUCCESS) {
-+        //     // Success
-+        //     mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Successfully processed comm message");
-+        //     factory_example_success = EXIT_SUCCESS;
-+        // }
-+        // if (fcc_is_session_finished()) {
-+        //     break;
-+        // }
-+    // }
-+// out2:
-+//     ftcd_comm->finish();
-+//     delete ftcd_comm;
-+//     fce_destroy_comm_interface();
-+// out1:
++/**
++* Device factory flow
++* - Runs in a task of its own
++*/
++static void factory_flow_task()
++{
++    bool success;
++    fcc_status_e fcc_status = FCC_STATUS_SUCCESS;
++
++    setvbuf(stdout, (char *)NULL, _IONBF, 0); /* Avoid buffering on test output */
++
++    fcc_platform_sw_build_info();
++
++    // Initialize storage
++    success = fcc_platform_storage_init();
++    if (success != true) {
++        tr_error("Failed initializing mcc platform storage\n");
++        return;
++    }
++
++    fcc_status = fcc_init();
++    if (fcc_status != FCC_STATUS_SUCCESS) {
++        tr_error("Failed initializing factory configurator client\n");
++        return;
++    }
++
++    if (factory_flow_mode == TCP_MODE) {
++        factory_flow_task_tcp();
++    } else if (factory_flow_mode == CBOR_MODE) {
++        factory_flow_task_cbor();
++    } else {
++        tr_error("Unsupported operating mode: %d\n", factory_flow_mode);
++    }
+ 
      fcc_status = fcc_finalize();
      if (fcc_status != FCC_STATUS_SUCCESS) {
-         tr_error("Failed finalizing factory client\n");
-     }
--
-     if (factory_example_success == EXIT_SUCCESS) {
-         mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Successfully completed factory flow");
-     }
-     mbed_trace_helper_finish();
--
-     fflush(stdout);
- }
--
- /**
- * Example main
+@@ -181,9 +253,9 @@ out1:
  */
-@@ -193,9 +174,7 @@ int main(int argc, char * argv[])
-     (void) argc;
-     (void) argv;
- #endif
+ int main(int argc, char * argv[])
+ {
+-    (void) argc;
+-    (void) argv;
 -
++    // set defaults
++    factory_flow_mode = TCP_MODE;
++    cbor_file_path = NULL;
      bool success = false;
--
+ 
      // careful, mbed-trace initialization may happen at this point if and only if we 
-     // do NOT use mutex by passing "true" at the second param for this functions.
-     // In case mutex is used, this function MUST be moved *after* pal_init()
-@@ -205,16 +184,12 @@ int main(int argc, char * argv[])
-         // and if failed - no tr_* print is eligible.
+@@ -197,6 +269,20 @@ int main(int argc, char * argv[])
          return EXIT_FAILURE;
      }
--
+ 
++    // process CLI opts
++    int opt;
++    while ((opt = getopt(argc, argv, "f:")) != -1) {
++        switch (opt) {
++        case 'f':
++            factory_flow_mode = CBOR_MODE;
++            cbor_file_path = optarg;
++            break;
++        default:
++            tr_error("Usage: %s [-f path/to/device.cbor]\n", argv[0]);
++            return EXIT_FAILURE;
++        }
++    }
++
      success = false;
--
-     success = (mcc_platform_init() == 0);
-     if (success) {
-         success = mcc_platform_run_program(&factory_flow_task);
-     }
--
-     // Print dynamic RAM statistics in case ENABLE_RAM_PROFILING cflag introduced
-     fcc_stats_print_summary();
--
-     return success ? factory_example_success : EXIT_FAILURE;
--}
-+}
-\ No newline at end of file
+ 
+     success = fcc_platform_initialization();
 -- 
-2.28.0
+2.17.1
 
