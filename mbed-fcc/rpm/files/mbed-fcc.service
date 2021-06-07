@@ -1,0 +1,9 @@
+[Unit]
+Description=Mbed FCC
+After=systemd-networkd-wait-online.service
+
+[Service]
+ExecStart=/usr/bin/launch-fcc.sh
+
+[Install]
+RequiredBy=multi-user.target

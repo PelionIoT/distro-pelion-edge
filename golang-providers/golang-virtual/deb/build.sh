@@ -6,11 +6,11 @@ PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
 source "$PELION_PACKAGE_DIR"/../../../build-env/inc/build-common.sh
 
-PELION_PACKAGE_PRE_BUILD_CALLBACK=cache_golang_packages
+PELION_PACKAGE_PRE_BUILD_DEP_CALLBACK=cache_golang_packages
 
 function cache_golang_packages() {
     echo "Caching golang-14 in local repository"
-    local OUTPUT_DIR="$ROOT_DIR"/build/apt/$DOCKER_DIST/pe-dependencies/
+    local OUTPUT_DIR="$ROOT_DIR"/build/repo/$DOCKER_DIST/pe-dependencies/
 
     mkdir -p $OUTPUT_DIR
     cd $OUTPUT_DIR

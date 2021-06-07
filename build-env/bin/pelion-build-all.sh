@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "WARNING: this script is deprecated. Use build-all.sh instead"
+
 set -e
 
 SCRIPT_DIR=$(dirname "$0")
@@ -32,9 +34,10 @@ PACKAGES=(
 )
 
 METAPACKAGES=(
-    'pelion-base'
-    'pelion-container-orchestration'
-    'pelion-protocol-engine'
+    'pelion-edge'
+    'pelion-edge-base'
+    'pelion-edge-container-orchestration'
+    'pelion-edge-protocol-engine'
 )
 
 PELION_PACKAGE_SOURCE=false
@@ -124,7 +127,7 @@ function pelion_parse_args() {
     fi
 
     # relative path to repo
-    APT_REPO_PATH=build/apt/$DIST_CODENAME
+    APT_REPO_PATH=build/repo/$DIST_CODENAME
 }
 
 # run command in docker

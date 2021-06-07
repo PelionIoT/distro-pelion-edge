@@ -1,0 +1,13 @@
+Source: pelion-edge-container-orchestration
+Section: metapackages
+Priority: optional
+Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: pelion-edge-container-orchestration
+Architecture: all
+Depends: kubelet
+Description: container-orchestration package group
+ Combine kubelet

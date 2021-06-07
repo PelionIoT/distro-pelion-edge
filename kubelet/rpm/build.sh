@@ -1,0 +1,1 @@
+../../build-env/bin/rpm-go-build.sh

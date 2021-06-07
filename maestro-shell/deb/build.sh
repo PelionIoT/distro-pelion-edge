@@ -8,7 +8,7 @@ PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 export PACKAGE_BRANCH="2c90fbe2552c58ec5121b75a08718be6ebe5a791"
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["git@github.com:armPelionEdge/maestro-shell.git"]="$PACKAGE_BRANCH")
+    ["https://github.com/armPelionEdge/maestro-shell.git"]="$PACKAGE_BRANCH")
 
 PELION_PACKAGE_PRE_BUILD_CALLBACK=configure_python
 

@@ -1,0 +1,5 @@
+{
+    "debug":            false,
+    "log-level":        "error",
+    "max-concurrent-downloads": 1
+}

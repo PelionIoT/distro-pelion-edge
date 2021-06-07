@@ -1,9 +1,10 @@
 %global goipath github.com/armPelionEdge/maestro
-%global commit  d224292b87dd5d60fae4e24d746875e2c49c802d
+%global tag     v2.9.0
+%global version v2.9.0
 %gometa
 
 Name:          maestro
-Version:       0.0.1
+Version:       2.9.0
 Release:       1%{?dist}
 Summary:       Pelion Edge systems management daemon
 
@@ -11,8 +12,14 @@ License:       Apache-2.0
 URL:           %{gourl}
 Source0:       %{gosource}
 Patch0:        01_gyp_force_python2.patch
+Patch1:        greaselib-autoreconf.patch
+Patch2:        gperftools-enable-unwind.patch
+Patch3:        eventfd.patch
 
-BuildRequires: m4 python27 gcc-c++
+BuildRequires: m4 python27 gcc-c++ golang < 1.15 libunwind-devel
+Requires(post): systemd-units
+Requires(preun): systemd-units
+Requires(postun): systemd-units
 
 %global __requires_exclude (libgrease\\.so\\.1|libtcmalloc_minimal\\.so\\.4)
 
@@ -26,6 +33,9 @@ and would prefer less writing over time.
 %prep
 %goprep -k
 %patch0 -p1
+%patch1 -p1
+%patch2 -p1
+%patch3 -p1
 
 %build
 topdir=$(pwd)
@@ -65,16 +75,41 @@ LDFLAGS="-r %{_libdir}/pelion $LDFLAGS"
 %install
 greaselibdir=vendor/github.com/armPelionEdge/greasego/deps/lib
 
+install -vdm 0755                     %{buildroot}/var/log/pelion
+install -vdm 0755                     %{buildroot}/var/lib/pelion/maestro
 install -vdm 0755                     %{buildroot}/%{_bindir}
 install -vpm 0755 %{gobuilddir}/bin/* %{buildroot}/%{_bindir}/
 
-install -vdm 0755                                         %{buildroot}/%{_libdir}/pelion
-install -vpm 0644 "$greaselibdir"/libgrease.so*           %{buildroot}/%{_libdir}/pelion/
-install -vpm 0644 "$greaselibdir"/libtcmalloc_minimal.so* %{buildroot}/%{_libdir}/pelion/
+install -vdm 0755                                         %{buildroot}/usr/lib/pelion
+install -vpm 0644 "$greaselibdir"/libgrease.so*           %{buildroot}/usr/lib/pelion/
+install -vpm 0644 "$greaselibdir"/libtcmalloc_minimal.so* %{buildroot}/usr/lib/pelion/
+
+install -vdm 0755                               %{buildroot}/%{_sysconfdir}/pelion/template
+install -vpm 0755 %{_filesdir}/template/*       %{buildroot}/%{_sysconfdir}/pelion/template
+install -vpm 0644 %{_filesdir}/pelion-base-config.yaml  %{buildroot}/%{_sysconfdir}/pelion
+
+install -vdm 0755                               %{buildroot}/%{_unitdir}
+install -vpm 0644 %{_filesdir}/maestro.service  %{buildroot}/%{_unitdir}
 
 %files
 %{_bindir}/*
-%{_libdir}/pelion
+/usr/lib/pelion
+%{_unitdir}/maestro.service
+%{_sysconfdir}/pelion/template/*
+%config %{_sysconfdir}/pelion/pelion-base-config.yaml
+
+%dir
+/var/lib/pelion/maestro
+/var/log/pelion
+
+%post
+%systemd_post maestro.service
+
+%preun
+%systemd_preun maestro.service
+
+%postun
+%systemd_postun_with_restart maestro.service
 
 %changelog
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1

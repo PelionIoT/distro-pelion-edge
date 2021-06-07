@@ -4,6 +4,7 @@ nodejs_arch() {
     case "$1" in
         x86_64) echo x64  ;;
         i686)   echo x86  ;;
+        aarch64) echo arm64 ;;
         *)      echo "$1" ;;
     esac
 }
@@ -22,8 +23,9 @@ override_download() {
 
 override_conjure_sources() {
     cd "$builddir"
-    tar -Jxf "$cachedir/$nodejs_tar" "$nodejs_dir/bin/node"
-    mv "$nodejs_dir/bin/node" "pe-node-$nodejs_ver"
+    rm -rf node_root
+    mkdir node_root
+    tar -Jxf "$cachedir/$nodejs_tar" --strip-components=1 -C node_root
 }
 
 . "${0%/*}"/../../build-env/inc/rpm-common.sh

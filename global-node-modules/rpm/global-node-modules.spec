@@ -13,8 +13,12 @@ URL:            https://github.com/armPelionEdge/edge-node-modules
 # https://github.com/armPelionEdge/ubuntu-pelion-edge-internal
 Source0:        edge-node-modules.tar.gz
 
-BuildRequires:  nodejs = 2:8.11.4-1nodesource
+# TODO: pe-nodejs-dev for build
+BuildRequires:  pe-nodejs python2 systemd-devel
 Requires:       pe-nodejs
+Requires(post): systemd-units
+Requires(preun): systemd-units
+Requires(postun): systemd-units
 
 %description
 Node.js modules used by different Pelion Edge components.
@@ -28,7 +32,7 @@ rm -f rsmi/bin/cc2530prog-x86
 rm -f rsmi/bin/slipcomms-x86
 
 %install
-%global pelibdir    %{_libdir}/pelion
+%global pelibdir    /usr/lib/pelion
 %global devicejsdir %{pelibdir}/devicejs-core-modules
 %global wigwagdir   %{pelibdir}/wigwag-core-modules
 
@@ -41,9 +45,22 @@ cp -r package.json rsmi zigbeeHA node_modules maestroRunner \
 cp -r DevStateManager LEDController RelayStatsSender VirtualDeviceDriver \
    onsite-enterprise-server relay-term %{buildroot}/%{wigwagdir}
 
+install -vdm 0755                               %{buildroot}/%{_unitdir}
+install -vpm 0644 %{_filesdir}/pelion-relay-term.service  %{buildroot}/%{_unitdir}
+
 %files
 %{devicejsdir}/*
 %{wigwagdir}/*
+%{_unitdir}/pelion-relay-term.service
+
+%post
+%systemd_post pelion-relay-term.service
+
+%preun
+%systemd_preun pelion-relay-term.service
+
+%postun
+%systemd_postun_with_restart pelion-relay-term.service
 
 %changelog
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1

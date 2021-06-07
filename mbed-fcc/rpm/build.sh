@@ -2,9 +2,9 @@
 
 override_download() {
     download "https://github.com/ARMmbed/factory-configurator-client-example" \
-             "dc3862efd6e7b3cbc6f10f34673c76e6fd968a3a"
+             "4.6.0"
     download "https://github.com/ARMmbed/mbed-cloud-client" \
-             "e03c516af9c9137b56d9c2620a293c79f1f867f8"
+             "4.6.0"
 }
 
 override_conjure_sources() {
@@ -14,8 +14,8 @@ override_conjure_sources() {
 
     check_python_dep requests
     check_python_dep click
-    PYTHONUSERBASE=. \
-    python3 pal-platform/pal-platform.py -v deploy --target=x86_x64_NativeLinux_mbedtls generate
+
+    PYTHONUSERBASE=. python3 pal-platform/pal-platform.py -v deploy --target=Yocto_Generic_YoctoLinux_mbedtls generate
 
     cd ..
     tar -caf mbed-fcc.tar.gz mbed-fcc

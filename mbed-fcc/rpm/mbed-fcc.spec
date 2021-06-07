@@ -11,17 +11,22 @@ URL:            https://github.com/ARMmbed/factory-configurator-client-example
 # The source for this package was generated via
 # https://github.com/armPelionEdge/ubuntu-pelion-edge-internal
 Source0:        mbed-fcc.tar.gz
+Patch0:         0002-Modified-FCCE-to-take-in-CBOR-file-to-generate-the-s.patch
 
-BuildRequires:  cmake
+BuildRequires:  cmake python3-click python3-requests python3
+Requires(post): systemd-units
+Requires(preun): systemd-units
+Requires(postun): systemd-units
 
 %description
 Factory client tool for preparing for registration.
 
 %prep
 %setup -q -n mbed-fcc
+%patch0 -p1
 
 %build
-%global pal_platform __x86_x64_NativeLinux_mbedtls
+%global pal_platform __Yocto_Generic_YoctoLinux_mbedtls
 cd %{pal_platform}
 
 %cmake -DCMAKE_BUILD_TYPE=Release \
@@ -33,9 +38,23 @@ cd %{pal_platform}
 %install
 install -vdm 0755 %{buildroot}/%{_bindir}
 install -vpm 0755 %{pal_platform}/Release/factory-configurator-client-example.elf %{buildroot}/%{_bindir}
+install -vpm 0755 %{_filesdir}/launch-fcc.sh %{buildroot}/%{_bindir}
+
+install -vdm 0755                               %{buildroot}/%{_unitdir}
+install -vpm 0644 %{_filesdir}/mbed-fcc.service  %{buildroot}/%{_unitdir}
 
 %files
 %{_bindir}/*
+%{_unitdir}/mbed-fcc.service
+
+%post
+%systemd_post mbed-fcc.service
+
+%preun
+%systemd_preun mbed-fcc.service
+
+%postun
+%systemd_postun_with_restart mbed-fcc.service
 
 %changelog
 * Thu May 21 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1

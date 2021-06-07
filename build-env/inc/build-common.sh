@@ -308,6 +308,10 @@ function pelion_generation_deb_metapackage() {
         sudo apt-get install -y debhelper
     fi
 
+    if [ -v PELION_PACKAGE_PRE_BUILD_DEP_CALLBACK ]; then
+        $PELION_PACKAGE_PRE_BUILD_DEP_CALLBACK
+    fi
+
     if [ -v PELION_PACKAGE_PRE_BUILD_CALLBACK ]; then
         $PELION_PACKAGE_PRE_BUILD_CALLBACK
     fi
@@ -374,13 +378,17 @@ function pelion_building_deb_package() {
     rm -rf "$PELION_TMP_BUILD_DIR"
     mkdir -p "$PELION_TMP_BUILD_DIR/$PELION_PACKAGE_FOLDER_NAME"
 
-    if [ -v PELION_PACKAGE_PRE_BUILD_CALLBACK ]; then
-        $PELION_PACKAGE_PRE_BUILD_CALLBACK
+    if [ -v PELION_PACKAGE_PRE_BUILD_DEP_CALLBACK ]; then
+        $PELION_PACKAGE_PRE_BUILD_DEP_CALLBACK
     fi
 
     if $PELION_PACKAGE_INSTALL_DEPS; then
         sudo apt-get update && \
         sudo apt-get build-dep -y -a "$PELION_PACKAGE_TARGET_ARCH" "$PELION_DEB_DEPLOY_DIR/source/$PELION_PACKAGE_DEB_ARCHIVE_NAME.dsc" -o APT::Immediate-Configure=0
+    fi
+
+    if [ -v PELION_PACKAGE_PRE_BUILD_CALLBACK ]; then
+        $PELION_PACKAGE_PRE_BUILD_CALLBACK
     fi
 
     tar xf "$PELION_DEB_DEPLOY_DIR/source/$PELION_PACKAGE_ORIG_ARCHIVE_NAME.orig.tar.gz" -C "$PELION_TMP_BUILD_DIR/"
@@ -430,7 +438,7 @@ function pelion_docker_build() {
     SCRIPT_PATH=$(cd "`dirname \"$0\"`" && pwd)
     DOCKER_ROOT_DIR="/pelion-build"
     DOCKER_SCRIPT_PATH=$(echo $SCRIPT_PATH | sed "s:^$ROOT_DIR:$DOCKER_ROOT_DIR:")
-    APT_REPO="$ROOT_DIR"/build/apt/$DOCKER_DIST
+    APT_REPO="$ROOT_DIR"/build/repo/$DOCKER_DIST
     mkdir -p $APT_REPO
 
     # Use separate docker containers for source generation and package build.
@@ -439,6 +447,7 @@ function pelion_docker_build() {
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --source
@@ -448,6 +457,7 @@ function pelion_docker_build() {
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --arch=$PELION_PACKAGE_TARGET_ARCH --build
@@ -457,6 +467,7 @@ function pelion_docker_build() {
         docker run --rm \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-build \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                 --install --build
@@ -467,6 +478,7 @@ function pelion_docker_build() {
             -v "$HOME/.ssh":/home/user/.ssh \
             -v "$ROOT_DIR":"$DOCKER_ROOT_DIR" \
             -v "$APT_REPO":/opt/apt-repo \
+            -v /var/run/docker.sock:/var/run/docker.sock \
             ${PELION_DOCKER_PREFIX}pelion-$DOCKER_DIST-source \
             "$DOCKER_SCRIPT_PATH/$BASENAME" \
                --arch=$PELION_PACKAGE_TARGET_ARCH --verify

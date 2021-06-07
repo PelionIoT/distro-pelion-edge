@@ -1,0 +1,13 @@
+Source: pelion-edge-base
+Section: metapackages
+Priority: optional
+Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: pelion-edge-base
+Architecture: all
+Depends: mbed-edge-core-devmode | mbed-edge-core, maestro, maestro-shell, edge-proxy, devicedb, global-node-modules
+Description: base package group
+ Combine mbed-edge-core, maestro, maestro-shell, edge-proxy, devicedb, global-node-modules

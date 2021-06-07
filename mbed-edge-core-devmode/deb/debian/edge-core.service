@@ -6,7 +6,7 @@ After=network-online.target
 Restart=always
 RestartSec=5s
 WorkingDirectory=/var/lib/pelion/mbed
-ExecStart=/usr/bin/edge-core --http-port 9101
+ExecStart=/usr/bin/launch-edge-core.sh
 
 [Install]
 WantedBy=multi-user.target

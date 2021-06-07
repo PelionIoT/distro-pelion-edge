@@ -1,7 +1,8 @@
 # A crappy polyfill for go-rpm-macros.
 
 %define gometa %{expand:
-%forgemeta -u https://%{goipath}
+%global forgeurl https://%{goipath}
+%forgemeta
 %define gourl %{forgeurl}
 %define gosource %{forgesource}
 %define extractdir %{archivename}
