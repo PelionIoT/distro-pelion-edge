@@ -112,5 +112,7 @@ install -vpm 0644 %{_filesdir}/maestro.service  %{buildroot}/%{_unitdir}
 %systemd_postun_with_restart maestro.service
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 2.9.0-1
+- Locked down version of all packages
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
