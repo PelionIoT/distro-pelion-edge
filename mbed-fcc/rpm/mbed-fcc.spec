@@ -1,7 +1,9 @@
 %global debug_package %{nil}
+%global tag     4.9.0
+%global version 4.9.0
 
 Name:           mbed-fcc
-Version:        0.0.1
+Version:        4.9.0
 Release:        1%{?dist}
 Summary:        A factory configurator client example
 
@@ -57,5 +59,7 @@ install -vpm 0644 %{_filesdir}/mbed-fcc.service  %{buildroot}/%{_unitdir}
 %systemd_postun_with_restart mbed-fcc.service
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 4.9.0-1
+- Locked down version of all packages
 * Thu May 21 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
