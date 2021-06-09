@@ -1,9 +1,10 @@
 %global goipath github.com/armPelionEdge/maestro-shell
-%global commit  2c90fbe2552c58ec5121b75a08718be6ebe5a791
+%global tag     v2.7.1
+%global version v2.7.1
 %gometa
 
 Name:           maestro-shell
-Version:        0.0.1
+Version:        2.7.1
 Release:        1%{?dist}
 Summary:        Shell access to maestro
 
@@ -41,5 +42,7 @@ install -vpm 0755 %{_filesdir}/maestro-shell %{buildroot}/%{_bindir}/
 /usr/lib/pelion/bin/*
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 2.7.1-1
+- Locked down version of all packages
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
