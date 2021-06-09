@@ -1,9 +1,10 @@
 %global goipath github.com/armPelionEdge/edge-proxy
-%global commit  b0f66f21e84078ff52e11f59f1cc9890a0dfaa34
+%global tag     v0.9.0
+%global version v0.9.0
 %gometa
 
 Name:           edge-proxy
-Version:        0.0.1
+Version:        0.9.0
 Release:        1%{?dist}
 Summary:        An HTTP proxy for Pelion Edge
 
@@ -52,5 +53,7 @@ install -vpm 0755 %{_filesdir}/edge-proxy.service   %{buildroot}/%{_unitdir}
 %systemd_postun_with_restart edge-proxy.service
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 0.9.0-1
+- Locked down version of all packages
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
