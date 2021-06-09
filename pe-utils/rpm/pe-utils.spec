@@ -1,11 +1,11 @@
 %global forgeurl https://github.com/armPelionEdge/pe-utils
-%global tag		2.0.4
-%global version 2.0.4
+%global tag		2.0.7
+%global version 2.0.7
 %forgemeta
 %global debug_package %{nil}
 
 Name:           pe-utils
-Version:        2.0.4
+Version:        2.0.7
 Release:        1%{?dist}
 Summary:        Pelion utilities
 
@@ -59,6 +59,8 @@ install -vpm 0755 %{_filesdir}/wait-for-pelion-identity.service		%{buildroot}/%{
 %systemd_postun_with_restart edge-core.service
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 2.0.7-1
+- Locked down version of all packages
 * Thu Feb 11 2021 Krzysztof Bembnista <krzysztof.bembnista@globallogic.com> - 2.0.4-1
 - version bump. Scripts does not use .ssl directory anumore
 * Mon May 25 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
