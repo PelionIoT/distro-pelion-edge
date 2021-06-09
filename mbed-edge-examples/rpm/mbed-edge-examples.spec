@@ -1,11 +1,12 @@
 %global forgeurl https://github.com/ARMmbed/mbed-edge-examples
-%global tag      0.10.0
+%global tag     0.10.0
+%global version 0.10.0
 %forgemeta
 %global builddir %{_builddir}/%{archivename}
 %global debug_package %{nil}
 
 Name:           mbed-edge-examples
-Version:        0.0.1
+Version:        0.10.0
 Release:        1%{?dist}
 Summary:        examples for mbed-edge protocol translatior
 
@@ -48,5 +49,7 @@ done
 %{_bindir}/*
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 0.10.0-1
+- Locked down version of all packages
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
