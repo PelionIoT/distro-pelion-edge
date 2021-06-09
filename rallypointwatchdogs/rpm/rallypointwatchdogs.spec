@@ -1,9 +1,10 @@
 %global goipath github.com/armPelionEdge/rallypointwatchdogs
-%global commit  54ee3bd50b063425606ad76aefad4167780d8760
+%global tag     v1.0.0
+%global version v1.0.0
 %gometa
 
 Name:           rallypointwatchdogs
-Version:        0.0.1
+Version:        1.0.0
 Release:        1%{?dist}
 Summary:        rallyPoint Maestro Watchdog
 
@@ -40,5 +41,7 @@ cp dummy/dummywd.so %{buildroot}/%{_libdir}/pelion
 %{_libdir}/pelion/dummywd.so
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 1.0.0-1
+- Locked down version of all packages
 * Wed May 27 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
