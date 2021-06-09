@@ -1,10 +1,11 @@
 %global forgeurl https://github.com/ARMmbed/mbed-edge
-%global tag      0.13.0
+%global tag 0.13.0
+%global version 0.13.0
 %global debug_package %{nil}
 %forgemeta
 
 Name:           mbed-edge-core-devmode
-Version:        0.0.1
+Version:        0.13.0
 Release:        1%{?dist}
 Summary:        The core of Device Management Edge (developer version)
 License:        Apache-2.0
@@ -94,5 +95,7 @@ install -vpm 0755 %{_filesdir}/edge-core.logrotate	%{buildroot}/%{_sysconfdir}/l
 %systemd_postun_with_restart edge-core.service
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 0.13.0-1
+- Locked down version of all packages
 * Mon May 18 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
