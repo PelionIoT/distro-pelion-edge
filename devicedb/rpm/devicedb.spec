@@ -1,9 +1,10 @@
 %global goipath github.com/armPelionEdge/devicedb
-%global commit  d24df289ab24a035ebf64d2ed27a2d531a2319da
+%global tag     1.10.0
+%global version 1.10.0
 %gometa
 
 Name:           devicedb
-Version:        0.0.1
+Version:        1.10.0
 Release:        1%{?dist}
 Summary:        A key-value store for Pelion Edge
 
@@ -48,5 +49,7 @@ install -vpm 0755 %{_filesdir}/devicedb.service   %{buildroot}/%{_unitdir}
 %systemd_postun_with_restart devicedb.service
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 1.10.0-1
+- Locked down version of all packages
 * Wed May 20 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1
 - Initial release.
