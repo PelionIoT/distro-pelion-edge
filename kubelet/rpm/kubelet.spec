@@ -1,9 +1,10 @@
 %global goipath github.com/armPelionEdge/edge-kubelet
-%global commit 83b266ae6939012883611d6dbda745f2490a67c4
+%global tag     v1.0.0
+%global version v1.0.0
 %gometa
 
 Name:           kubelet
-Version:        0.0.1
+Version:        1.0.0
 Release:        1%{?dist}
 Summary:        Talks to kubernetes service
 
@@ -69,5 +70,7 @@ install -vpm 0644 %{_filesdir}/99-loopback.conf     %{buildroot}/%{_sysconfdir}/
 %systemd_postun_with_restart kubelet.service
 
 %changelog
+* Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 1.0.0-1
+- Locked down version of all packages
 * Tue Dec 15 2020 Krzysztof Bembnista <krzysztof.bembnista@globallogic.com> - 0.0.1-1
 - Initial release.
