@@ -1,4 +1,4 @@
-From 6be2728b0165722906be2e24c712da6892541de9 Mon Sep 17 00:00:00 2001
+From 9dd8473aea8d94a1a1b6f20fffc3174d187d979e Mon Sep 17 00:00:00 2001
 From: Nic Costa <nic.costa@gmail.com>
 Date: Thu, 3 Jun 2021 16:07:05 -0500
 Subject: [PATCH] Modified FCCE to take in CBOR file to generate the secure
@@ -7,11 +7,11 @@ Subject: [PATCH] Modified FCCE to take in CBOR file to generate the secure
 Added a -f flag to take a device.cbor file as input instead of
 listening on a TCP socket.
 ---
- source/factory_client_example.cpp | 160 +++++++++++++++++++++++-------
- 1 file changed, 123 insertions(+), 37 deletions(-)
+ source/factory_client_example.cpp | 165 +++++++++++++++++++++++-------
+ 1 file changed, 128 insertions(+), 37 deletions(-)
 
 diff --git a/source/factory_client_example.cpp b/source/factory_client_example.cpp
-index 12d929d..0e5091a 100644
+index 12d929d..cda2327 100644
 --- a/source/factory_client_example.cpp
 +++ b/source/factory_client_example.cpp
 @@ -23,6 +23,7 @@
@@ -108,7 +108,7 @@ index 12d929d..0e5091a 100644
                  }
  #endif
              }
-@@ -155,12 +139,100 @@ static void factory_flow_task()
+@@ -155,12 +139,105 @@ static void factory_flow_task()
          }
      }
  
@@ -124,7 +124,8 @@ index 12d929d..0e5091a 100644
 +    uint8_t *response_message = NULL;
 +    size_t response_message_size = 0;
 +    fcc_status_e fcc_status = FCC_STATUS_SUCCESS;
-+
+ 
+-out1:
 +    mbed_tracef(TRACE_LEVEL_CMD, TRACE_GROUP, "Factory flow begins...");
 +    factory_example_success = EXIT_FAILURE;
 +
@@ -146,6 +147,11 @@ index 12d929d..0e5091a 100644
 +
 +    FILE *f = NULL;
 +    f = fopen(cbor_file_path, "rb");
++    if (f == NULL) {
++        tr_error("Failed to open CBOR file %s\n", cbor_file_path);
++        return;
++    }
++
 +    fseek(f, 0, SEEK_END);
 +    long fsize = ftell(f);
 +    fseek(f, 0 , SEEK_SET);
@@ -173,8 +179,7 @@ index 12d929d..0e5091a 100644
 +        fcc_free(response_message);
 +    }
 +}
- 
--out1:
++
 +/**
 +* Device factory flow
 +* - Runs in a task of its own
@@ -211,7 +216,7 @@ index 12d929d..0e5091a 100644
  
      fcc_status = fcc_finalize();
      if (fcc_status != FCC_STATUS_SUCCESS) {
-@@ -181,9 +253,9 @@ out1:
+@@ -181,9 +258,9 @@ out1:
  */
  int main(int argc, char * argv[])
  {
@@ -224,7 +229,7 @@ index 12d929d..0e5091a 100644
      bool success = false;
  
      // careful, mbed-trace initialization may happen at this point if and only if we 
-@@ -197,6 +269,20 @@ int main(int argc, char * argv[])
+@@ -197,6 +274,20 @@ int main(int argc, char * argv[])
          return EXIT_FAILURE;
      }
  
