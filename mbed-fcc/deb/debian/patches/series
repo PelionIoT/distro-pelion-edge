@@ -2,3 +2,4 @@
 0002-Modified-FCCE-to-take-in-CBOR-file-to-generate-the-s.patch
 0003-tcp-port-selection.patch
 0004-increase-wait-for-network-timeout.patch
+0005-crash-fix.patch
