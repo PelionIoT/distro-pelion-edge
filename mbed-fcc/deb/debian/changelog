@@ -1,3 +1,9 @@
+mbed-fcc (4.6.0-1) unstable; urgency=medium
+
+  * Update package version
+
+ -- Mo Chen <mo.chen@pelion.com>  Thu, 10 Jun 2021 14:49:39 -0500
+
 mbed-fcc (0.0.1-1) unstable; urgency=medium
 
   * Initial release

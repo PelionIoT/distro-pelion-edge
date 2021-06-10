@@ -1,3 +1,9 @@
+kubelet (0.9.0-1) unstable; urgency=medium
+
+  * Update package version
+
+ -- Mo Chen <mo.chen@pelion.com>  Thu, 10 Jun 2021 14:44:05 -0500
+
 kubelet (0.0.1-1) unstable; urgency=medium
 
   * Initial release
