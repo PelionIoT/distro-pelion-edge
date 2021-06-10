@@ -4,3 +4,5 @@
 ETHERNET_LINUX_IFACE_NAME=eth1
 # set fixed fcc port number to listen on
 ETHERNET_LINUX_TCP_PORT=7777
+# use 'tcp' or 'cbor' mode, cbor - default
+FCC_MODE=tcp

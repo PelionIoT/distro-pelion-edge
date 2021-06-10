@@ -18,8 +18,10 @@
 # ----------------------------------------------------------------------------
 MBED_FOLDER=/var/lib/pelion/mbed
 MCC_CONFIG_FOLDER=$MBED_FOLDER/mcc_config
+FCC_MODE=${FCC_MODE:-cbor}
 
-CREDS_FOLDER=/var/lib/pelion/creds
+CREDS_FOLDER=/var/lib/creds
+CREDS_CBOR_FILE=$CREDS_FOLDER/device.cbor
 
 if [ -e ${MCC_CONFIG_FOLDER} ]; then
     echo "mcc_config exists. Success!"
@@ -29,7 +31,19 @@ fi
 cd $CREDS_FOLDER
 export ENTROPYSOURCE=/dev/random
 
-/usr/bin/factory-configurator-client-example.elf
+if [ "$FCC_MODE" == "cbor" ]; then
+    if [ ! -f ${CREDS_CBOR_FILE} ]; then
+        echo "edge-core launch failure: please verify $CREDS_CBOR_FILE"
+        exit 1
+    fi
+
+    /usr/bin/factory-configurator-client-example.elf -f "$CREDS_CBOR_FILE"
+elif [ "$FCC_MODE" == "tcp" ]; then
+
+    /usr/bin/factory-configurator-client-example.elf
+else
+    echo "unknown client mode: \'$FCC_MODE\', use 'cbor' or 'tcp'"
+fi
 
 if [ ! -d $CREDS_FOLDER/pal/WORKING ]; then
 	echo "/usr/bin/factory-configurator-client-example.elf did not generate a pal folder"
