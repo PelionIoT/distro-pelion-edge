@@ -1,0 +1,17 @@
+diff --git a/source/factory_client_example.cpp b/source/factory_client_example.cpp
+index 0e5091a..a762fd3 100644
+--- a/source/factory_client_example.cpp
++++ b/source/factory_client_example.cpp
+@@ -172,6 +172,12 @@ static void factory_flow_task_cbor()
+ 
+     FILE *f = NULL;
+     f = fopen(cbor_file_path, "rb");
++
++    if (f == NULL) {
++        tr_error("Failed open CBOR file\n");
++        return;
++    }
++
+     fseek(f, 0, SEEK_END);
+     long fsize = ftell(f);
+     fseek(f, 0 , SEEK_SET);
