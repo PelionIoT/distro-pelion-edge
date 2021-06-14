@@ -40,7 +40,7 @@ PELION_TMP_BUILD_DIR=$ROOT_DIR/build/tmp-build/$PELION_PACKAGE_NAME
 
 PELION_PACKAGE_FULL_VERSION=$(cd "$PELION_PACKAGE_DIR"; dpkg-parsechangelog --show-field Version)
 PELION_PACKAGE_VERSION=$(echo $PELION_PACKAGE_FULL_VERSION \
-    | sed -r 's/([0-9]+\.[0-9]+(\.[0-9]+)?).*/\1/') # Version without Revision
+    | sed 's/\-[^\-]*$//') # Version without Revision
 
 PELION_PACKAGE_FOLDER_NAME="$PELION_PACKAGE_NAME"-"$PELION_PACKAGE_VERSION"
 PELION_PACKAGE_ORIG_ARCHIVE_NAME="$PELION_PACKAGE_NAME"_"$PELION_PACKAGE_VERSION"
