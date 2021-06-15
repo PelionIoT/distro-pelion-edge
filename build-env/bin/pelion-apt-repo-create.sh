@@ -23,9 +23,11 @@ PELION_APT_REPO_INSTALL=false
 PELION_APT_REPO_GPG_KEY_FILE=key.gpg
 PELION_APT_REPO_GPG_KEY_PATH=$PELION_APT_REPO_DIR
 
-PELION_PACKAGES_SUPPORTED_DIST=(bionic xenial stretch)
+PELION_PACKAGES_SUPPORTED_DIST_DEFAULT=(bionic xenial stretch)
 PELION_PACKAGES_SUPPORTED_COMPONENTS=(main)
 PELION_PACKAGES_SUPPORTED_ARCH=(amd64 arm64 armhf armel all)
+
+PELION_PACKAGES_SUPPORTED_DIST=()
 
 function pelion_apt_repo_parse_args() {
     for opt in "$@"; do
@@ -50,26 +52,35 @@ function pelion_apt_repo_parse_args() {
                 PELION_GPG_ENABLE_SIGNING=false
                 ;;
 
-            --distro=*)
-                PELION_PACKAGES_SUPPORTED_DIST=(${opt#*=})
-                ;;
-
             --help|-h)
-                echo "Usage: $(basename "$0") [Options]"
+                echo "Usage: $(basename "$0") [Options] [input-distro[=output-name] [...]]"
                 echo ""
                 echo "Options:"
                 echo " --key-name=<name>         Filename of secret GPG key."
                 echo " --key-[id|path]=<id|path> Use key id of existing GPG key or path where private key is placed."
                 echo " --install                 Installs the necessary tools to create structure for apt repository."
                 echo " --no-sign                 Don't sign any files with GPG"
-                echo " --distro=<distro-list>    Replace list of supported distros"
                 echo " --help,-h                 Print this message."
                 echo ""
                 echo "Default mode: $(basename "$0") --key-name=$PELION_GPG_KEYNAME --key-path=$PELION_GPG_KEY_PATH"
+                echo ""
+                echo "Example: $(basename "$0") --key-path=/home/vagrant/.ssh --key-name=my_apt_repo.key buster=buster-next focal"
                 exit 0
+                ;;
+
+            -*)
+                echo "Unknown option: ${opt}. Try --help."
+                exit 1
+                ;;
+
+            *)
+                PELION_PACKAGES_SUPPORTED_DIST+=(${opt})
                 ;;
         esac
     done
+    if [ ${#PELION_PACKAGES_SUPPORTED_DIST[@]} = 0 ]; then
+        PELION_PACKAGES_SUPPORTED_DIST=(${PELION_PACKAGES_SUPPORTED_DIST_DEFAULT[@]})
+    fi
 }
 
 function pelion_apt_repo_gpg_import() {
@@ -100,7 +111,6 @@ function pelion_apt_repo_gpg_import() {
 }
 
 function pelion_apt_repo_pool_update() {
-    PELION_APT_REPO_POOL_DISTS=$(echo ${PELION_PACKAGES_SUPPORTED_DIST[@]} | sed -e 's/ /|/g')
     PELION_APT_REPO_POOL_COMPONENTS=$(echo ${PELION_PACKAGES_SUPPORTED_COMPONENTS[@]} | sed -e 's/ /|/g')
     PELION_APT_REPO_POOL_ARCHS=$(echo ${PELION_PACKAGES_SUPPORTED_ARCH[@]} | sed -e 's/ /|/g')
 
@@ -108,13 +118,23 @@ function pelion_apt_repo_pool_update() {
 
     cd "$PELION_DEB_DEPLOY_DIR"
 
-    find . -mindepth 4 -maxdepth 4 -regextype posix-extended -regex \
-        "\./($PELION_APT_REPO_POOL_DISTS)/($PELION_APT_REPO_POOL_COMPONENTS)/source/.*(orig\.tar\.gz|debian\.tar\.xz|\.tar\.gz|dsc)" \
-        -exec cp --parents -t "$PELION_APT_REPO_DIR/pool" {} +
+    for PELION_APT_REPO_POOL_DIST in ${PELION_PACKAGES_SUPPORTED_DIST[@]}; do
 
-    find . -mindepth 4 -maxdepth 4 -regextype posix-extended -regex \
-        "\./($PELION_APT_REPO_POOL_DISTS)/($PELION_APT_REPO_POOL_COMPONENTS)/binary-($PELION_APT_REPO_POOL_ARCHS)/.*\3\.deb" \
-        -exec cp --parents -t "$PELION_APT_REPO_DIR/pool" {} +
+        pushd "${PELION_APT_REPO_POOL_DIST%=*}" || continue
+
+        mkdir -p "$PELION_APT_REPO_DIR/pool/${PELION_APT_REPO_POOL_DIST#*=}"
+
+        find . -mindepth 3 -maxdepth 3 -regextype posix-extended -regex \
+            "\./($PELION_APT_REPO_POOL_COMPONENTS)/source/.*(orig\.tar\.gz|debian\.tar\.xz|\.tar\.gz|dsc)" \
+            -exec cp --parents -t "$PELION_APT_REPO_DIR/pool/${PELION_APT_REPO_POOL_DIST#*=}" {} +
+
+        find . -mindepth 3 -maxdepth 3 -regextype posix-extended -regex \
+            "\./($PELION_APT_REPO_POOL_COMPONENTS)/binary-($PELION_APT_REPO_POOL_ARCHS)/.*\2\.deb" \
+            -exec cp --parents -t "$PELION_APT_REPO_DIR/pool/${PELION_APT_REPO_POOL_DIST#*=}" {} +
+
+        popd
+
+    done
 }
 
 function pelion_apt_repo_pool_sign_with_gpg_key() {
