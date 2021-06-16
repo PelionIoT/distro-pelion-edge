@@ -1,3 +1,9 @@
+rallypointwatchdogs (1.0.0+1554845858+54ee3bd-1) unstable; urgency=medium
+
+  * Update package version
+
+ -- Mo Chen <mo.chen@pelion.com>  Wed, 16 Jun 2021 10:27:40 -0500
+
 rallypointwatchdogs (0.0.1-1) unstable; urgency=medium
 
   * Initial release
