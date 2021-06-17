@@ -1,3 +1,9 @@
+pelion-edge-protocol-engine (2.1.0-8+1623960761+038815c-1) unstable; urgency=medium
+
+  * Update package version
+
+ -- J. Michael Welsh <mike.welsh@pelion.com>  Wed, 16 Jun 2021 13:12:26 -0500
+
 pelion-edge-protocol-engine (0.0.1-1) unstable; urgency=medium
 
   * Initial release
