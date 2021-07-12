@@ -13,42 +13,5 @@ export GOPATH="`pwd`/go-workspace"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
-PACKAGE=github.com/armPelionEdge/maestro
-MAESTRODIR="$GOPATH"/src/"$PACKAGE"
-GREASEGODIR="$MAESTRODIR"/vendor/github.com/armPelionEdge/greasego
-GREASELIBDIR="$GREASEGODIR"/deps/src/greaseLib
-
-rm -rf "$GOPATH"
-set -- *
-mkdir -p "$MAESTRODIR"
-cp -r "$@" "$MAESTRODIR"/
-
-mkdir "$GREASEGODIR"/deps/bin
-mkdir "$GREASEGODIR"/deps/lib
-
-cd "$GREASELIBDIR"/deps
-./install-deps.sh
-
-cd "$GREASELIBDIR"
-make libgrease.a-server
-make libgrease.so.1
-make grease_echo
-make standalone_test_logsink
-
-# migrate all of the greaselib dependencies up to the folder Go will use
-cp -r deps/build/lib/* "$GREASEGODIR"/deps/lib
-cp -r deps/build/include/* "$GREASEGODIR"/deps/include
-cp deps/libuv-v1.10.1/include/uv* "$GREASEGODIR"/deps/include
-cp libgrease.so.1 "$GREASEGODIR"/deps/lib
-cp *.h "$GREASEGODIR"/deps/include
-
-cd "$GREASEGODIR"/deps/lib
-ln -sf libgrease.so.1 libgrease.so
-
-cd "$GREASEGODIR"
-DEBUG=1 ./build.sh preprocess_only
-rm -rf src
-make bindings.a
-
-cd "$MAESTRODIR"/maestro
-go build -buildmode=pie --tags debug "$PACKAGE"/maestro
+mkdir -p bin
+go build -o bin/maestro -buildmode=pie --tags debug maestro/main.go
