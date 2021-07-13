@@ -28,6 +28,8 @@
 
 # Build scripts for Pelion Edge
 
+Delete Me
+
 The  folder `build-env`  contains helper  or common  scripts. Other  directories
 contain build scripts specific for each package, for Debian-based distributions:
 ```
