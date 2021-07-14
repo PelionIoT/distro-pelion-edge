@@ -1,0 +1,12 @@
+Source: fluent-bit
+Section: utils
+Priority: optional
+Maintainer: Michael Ray <michael.ray@pelion.com>
+Build-Depends: debhelper (>=9), dh-systemd, cmake (>=3.5), libsystemd-dev, flex, bison
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: fluent-bit
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: fluent-bit logging

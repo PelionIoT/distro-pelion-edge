@@ -1,0 +1,5 @@
+fluent-bit (1.7.9-1) unstable; urgency=medium
+
+  * Initial build
+
+ -- Michael Ray <michael.ray@pelion.com>  Mon, 12 Jul 2021 14:47:51 -0500

@@ -1,0 +1,12 @@
+[Unit]
+Description=Fluent Bit
+Requires=edge-proxy.service
+After=edge-proxy.service
+
+[Service]
+Restart=always
+RestartSec=5s
+ExecStart=/usr/bin/launch-fluent-bit.sh
+
+[Install]
+WantedBy=multi-user.target
