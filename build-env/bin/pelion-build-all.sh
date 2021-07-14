@@ -31,6 +31,7 @@ PACKAGES=(
     'mbed-edge-examples'
     'mbed-fcc'
     'pe-utils'
+    'fluent-bit'
 )
 
 METAPACKAGES=(
