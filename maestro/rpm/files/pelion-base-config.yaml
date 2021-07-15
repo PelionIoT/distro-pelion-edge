@@ -25,10 +25,6 @@ var_defs:
     value: "/usr/lib/pelion/devicejs-core-modules/maestroRunner"
   - key: "SSL_CERTS_PATH"
     value: "/var/lib/pelion/edge_gw_config/.ssl"
-  - key: "LOCAL_DEVICEDB_PORT"
-    value: 9000
-  - key: "LOCAL_DATABASE_STORAGE_DIRECTORY"
-    value: "/var/lib/pelion/devicedb"
   - key: "RELAY_VERSIONS_FILE"
     value: "/etc/pelion/versions.json"
   - key: "FACTORY_VERSIONS_FILE"
@@ -107,9 +103,6 @@ targets:
       - levels: error
         format_pre: "{" # you will wrap this output with { "log": [ OUTPUT ] }
 static_file_generators:
-  - name: "devicedb"
-    template_file: "/etc/pelion/template/template.devicedb.conf"
-    output_file: "/etc/pelion/devicedb.yaml"
   - name: "ca_pem"
     template: "{{ARCH_CA_CERT_PEM}}"
     output_file: "{{SSL_CERTS_PATH}}/ca.cert.pem"
