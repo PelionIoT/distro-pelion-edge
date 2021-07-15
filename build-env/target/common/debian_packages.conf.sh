@@ -10,7 +10,6 @@ PACKAGES=(
     'global-node-modules'
     'kubelet'
     'maestro'
-    'maestro-shell'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
     'golang-github-containernetworking-plugins'
