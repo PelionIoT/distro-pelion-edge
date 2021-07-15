@@ -31,27 +31,6 @@ var_defs:
     value: "/etc/pelion/user/versions.json"
   - key: "UPGRADE_VERSIONS_FILE"
     value: "/etc/pelion/upgrade/versions.json"
-mdns:
-  # disable: true
-  static_records:
-    - name: "WigWagRelay"
-      service: "_wwservices._tcp" # normally something like https or ftp
-      # domain: "local"     # local is default
-      interfaces: "eth0"
-      not_interfaces: "Witap0"
-      port: 3131
-      text:
-        - "wwid={{ARCH_SERIAL_NUMBER}}"
-      hostname: "wigwaggateway"
-    - name: "WigWagRelay_{{ARCH_SERIAL_NUMBER}}"
-      service: "_wwservices._tcp" # normally something like https or ftp
-      # domain: "local"     # local is default
-      interfaces: "eth0"
-      not_interfaces: "Witap0"
-      port: 3131
-      text:
-        - "wwid={{ARCH_SERIAL_NUMBER}}"
-      hostname: "{{ARCH_SERIAL_NUMBER}}"
 targets:
   - file: "/var/log/pelion/maestro.log"
     rotate:
