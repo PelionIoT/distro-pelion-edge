@@ -19,12 +19,10 @@ DEPENDS=(
 # TODO: do not duplicate for amd64 only build
 PACKAGES=(
     'pe-nodejs'
-    'devicedb'
     'edge-proxy'
     'global-node-modules'
     'kubelet'
     'maestro'
-    'maestro-shell'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
     'golang-github-containernetworking-plugins'

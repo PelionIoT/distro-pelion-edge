@@ -85,7 +85,7 @@ install -vpm 0644 "$greaselibdir"/libgrease.so*           %{buildroot}/usr/lib/p
 install -vpm 0644 "$greaselibdir"/libtcmalloc_minimal.so* %{buildroot}/usr/lib/pelion/
 
 install -vdm 0755                               %{buildroot}/%{_sysconfdir}/pelion/template
-install -vpm 0755 %{_filesdir}/template/*       %{buildroot}/%{_sysconfdir}/pelion/template
+install -vpm 0644 %{_filesdir}/relay-term-config.json  %{buildroot}/%{_sysconfdir}/pelion
 install -vpm 0644 %{_filesdir}/pelion-base-config.yaml  %{buildroot}/%{_sysconfdir}/pelion
 
 install -vdm 0755                               %{buildroot}/%{_unitdir}

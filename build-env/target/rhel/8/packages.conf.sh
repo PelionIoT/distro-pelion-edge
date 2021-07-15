@@ -6,13 +6,11 @@ DEPENDS=(
 
 PACKAGES=(
     'pe-nodejs'
-    'devicedb'
     'edge-proxy'
     'global-node-modules'
     'golang-github-containernetworking-plugins'
     'kubelet'
     'maestro'
-    'maestro-shell'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
     'mbed-edge-examples'
