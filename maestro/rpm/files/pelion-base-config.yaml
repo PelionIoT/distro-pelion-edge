@@ -27,8 +27,4 @@ var_defs:
     value: "/etc/pelion/user/versions.json"
   - key: "UPGRADE_VERSIONS_FILE"
     value: "/etc/pelion/upgrade/versions.json"
-static_file_generators:
-  - name: "relayTerm"
-    template_file: "/etc/pelion/template/relayTerm.template.json"
-    output_file: "/etc/pelion/relay-term-config.json"
 config_end: true

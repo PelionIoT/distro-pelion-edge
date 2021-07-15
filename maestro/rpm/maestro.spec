@@ -84,8 +84,8 @@ install -vdm 0755                                         %{buildroot}/usr/lib/p
 install -vpm 0644 "$greaselibdir"/libgrease.so*           %{buildroot}/usr/lib/pelion/
 install -vpm 0644 "$greaselibdir"/libtcmalloc_minimal.so* %{buildroot}/usr/lib/pelion/
 
-install -vdm 0755                               %{buildroot}/%{_sysconfdir}/pelion/template
-install -vpm 0755 %{_filesdir}/template/*       %{buildroot}/%{_sysconfdir}/pelion/template
+install -vdm 0755                               %{buildroot}/%{_sysconfdir}/pelion
+install -vpm 0644 %{_filesdir}/relay-term-config.json  %{buildroot}/%{_sysconfdir}/pelion
 install -vpm 0644 %{_filesdir}/pelion-base-config.yaml  %{buildroot}/%{_sysconfdir}/pelion
 
 install -vdm 0755                               %{buildroot}/%{_unitdir}
@@ -95,8 +95,8 @@ install -vpm 0644 %{_filesdir}/maestro.service  %{buildroot}/%{_unitdir}
 %{_bindir}/*
 /usr/lib/pelion
 %{_unitdir}/maestro.service
-%{_sysconfdir}/pelion/template/*
 %config %{_sysconfdir}/pelion/pelion-base-config.yaml
+%config %{_sysconfdir}/pelion/relay-term-config.json
 
 %dir
 /var/lib/pelion/maestro
