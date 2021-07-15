@@ -31,6 +31,19 @@ var_defs:
     value: "/etc/pelion/user/versions.json"
   - key: "UPGRADE_VERSIONS_FILE"
     value: "/etc/pelion/upgrade/versions.json"
+gateway_capabilities:
+  edge_core_socketpath: "/tmp/edge.sock"
+  lwm2m_objectid: 33457
+  gateway_resources:
+  - name: "urn:fid:pelion.com:log:1.0.0"
+    enable: true
+    config_filepath: "/etc/pelion/fluent-bit.conf"
+  - name: "urn:fid:pelion.com:terminal:1.0.0"
+    enable: true
+    config_filepath: "/etc/pelion/relay-term-config.json"
+  - name: "urn:fid:pelion.com:kaas:1.0.0"
+    enable: true
+    config_filepath: "/etc/pelion/kubeconfig"
 mdns:
   # disable: true
   static_records:
