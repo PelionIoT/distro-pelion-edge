@@ -1,5 +1,5 @@
 debian/pelion-base-config.yaml etc/pelion
-debian/template                etc/pelion
+debian/relay-term-config.json  etc/pelion
 
 go-workspace/src/github.com/armPelionEdge/maestro/maestro/maestro usr/bin
 

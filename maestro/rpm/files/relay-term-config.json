@@ -1,5 +1,5 @@
 {
-	"cloud": "http://{{FOG_PROXY_ADDR}}/relay-term",
+	"cloud": "http://gateways.local:8080/relay-term",
 	"noValidate": true,
 	"certificate": "",
 	"key": ""
