@@ -1,0 +1,13 @@
+Source: pe-terminal
+Section: utils
+Priority: optional
+Maintainer: Aditya Awasthi <aditya.awasthi@pelion.com>
+Build-Depends: debhelper (>=9), pe-golang:native, libc6
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: pe-terminal
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, pe-utils
+Description: Terminal-client for Pelion Edge

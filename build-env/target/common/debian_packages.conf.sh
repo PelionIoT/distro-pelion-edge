@@ -7,6 +7,7 @@ DEPENDS=(
 PACKAGES=(
     'pe-nodejs'
     'edge-proxy'
+    'pe-terminal'
     'global-node-modules'
     'kubelet'
     'maestro'
