@@ -118,7 +118,7 @@ function run_verify {
         args+=( --arch=$ARCH )
     fi
 
-    run_command_build "$(path_package_script $package)" "${args[@]}"
+    run_command_source "$(path_package_script $package)" "${args[@]}"
 }
 
 # arg1: package name
