@@ -1,0 +1,13 @@
+[Unit]
+Description=Pelion Edge Terminal
+Requires=edge-proxy.service
+After=edge-proxy.service
+
+[Service]
+Restart=always
+RestartSec=5s
+Environment="TERM=xterm-256color"
+ExecStart=/usr/bin/pe-terminal -config=/etc/pelion/pe-terminal.conf.json
+
+[Install]
+WantedBy=multi-user.target
