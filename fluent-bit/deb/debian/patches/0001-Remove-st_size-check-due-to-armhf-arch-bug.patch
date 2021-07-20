@@ -1,0 +1,27 @@
+From 7f5b39626d8f21e6684dc1432b3494db9dcc51a2 Mon Sep 17 00:00:00 2001
+From: Michael Ray <mray190@gmail.com>
+Date: Tue, 20 Jul 2021 21:39:53 +0000
+Subject: [PATCH] Remove st_size check due to armhf arch bug
+
+See: https://bugs.ruby-lang.org/issues/16025
+See: https://github.com/k-takata/Onigmo/issues/130
+See: https://github.com/fluent/fluent-bit/issues/3754
+---
+ lib/onigmo/st.h | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/lib/onigmo/st.h b/lib/onigmo/st.h
+index 812292b7..fd30e893 100644
+--- a/lib/onigmo/st.h
++++ b/lib/onigmo/st.h
+@@ -62,7 +62,6 @@ typedef st_data_t st_index_t;
+ typedef int st_compare_func(st_data_t, st_data_t);
+ typedef st_index_t st_hash_func(st_data_t);
+ 
+-typedef char st_check_for_sizeof_st_index_t[SIZEOF_VOIDP == (int)sizeof(st_index_t) ? 1 : -1];
+ #define SIZEOF_ST_INDEX_T SIZEOF_VOIDP
+ 
+ struct st_hash_type {
+-- 
+2.20.1
+
