@@ -7,7 +7,7 @@ PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK=pelion_fluent_bit_source_preparation_cb
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["https://github.com/fluent/fluent-bit.git"]="v1.7.9")
+    ["https://github.com/fluent/fluent-bit.git"]="v1.8.1")
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
 function pelion_fluent_bit_source_preparation_cb() {
