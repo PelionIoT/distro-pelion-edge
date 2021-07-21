@@ -414,8 +414,8 @@ function pelion_verifying_deb_package() {
 
     cd $PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH
 
-    lintian --no-tag-display-limit --info \
-        ${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian
+    (set -o pipefail; lintian --no-tag-display-limit --info \
+        ${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian)
 }
 
 function pelion_print_target_package_path()
