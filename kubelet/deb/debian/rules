@@ -14,3 +14,4 @@ override_dh_auto_clean:
 
 override_dh_auto_test:
 	# Tests not completing
+override_dh_installinit:

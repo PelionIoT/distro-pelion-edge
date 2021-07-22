@@ -14,3 +14,5 @@ shlib-with-executable-bit
 shared-lib-without-dependency-information
 embedded-library
 windows-devel-file-in-package
+global-node-modules: missing-dep-for-interpreter node *
+global-node-modules: wrong-path-for-interpreter usr/lib/pelion/devicejs-core-modules/node_modules/request/node_modules/node-uuid/benchmark/bench.gnu *
