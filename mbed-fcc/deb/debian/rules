@@ -25,3 +25,6 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	echo Not needed in our case
+
+override_dh_installinit:
+
