@@ -9,5 +9,6 @@ Homepage: https://www.pelion.com
 Package: pe-nodejs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: python
 Description: Node.js javascript engine for Pelion Edge applications.
  Node.js engine that is compatible with Pelion Edge javascript applications.
