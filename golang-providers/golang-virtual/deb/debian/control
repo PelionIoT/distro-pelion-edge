@@ -11,3 +11,4 @@ Depends: golang-1.14-go
 Provides: pe-golang
 Conflicts: pe-golang-bin
 Description: Go compiler required for Pelion Edge compilation.
+             This is a metapackage which pulls required version of Go
