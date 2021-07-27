@@ -15,6 +15,8 @@ override_dh_auto_build:
 
 	rm -f rsmi/bin/cc2530prog-x86
 	rm -f rsmi/bin/slipcomms-x86
+	find -name .npmignore -delete
+	find -name '.eslintrc*' -delete
 
 override_dh_systemd_enable:
 	dh_systemd_enable --name=pelion-relay-term pelion-relay-term.service

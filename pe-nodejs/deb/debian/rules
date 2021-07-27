@@ -2,3 +2,8 @@
 
 %:
 	dh $@
+
+override_dh_auto_build:
+	find -name .npmignore -delete
+	find -name '.eslintrc*' -delete
+	rm -rf lib/node_modules/npm/node_modules/update-notifier/node_modules/boxen/node_modules/term-size/vendor/windows/term-size.exe
