@@ -1,3 +1,10 @@
+mbed-edge-core (0.18.0-1) unstable; urgency=medium
+
+  * Updated mbed-edge-core to version 0.18 and updated all of the patches to
+    work with the changes in the new versions code.
+
+ -- J. Michael Welsh <mike.welsh@pelion.com>  Tue, 27 Jun 2021 15:13:51 -0500
+
 mbed-edge-core (0.13.0-1) stable; urgency=medium
 
   * Set the package version to 0.13.0-1

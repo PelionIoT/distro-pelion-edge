@@ -28,7 +28,7 @@
 #define MBED_CLOUD_CLIENT_SUPPORT_CLOUD
 #define MBED_CLOUD_CLIENT_ENDPOINT_TYPE          "MBED_GW"
 #define MBED_CLOUD_CLIENT_TRANSPORT_MODE_TCP
-#define MBED_CLOUD_CLIENT_LIFETIME               3600
+#define MBED_CLOUD_CLIENT_LIFETIME 600
 
 #define SN_COAP_MAX_BLOCKWISE_PAYLOAD_SIZE       1024
 #define SN_COAP_DUPLICATION_MAX_MSGS_COUNT       0
@@ -40,6 +40,9 @@
 /* set the TCP KEEPALIVE values */
 #define MBED_CLIENT_TCP_KEEPALIVE_INTERVAL 60
 #define MBED_CLIENT_TCP_KEEPALIVE_TIME 60
+
+/* uncomment this if you want port 443 */
+//#define MBED_CLOUD_CLIENT_CUSTOM_URI_PORT 443
 
 #define PLATFORM_VERSION_HASH_FILE "/etc/pelion/platform_version"
 #define PLATFORM_VERSION_FILE "/etc/pelion/readable_version"
