@@ -5,11 +5,11 @@ ARG GROUP_ID
 ARG DOCKER_GROUP_ID
 ARG LOCAL_SRC_PATH=./docker-debian-9-stretch
 
-RUN groupadd -o --gid $GROUP_ID user
+RUN if [ $GROUP_ID != $DOCKER_GROUP_ID ]; then groupadd -o --gid $GROUP_ID user; fi
+RUN addgroup --gid $DOCKER_GROUP_ID docker
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
-RUN addgroup --gid $DOCKER_GROUP_ID docker
-RUN usermod -aG docker user
+RUN if [ $GROUP_ID != $DOCKER_GROUP_ID ]; then usermod -aG docker user; fi
 
 COPY $LOCAL_SRC_PATH/sources.list.stretch /etc/apt/sources.list
 COPY $LOCAL_SRC_PATH/preferences /etc/apt/preferences
@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
-COPY --chown=user ./common/.bash_aliases /home/user/
+COPY --chown=$USER_ID:$GROUP_ID ./common/.bash_aliases /home/user/
 
 COPY ./common/nodejs-apt-repo.sh /root/
 RUN /root/nodejs-apt-repo.sh && apt-get update
