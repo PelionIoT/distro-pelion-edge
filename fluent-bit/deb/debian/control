@@ -9,4 +9,6 @@ Homepage: https://www.pelion.com
 Package: fluent-bit
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: fluent-bit logging
+Description: Fast and Lightweight Logs and Metrics Processor and Forwarder.
+ It has been made with a strong focus on performance to allow
+ the collection of events from different sources without complexity.
