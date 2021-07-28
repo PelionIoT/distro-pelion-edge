@@ -1,2 +1,4 @@
 new-package-should-close-itp-bug
 binary-without-manpage
+fluent-bit: script-with-language-extension usr/bin/launch-fluent-bit.sh
+fluent-bit: embedded-library usr/bin/fluent-bit: mbedtls
