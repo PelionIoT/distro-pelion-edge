@@ -1,0 +1,2 @@
+# ignore "valid until" timestamp so that installing from snapshot will work
+Acquire::Check-Valid-Until "0";
