@@ -484,6 +484,24 @@ Or, install a single package by specifying its deb file name.
 $ sudo apt install -y ./devicedb_<version>_<arch>.deb
 ```
 
+#### Additional steps for Debian 11 Bullseye
+
+Pelion container orchestration services require cgroupv1 for proper operation.
+Since Debian 11 changes to using cgroupv2 by default, the Debian 11 kernel
+must be configured to override the default and use a hybrid cgroup heirarchy.
+Do this by adding the parameters `systemd.unified_cgroup_hierarchy=false` and
+`systemd.legacy_systemd_cgroup_controller=false` to the kernel command line.
+
+For example, if using grub, add the following line to a new file `/etc/default/grub.d/pelion.cfg`:
+    ```
+    GRUB_CMDLINE_LINUX_DEFAULT="${GRUB_CMDLINE_LINUX_DEFAULT} systemd.unified_cgroup_hierarchy=false systemd.legacy_systemd_cgroup_controller=false"
+    ```
+Next, regenerate the grub config file and reboot the system.
+    ```
+    sudo update-grub
+    sudo reboot
+    ```
+
 ### Installing on Red Hat or Centos
 1.  Before installing  packages make  sure  that you  have subscription  enabled
 and   EPEL,  CodeReady   and  Docker   repositories  are   enabled  (see   [RHEL
