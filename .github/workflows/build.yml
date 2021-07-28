@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        distro: [buster, bionic, focal]
+        distro: [buster, bullseye, bionic, focal]
         arch: [amd64, arm64, armhf]
       fail-fast: false
     steps:
