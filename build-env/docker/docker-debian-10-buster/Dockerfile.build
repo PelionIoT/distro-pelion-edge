@@ -5,11 +5,11 @@ ARG GROUP_ID
 ARG DOCKER_GROUP_ID
 ARG LOCAL_SRC_PATH=./docker-debian-10-buster
 
-RUN groupadd -o --gid $GROUP_ID user
+RUN if [ $GROUP_ID != $DOCKER_GROUP_ID ]; then groupadd -o --gid $GROUP_ID user; fi
+RUN addgroup --gid $DOCKER_GROUP_ID docker
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 RUN usermod -aG sudo user
-RUN addgroup --gid $DOCKER_GROUP_ID docker
-RUN usermod -aG docker user
+RUN if [ $GROUP_ID != $DOCKER_GROUP_ID ]; then usermod -aG docker user; fi
 
 RUN echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retries
 COPY $LOCAL_SRC_PATH/sources.list.buster /etc/apt/sources.list
@@ -37,7 +37,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
-COPY --chown=user ./common/.bash_aliases /home/user/
+COPY --chown=$USER_ID:$GROUP_ID ./common/.bash_aliases /home/user/
 
 # github.com ssh host key
 COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts
