@@ -8,6 +8,9 @@ CONFIGURE_FLAGS = -DFLB_EXAMPLES=Off -DFLB_IN_SYSTEMD=On -DFLB_LUAJIT=Off -DFLB_
 ifeq ($(DEB_HOST_ARCH), armhf)
 	CONFIGURE_FLAGS += -DCMAKE_TOOLCHAIN_FILE=debian/linux-armhf.cmake
 endif
+ifeq ($(DEB_HOST_ARCH), arm64)
+	CONFIGURE_FLAGS += -DCMAKE_TOOLCHAIN_FILE=cmake/linux-arm64.cmake
+endif
 
 %:
 	dh $@ --builddirectory=build/ --with systemd
