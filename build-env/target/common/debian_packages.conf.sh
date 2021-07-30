@@ -12,6 +12,7 @@ PACKAGES=(
     'maestro'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
+    'mbed-edge-core-byocmode'
     'golang-github-containernetworking-plugins'
     'mbed-edge-examples'
     'mbed-fcc'
