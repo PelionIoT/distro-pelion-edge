@@ -489,8 +489,8 @@ directory run:
 sudo yum install *.rpm
 ```
 
-Please  note  that  `mbed-edge-core`   and  `mbed-edge-core-devmode`  cannot  be
-installed simultaneously.
+Please note that `mbed-edge-core`, `mbed-edge-core-devmode`, and `mbed-edge-core-byocmode`
+cannot be installed simultaneously.
 
 4. Enable `systemd` services. After installation there are following services:
 ```

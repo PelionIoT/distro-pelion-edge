@@ -1,0 +1,5 @@
+mbed-edge-core-byocmode (0.18.0-1) unstable; urgency=medium
+
+  * Initial release of BYOC version of edge-core
+
+ -- Nic Costa <nic.costa@gmail.com>  Tue, 27 Jul 2021 16:49:44 +0000
