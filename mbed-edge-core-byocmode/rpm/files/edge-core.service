@@ -1,0 +1,12 @@
+[Unit]
+Description=Edge Core
+After=network-online.target
+
+[Service]
+Restart=always
+RestartSec=5s
+WorkingDirectory=/var/lib/pelion/mbed
+ExecStart=/usr/bin/edge-core --http-port 9101
+
+[Install]
+RequiredBy=multi-user.target
