@@ -1,4 +1,4 @@
-Source: mbed-edge-core
+Source: mbed-edge-core-byocmode
 Section: net
 Priority: optional
 Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
@@ -6,11 +6,11 @@ Build-Depends: debhelper (>=9), dh-systemd, cmake (>=3.5), doxygen, graphviz, li
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
-Package: mbed-edge-core
+Package: mbed-edge-core-byocmode
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Conflicts: mbed-edge-core-devmode, mbed-edge-core-byocmode
-Replaces: mbed-edge-core-devmode, mbed-edge-core-byocmode
+Conflicts: mbed-edge-core, mbed-edge-core-devmode
+Replaces: mbed-edge-core, mbed-edge-core-devmode
 Description: pelion LWM2M path and registration
  Device Management Edge (from now on, just Edge) is a product that enables you
  to connect a variety of devices to Device Management. Examples of such devices
