@@ -33,7 +33,7 @@ else
 
     GATEWAYS_ADDRESS=$(jq -r .gatewayServicesAddress ${IDENTITY_JSON})
     CONTAINERS_ADDRESS=$(jq -r .containerServicesAddress ${IDENTITY_JSON})
-    ARGS="${ARGS} -forwarding-addresses={\"gateways.local\":\"${GATEWAYS_ADDRESS#"https://"}\"\,\"containers.local\":\"${CONTAINERS_ADDRESS#"https://"}\"}"
+    ARGS="${ARGS} -forwarding-addresses={\"gateways.local\":\"${GATEWAYS_ADDRESS#"https://"}"\"\,\"containers.local\":\"${CONTAINERS_ADDRESS#"https://"}"\"}"
 fi
 
 EDGE_PROXY_URI_RELATIVE_PATH=$(jq -r .edge_proxy_uri_relative_path /etc/pelion/edge-proxy.conf.json)
