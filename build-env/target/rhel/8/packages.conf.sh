@@ -18,7 +18,6 @@ PACKAGES=(
     'mbed-edge-examples'
     'mbed-fcc'
     'pe-utils'
-    'fluent-bit'
 )
 
 DISTNAME=rhel8
