@@ -32,13 +32,18 @@ else
     ARGS="${ARGS} -proxy-uri=${EDGE_K8S_ADDRESS}"
 
     GATEWAYS_ADDRESS=$(jq -r .gatewayServicesAddress ${IDENTITY_JSON})
-    ARGS="${ARGS} -forwarding-addresses={\"gateways.local\":\"${GATEWAYS_ADDRESS#"https://"}\"}"
+    CONTAINERS_ADDRESS=$(jq -r .containerServicesAddress ${IDENTITY_JSON})
+    ARGS="${ARGS} -forwarding-addresses={\"gateways.local\":\"${GATEWAYS_ADDRESS#"https://"}"\"\,\"containers.local\":\"${CONTAINERS_ADDRESS#"https://"}"\"}"
 fi
 
 EDGE_PROXY_URI_RELATIVE_PATH=$(jq -r .edge_proxy_uri_relative_path /etc/pelion/edge-proxy.conf.json)
 
 if ! grep -q "gateways.local" /etc/hosts; then
     echo "127.0.0.1 gateways.local" >> /etc/hosts
+fi
+
+if ! grep -q "containers.local" /etc/hosts; then
+    echo "127.0.0.1 containers.local" >> /etc/hosts
 fi
 
 if [[ -n "$HTTP_PROXY" ]]; then
