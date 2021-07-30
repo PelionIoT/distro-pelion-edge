@@ -13,6 +13,7 @@ PACKAGES=(
     'maestro'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
+    'mbed-edge-core-byocmode'
     'mbed-edge-examples'
     'mbed-fcc'
     'pe-utils'
