@@ -33,7 +33,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
 COPY ./common/.bash_aliases /home/user/
-RUN chown $USER_ID:$GROUP_ID /home/user/.bashrc
+RUN chown $USER_ID:$GROUP_ID /home/user/.bash_aliases
 
 COPY ./common/nodejs-apt-repo.sh /root/
 RUN /root/nodejs-apt-repo.sh && apt-get update
