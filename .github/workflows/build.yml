@@ -2,29 +2,6 @@ name: Build
 on: push
 
 jobs:
-  build-debs:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        distro: [buster, bionic, focal]
-        arch: [amd64, arm64, armhf]
-      fail-fast: false
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Copy mbed_cloud_dev_credentials.c
-        env:
-          MBED_CLOUD_DEV_CREDENTIALS: ${{ secrets.MBED_CLOUD_DEV_CREDENTIALS_C_RYAN }}
-        run: |
-          echo "$MBED_CLOUD_DEV_CREDENTIALS" > mbed_cloud_dev_credentials.c
-      - name: Copy update_default_resources.c
-        env:
-          UPDATE_DEFAULT_RESOURCES: ${{ secrets.UPDATE_DEFAULT_RESOURCES_C_RYAN }}
-        run: |
-          echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
-      - name: Build
-        run: |
-          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} ./build-env/bin/build-all.sh --deps --install --build --source --arch=${{ matrix.arch }}
   build-rpms:
     runs-on: ubuntu-latest
     strategy:
