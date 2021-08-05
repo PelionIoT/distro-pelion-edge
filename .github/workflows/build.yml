@@ -3,7 +3,7 @@ on: push
 
 jobs:
   build-rpms:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, foobar]
     strategy:
       matrix:
         distro: [centos]
