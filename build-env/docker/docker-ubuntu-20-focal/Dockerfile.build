@@ -37,7 +37,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
 
-COPY --chown=$USER_ID:$GROUP_ID ./common/.bash_aliases /home/user/
+COPY ./common/.bash_aliases /home/user/
+RUN chown $USER_ID:$GROUP_ID /home/user/.bashrc
 
 # github.com ssh host key
 COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts
