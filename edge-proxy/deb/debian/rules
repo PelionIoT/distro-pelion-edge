@@ -13,3 +13,5 @@ override_dh_auto_clean:
 	-rm -rf go-workspace
 
 override_dh_installinit:
+	dh_installinit -pedge-proxy --noscripts
+	dh_installinit --remaining
