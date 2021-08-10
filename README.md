@@ -24,6 +24,8 @@
   * [APT repository](#apt-repository)
     - [GPG key pair generation](#gpg-key-pair-generation)
     - [APT repository usage](#apt-repository-usage)
+  * [YUM repository](#yum-repository)
+    - [YUM repository usage](#yum-repository-usage)
   * [FOTA](#fota)
 
 # Build scripts for Pelion Edge
@@ -596,6 +598,60 @@ Then import the GPG key the repository was signed with:
 ```
 wget -q -O - http://<ip address>/key.gpg | sudo apt-key add -
 ```
+
+## YUM repository
+
+Structure for YUM repository server can be created in `build/deploy/rpm/yum-repo`.
+`createrepo` tool needs to be installed to create repository. Package files need to
+be copied to this location and then repository can be created with `createrepo` tool.
+
+```
+$ mkdir -p build/deploy/rpm/yum-repo
+$ cp <packages path> build/deploy/rpm/yum-repo
+
+$ yum install createrepo
+$ createrepo build/deploy/rpm/yum-repo
+
+$ yum clean all
+$ yum update
+```
+An YUM repository and its contents have to be signed with a GPG key. Key can be 
+generated using this [instruction](#gpg-key-pair-generation) and will be placed
+here `build/deploy/deb/gpg/Pelion_GPG_key_private.gpg`. Export this key to file with
+`gpg` tool and import key to `rpm` tool to be able to sign packages.
+
+```
+$ gpg --export -a 'Pelion_GPG_key' > RPM-GPG_KEY-pelion
+$ rpm --import RPM-GPG_KEY-pelion 
+```
+
+In order to utilize the key edit the file `~/.rpmmacros`.
+
+```
+%_signature gpg
+%_gpg_path <user's home directory path>/.gnupg
+%_gpg_name Pelion_GPG_key
+%_gpgbin /usr/bin/gpg
+```
+
+Now all packages can be signed with GPG key.
+```
+$ rpm --addsign build/deploy/rpm/yum-repo/*.rpm
+```
+
+### YUM repository usage
+
+In order to get access to an YUM repository add a new file in this path
+`/etc/yum.repos.d/pelionedge.repo` with this contents:
+```
+[pelionedge]
+name=pelionedge
+baseurl=http://<ip address>
+enabled=1
+gpgcheck=1
+gpgkey=file://<RPM-GPG_KEY-pelion (public) key path>
+```
+`gpgkey` field can also be remote web link.
 
 ## FOTA
 
