@@ -45,7 +45,7 @@ jobs:
           echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
       - name: Build
         run: |
-          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} ./build-env/bin/build-all.sh --deps --install --build --source --arch=${{ matrix.arch }}
+          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} ./build-env/bin/build-all.sh --install --arch=${{ matrix.arch }}
   build-rpms:
     runs-on: ubuntu-latest
     strategy:
@@ -68,4 +68,4 @@ jobs:
           echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
       - name: Build
         run: |
-          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh -a ${{ matrix.arch }} ${{ matrix.distro }} ./build-env/bin/build-all.sh --deps --install --build --source --arch=${{ matrix.arch }}
+          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh -a ${{ matrix.arch }} ${{ matrix.distro }} ./build-env/bin/build-all.sh --install --arch=${{ matrix.arch }}
