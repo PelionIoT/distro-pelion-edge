@@ -48,8 +48,8 @@ override_dh_install:
 
 override_dh_fixperms:
 	dh_fixperms
-	chmod 755 debian/containernetworking-plugins/usr/lib/cni/c2d
-	chmod 755 debian/containernetworking-plugins/usr/lib/cni/c2d-inner
+	chmod 755 debian/containernetworking-plugins-c2d/usr/lib/cni/c2d
+	chmod 755 debian/containernetworking-plugins-c2d/usr/lib/cni/c2d-inner
 
 override_dh_compress:
 	dh_compress -X.md
