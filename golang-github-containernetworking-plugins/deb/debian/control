@@ -50,10 +50,13 @@ Description: standard networking plugins - sources
  .
  [ipvlan]: https://www.kernel.org/doc/Documentation/networking/ipvlan.txt
 
-Package: containernetworking-plugins
+Package: containernetworking-plugins-c2d
 Architecture: any
 Built-Using: ${misc:Built-Using}
 Depends: ${misc:Depends}, ${shlibs:Depends}
+Conflicts: containernetworking-plugins
+Replaces: containernetworking-plugins
+Provides: containernetworking-plugins
 Description: standard networking plugins - binaries
  This package contains binaries of the Container Networking Initiative's
  official plugins:
