@@ -14,13 +14,19 @@ if [ $? -ne 0 ]; then
 fi
 
 # Get the IP address of the interface with Internet access
-IP_ADDR=$(ip route get 1.1.1.1 | grep -oP 'src \K\S+')
-
-if [ -n $IP_ADDR ]; then
-    NODE_IP_OPTION="--node-ip=$IP_ADDR"
-else
-    NODE_IP_OPTION=""
-fi
+# we'll wait a fixed number of seconds before proceeding in offline mode
+WAIT_INTERVAL_SECONDS=7
+NODE_IP_OPTION=""
+IP_ADDR=""
+while [ -z "$IP_ADDR" -a "$WAIT_INTERVAL_SECONDS" != 0 ]; do
+    IP_ADDR=$(ip route get 1.1.1.1 | grep -oP 'src \K\S+')
+    if [ -n "$IP_ADDR" ]; then
+        NODE_IP_OPTION="--node-ip=$IP_ADDR"
+    else
+        sleep 1
+        let WAIT_INTERVAL_SECONDS--
+    fi
+done
 
 FIRST_BROKEN_VERSION='iptables v1.8.0'
 FIRST_WORKING_VERSION='iptables v1.8.3'
