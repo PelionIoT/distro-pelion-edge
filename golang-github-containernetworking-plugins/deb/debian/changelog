@@ -1,3 +1,10 @@
+golang-github-containernetworking-plugins (0.8.4-2) unstable; urgency=medium
+
+  * Changed package name from containernetworking-plugins to
+    containernetworking-plugins-c2d
+
+ -- Michael Ray <michael.ray@pelion.com>  Wed, 11 Aug 2020 17:47:22 +1100
+
 golang-github-containernetworking-plugins (0.8.4-1) unstable; urgency=medium
 
   * New upstream release.
