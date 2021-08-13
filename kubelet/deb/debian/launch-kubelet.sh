@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DEFAULT_NODE_IP=10.0.0.1
+
 IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
 DEVICE_ID=$(jq -r .deviceID ${IDENTITY_JSON})
 if [ $? -ne 0 ]; then
@@ -13,20 +15,8 @@ if [ $? -ne 0 ]; then
     exit 2
 fi
 
-# Get the IP address of the interface with Internet access
-# we'll wait a fixed number of seconds before proceeding in offline mode
-WAIT_INTERVAL_SECONDS=7
-NODE_IP_OPTION=""
-IP_ADDR=""
-while [ -z "$IP_ADDR" -a "$WAIT_INTERVAL_SECONDS" != 0 ]; do
-    IP_ADDR=$(ip route get 1.1.1.1 | grep -oP 'src \K\S+')
-    if [ -n "$IP_ADDR" ]; then
-        NODE_IP_OPTION="--node-ip=$IP_ADDR"
-    else
-        sleep 1
-        let WAIT_INTERVAL_SECONDS--
-    fi
-done
+# the IP address is user specified, since querying the default route IP can give the wrong result
+NODE_IP_OPTION="--node-ip=${DEFAULT_NODE_IP}"
 
 FIRST_BROKEN_VERSION='iptables v1.8.0'
 FIRST_WORKING_VERSION='iptables v1.8.3'
