@@ -13,9 +13,8 @@ RUN if [ $GROUP_ID != $DOCKER_GROUP_ID ]; then usermod -aG docker user; fi
 
 RUN echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retries
 COPY $LOCAL_SRC_PATH/sources.list.bullseye /etc/apt/sources.list
-COPY $LOCAL_SRC_PATH/preferences /etc/apt/preferences
 COPY $LOCAL_SRC_PATH/apt.conf.d/10-no-check-valid-until /etc/apt/apt.conf.d/10-no-check-valid-until
-RUN chmod 644 /etc/apt/sources.list /etc/apt/preferences /etc/apt/apt.conf.d/10-no-check-valid-until
+RUN chmod 644 /etc/apt/sources.list /etc/apt/apt.conf.d/10-no-check-valid-until
 RUN mkdir -p /opt/apt-repo/pe-dependencies && echo -n| gzip >/opt/apt-repo/pe-dependencies/Packages.gz && find /opt && apt-get update
 
 RUN dpkg --add-architecture arm64
