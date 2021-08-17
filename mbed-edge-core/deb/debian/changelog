@@ -1,3 +1,11 @@
+mbed-edge-core (0.13.0-2) unstable; urgency=medium
+
+  * debian/control:
+    + Remove Build-Depends on deprecated dh-systemd and depend on
+      debhelper (>= 9.20160709) now that it integrates dh-systemd.
+
+ -- Ryan Nowakowski <ryan.nowakowski@pelion.com>  Tue, 17 Aug 2021 17:29:51 -0500
+
 mbed-edge-core (0.13.0-1) stable; urgency=medium
 
   * Set the package version to 0.13.0-1

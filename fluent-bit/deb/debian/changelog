@@ -1,3 +1,11 @@
+fluent-bit (1.8.1-2) unstable; urgency=medium
+
+  * debian/control:
+    + Remove Build-Depends on deprecated dh-systemd and depend on
+      debhelper (>= 9.20160709) now that it integrates dh-systemd.
+
+ -- Ryan Nowakowski <ryan.nowakowski@pelion.com>  Tue, 17 Aug 2021 17:30:53 -0500
+
 fluent-bit (1.8.1-1) unstable; urgency=medium
 
   * Initial build
