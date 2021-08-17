@@ -25,7 +25,6 @@ RUN dpkg --add-architecture armhf
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		build-essential \
 		debhelper \
-		dh-systemd \
 		ca-certificates \
 		crossbuild-essential-arm64 \
 		crossbuild-essential-armel \
