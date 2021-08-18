@@ -1,4 +1,4 @@
-FROM debian:10
+FROM debian:buster-20210816
 
 ARG USER_ID
 ARG GROUP_ID
