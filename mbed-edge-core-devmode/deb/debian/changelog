@@ -3,7 +3,8 @@ mbed-edge-core-devmode (0.18.0-1) unstable; urgency=medium
   * Updated mbed-edge-core to version 0.18 and updated all of the patches to
     work with the changes in the new versions code.
 
- -- Mo Chen <mo.chen@pelion.com>  Thu, 10 Jun 2021 14:47:51 -0500
+ -- Mo Chen <mo.chen@pelion.com>  Wed, 28 Jul 2021 19:01:08 -0500
+
 mbed-edge-core-devmode (0.13.0-1) unstable; urgency=medium
 
   * Update package version
