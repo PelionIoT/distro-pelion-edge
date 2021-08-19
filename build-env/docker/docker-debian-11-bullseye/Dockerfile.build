@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM debian:bullseye-20210816
 
 ARG USER_ID
 ARG GROUP_ID
