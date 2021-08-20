@@ -9,5 +9,11 @@ override_dh_strip:
 
 override_dh_dwz:
 
+override_dh_shlibdeps:
+	dh_shlibdeps -Xtestdata -Xtest
+
+override_dh_makeshlibs:
+	dh_makeshlibs -Xtestdata -Xtest
+
 %:
 	dh $@
