@@ -49,12 +49,6 @@ var_defs:
 #     value: "/mnt/.overlay/user/slash/wigwag/etc/versions.json"
 #   - key: "UPGRADE_VERSIONS_FILE"
 #     value: "/mnt/.overlay/upgrade/wigwag/etc/versions.json"
-devicedb_conn_config:
-    devicedb_uri: "https://{{ARCH_DEVICE_ID}}:9000" #default uri
-    devicedb_prefix: "maestro.configs" #default prefix
-    devicedb_bucket: "lww" #default bucket
-    relay_id: "{{ARCH_DEVICE_ID}}" #default relay id
-    ca_chain: "{{SSL_CERTS_PATH}}/ca-chain.cert.pem" #default chain cert file name     
 sys_stats: # system stats intervals
   vm_stats:
     every: "15s"
@@ -131,9 +125,6 @@ static_file_generators:
    - name: "devicejs"
      template_file: "__PE_ROOT__/etc/pelion/template/template.devicejs.conf"
      output_file: "__PE_ROOT__/etc/pelion/run/devicejs.conf"
-   - name: "devicedb"
-     template_file: "__PE_ROOT__/etc/pelion/template/template.devicedb.conf"
-     output_file: "__PE_ROOT__/etc/pelion/run/devicedb.yaml"
    - name: "relayTerm"
      template_file: "__PE_ROOT__/etc/pelion/template/relayTerm.template.json"
      output_file: "__PE_ROOT__/etc/pelion/run/relay-term-config.json"
@@ -221,34 +212,6 @@ container_templates:
         - "--max-old-space-size=128"
         - "--max-semi-space-size=1"
 jobs:
-   - job: "devicedb"
-     immutable: true
-     die_on_parent_death: true
-     inherit_env: true
-     exec_cmd: "__PE_ROOT__/usr/bin/devicedb"
-     restart: true
-     restart_limit: 5000
-     restart_pause: 1
-     exec_args:
-        - "start"
-        - "-conf=__PE_ROOT__/etc/pelion/run/devicedb.yaml"
-   - job: "devicejs"
-     defer_running_status: 30000   # waits 8 seconds before marking this Job as RUNNING, which delays all dependencies
-     depends_on:
-        - "devicedb"
-     container_template: "node_process"
-     immutable: true
-     die_on_parent_death: true
-     env:
-#        - "LD_PRELOAD=/usr/lib/libcrypto.so.1.0.2"
-        - "NODE_PATH={{DEVICEJS_ROOT}}/node_modules"
-        - "DEVJS_LOGGER={\"modulepath\":\"{{WIGWAG_NODE_PATH}}/grease-log-client\",\"type\":\"global\"}"
-     exec_cmd: "{{DEVICEJS_ROOT}}/src/runtime/start"
-     restart: true
-     restart_limit: 5000
-     restart_pause: 10
-     exec_args:
-        - "--config=__PE_ROOT__/etc/pelion/run/devicejs.conf"
    - job: "MbedDeviceJSBridge"
      immutable: true  # don't store in DB
      exec_cmd: "${thisdir}/../../mbed/mbed-devicejs-bridge"

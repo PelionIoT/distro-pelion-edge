@@ -19,7 +19,6 @@ DEPENDS=(
 # TODO: do not duplicate for amd64 only build
 PACKAGES=(
     'pe-nodejs'
-    'devicedb'
     'edge-proxy'
     'global-node-modules'
     'kubelet'

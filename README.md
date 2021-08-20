@@ -219,7 +219,7 @@ and source stage). Container is removed after each element is done:
 	[docker run --rm] pe-nodejs source
 	# container is automatically removed
 	# create and run temporary container
-	[docker run --rm] devicedb source
+	[docker run --rm] maestro source
 	# container is automatically removed
 	...
 	```
@@ -230,7 +230,7 @@ uses it for each element:
 	[check if container exists => create if missing]
 	[if stopped => docker start]
 	[docker exec] pe-nodejs source
-	[docker exec] devicedb source
+	[docker exec] maestro source
 	...
 	[docker exec] pe-nodejs build
 	```
@@ -244,7 +244,7 @@ use in script:
 	[docker container create]
 	[docker start]
 	[docker exec] pe-nodejs source
-	[docker exec] devicedb source
+	[docker exec] maestro source
 	...
 	[docker exec] pe-nodejs build
 	...
@@ -481,7 +481,7 @@ $ sudo apt install -y ./*.deb
 
 Or, install a single package by specifying its deb file name.
 ```bash
-$ sudo apt install -y ./devicedb_<version>_<arch>.deb
+$ sudo apt install -y ./maestro_<version>_<arch>.deb
 ```
 
 ### Installing on Red Hat or Centos
@@ -504,7 +504,6 @@ installed simultaneously.
 
 4. Enable `systemd` services. After installation there are following services:
 ```
-devicedb.service
 edge-core.service
 edge-proxy.service
 kubelet.service
@@ -516,7 +515,7 @@ wait-for-pelion-identity.service
 
 To enable all services, run:
 ```bash
-sudo systemctl enable devicedb.service edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
+sudo systemctl enable edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
 ```
 
 Dependent     services      are     enabled     implicitly.      For     example
