@@ -2,7 +2,7 @@ Source: pe-utils
 Section: javascript
 Priority: optional
 Maintainer: Olha Kulyk  <olha.kulyk@globallogic.com>
-Build-Depends: debhelper (>=9)
+Build-Depends: debhelper (>=11~)
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
