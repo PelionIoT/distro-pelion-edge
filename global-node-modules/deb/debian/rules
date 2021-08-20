@@ -8,7 +8,7 @@ export CXX=${DEB_HOST_GNU_TYPE}-g++
 export PKG_CONFIG=${DEB_HOST_GNU_TYPE}-pkg-config
 
 %:
-	dh $@ --with systemd
+	dh $@
 
 override_dh_auto_build:
 	./debian/npm_arch_rebuild.sh ${DEB_HOST_ARCH} --production

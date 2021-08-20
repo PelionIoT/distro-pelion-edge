@@ -4,7 +4,7 @@
 # export DH_VERBOSE = 1
 
 %:
-	dh $@ --builddirectory=build/ --with systemd
+	dh $@ --builddirectory=build/
 
 override_dh_auto_configure:
 	dh_auto_configure -- -DFACTORY_MODE=ON -DFIRMWARE_UPDATE=ON -DNETWORK_PROXY_SUPPORT=ON
