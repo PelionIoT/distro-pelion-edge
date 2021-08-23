@@ -148,6 +148,7 @@ fetch_deps() {
         '/^libpam\b/d'
         '/^libaudit\b/d'
         '/^libsemanage\b/d'
+        '/^libtirpc-common\b/d'
         '/^lsb-base\b/d'
         '/^adduser\b/d'
         '/^init-system-helpers\b/d'
