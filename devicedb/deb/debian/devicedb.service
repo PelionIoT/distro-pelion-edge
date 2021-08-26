@@ -1,6 +1,10 @@
 [Unit]
 Description=DeviceDB: Remote database manager for Maestro
-Requires=edge-proxy.service
+PartOf=pelion.target
+After=pelion.target
+# maestro generates the devicedb config file from a template
+# edge-proxy provides connectivity to Pelion
+Requires=maestro.service edge-proxy.service
 After=maestro.service edge-proxy.service
 
 [Service]
@@ -11,4 +15,4 @@ ExecStart=/usr/bin/devicedb start -conf /etc/pelion/devicedb.yaml
 Type=simple
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=pelion.target

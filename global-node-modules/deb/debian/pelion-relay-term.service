@@ -1,7 +1,11 @@
 [Unit]
 Description=relay terminal for remote terminals in pelion cloud
-Requires=maestro.service
-After=maestro.service
+PartOf=pelion.target
+After=pelion.target
+# maestro generates the devicedb config file from a template
+# edge-proxy provides connectivity to Pelion
+Requires=maestro.service edge-proxy.service
+After=maestro.service edge-proxy.service
 
 [Service]
 Restart=always
@@ -10,4 +14,4 @@ Environment=NODE_PATH=/usr/lib/pelion/devicejs-core-modules/node_modules
 ExecStart=/usr/lib/pelion/bin/node /usr/lib/pelion/wigwag-core-modules/relay-term/src/index.js start /etc/pelion/relay-term-config.json
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=pelion.target
