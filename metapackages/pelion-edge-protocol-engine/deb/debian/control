@@ -8,6 +8,6 @@ Homepage: https://www.pelion.com
 
 Package: pelion-edge-protocol-engine
 Architecture: all
-Depends: devicedb, global-node-modules, mbed-edge-examples, mbed-edge-core-devmode | mbed-edge-core
+Depends: global-node-modules, mbed-edge-examples, mbed-edge-core-devmode | mbed-edge-core
 Description: protocol-engine package group
- Combine devicedb, global-node-modules mbed-edge-examples, mbed-edge-core
+ Combine global-node-modules mbed-edge-examples, mbed-edge-core

@@ -21,8 +21,6 @@ var_defs:
     value: "/usr/lib/pelion/devicejs-core-modules/maestroRunner"
   - key: "LOCAL_DEVICEDB_PORT"
     value: 9000
-  - key: "LOCAL_DATABASE_STORAGE_DIRECTORY"
-    value: "/var/lib/pelion/devicedb"
   - key: "RELAY_VERSIONS_FILE"
     value: "/etc/pelion/versions.json"
   - key: "FACTORY_VERSIONS_FILE"
@@ -51,9 +49,6 @@ targets:
         format_pre: "\u001B[31m" # red
         format_post: "\u001B[39m"
 static_file_generators:
-  - name: "devicedb"
-    template_file: "/etc/pelion/template/template.devicedb.conf"
-    output_file: "/etc/pelion/devicedb.yaml"
   - name: "relayTerm"
     template_file: "/etc/pelion/template/relayTerm.template.json"
     output_file: "/etc/pelion/relay-term-config.json"

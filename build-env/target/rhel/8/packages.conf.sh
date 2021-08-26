@@ -6,7 +6,6 @@ DEPENDS=(
 
 PACKAGES=(
     'pe-nodejs'
-    'devicedb'
     'edge-proxy'
     'global-node-modules'
     'golang-github-containernetworking-plugins'
