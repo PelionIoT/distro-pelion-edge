@@ -205,7 +205,7 @@ function pelion_parse_args() {
                 ;;
 
             --print-package-name)
-                echo $PELION_PACKAGE_NAME
+                echo $(pelion_get_deb_package_from_control)
                 exit 0
                 ;;
 

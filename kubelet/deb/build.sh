@@ -21,6 +21,4 @@ else
     fi
 fi
 
-echo "buildtype=$OS_CPU"
-
 pelion_main "$@"
