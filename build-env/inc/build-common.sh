@@ -403,7 +403,7 @@ function pelion_building_deb_package() {
 
     dpkg-buildpackage $PELION_DPKG_BUILD_OPTIONS
 
-    mv "$PELION_TMP_BUILD_DIR/${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb" "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
+    mv "$PELION_TMP_BUILD_DIR/"*.deb "$PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH"
 }
 
 function pelion_verifying_deb_package() {
@@ -414,13 +414,26 @@ function pelion_verifying_deb_package() {
 
     cd $PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH
 
+    for PACKAGE_BINARY_NAME in $(pelion_get_deb_package_from_control)
+    do
+        local PACKAGE_DEB_BINARY_NAME="${PACKAGE_BINARY_NAME}"_"${PELION_PACKAGE_FULL_VERSION}"
     (set -o pipefail; lintian --no-tag-display-limit --info \
-        ${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian)
+        ${PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb 2>&1 | tee $PELION_PACKAGE_NAME.lintian)
+    done
+}
+
+function pelion_get_deb_package_from_control()
+{
+    awk '/^Package:/ { print $2 }' "${PELION_PACKAGE_DIR}/debian/control"
 }
 
 function pelion_print_target_package_path()
 {
-    echo $PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH/${PELION_PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb
+    for PACKAGE_BINARY_NAME in $(pelion_get_deb_package_from_control)
+    do
+        local PACKAGE_DEB_BINARY_NAME="${PACKAGE_BINARY_NAME}"_"${PELION_PACKAGE_FULL_VERSION}"
+        echo $PELION_DEB_DEPLOY_DIR/binary-$PELION_PACKAGE_TARGET_ARCH/${PACKAGE_DEB_BINARY_NAME}_${PELION_PACKAGE_TARGET_ARCH}.deb
+    done
 }
 ################################################################################
 # Docker helpers
