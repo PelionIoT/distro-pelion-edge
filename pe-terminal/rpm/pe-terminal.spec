@@ -1,5 +1,6 @@
 %global goipath github.com/PelionIoT/pe-terminal
-%global commit  5be41d5f8ae5a6e93643d0067533124e11d5d3a0
+%global tag     v1.0.0
+%global version v1.0.0
 %gometa
 
 Name:           pe-terminal
@@ -50,5 +51,5 @@ install -vpm 0755 %{_filesdir}/pe-terminal.service   %{buildroot}/%{_unitdir}
 %systemd_postun_with_restart pe-terminal.service
 
 %changelog
-* Fri Sep 10 2021 Aditya Awasthi <aditya.awasthi@pelion.com> - 1.0.0
+* Fri Sep 10 2021 Aditya Awasthi <aditya.awasthi@pelion.com> - 1.0.0-1
 - Initial release.
