@@ -1,9 +1,9 @@
 %global goipath github.com/PelionIoT/pe-terminal
-%global commit  8d2a020eb0bccf40cd9d9e54188e29df531bc019
+%global commit  5be41d5f8ae5a6e93643d0067533124e11d5d3a0
 %gometa
 
 Name:           pe-terminal
-Version:        0.0.1
+Version:        1.0.0
 Release:        1%{?dist}
 Summary:        Terminal-client for Pelion Edge
 
@@ -50,5 +50,5 @@ install -vpm 0755 %{_filesdir}/pe-terminal.service   %{buildroot}/%{_unitdir}
 %systemd_postun_with_restart pe-terminal.service
 
 %changelog
-* Fri Jul 19 2021 Aditya Awasthi <aditya.awasthi@pelion.com> - 0.0.1-1
+* Fri Sep 10 2021 Aditya Awasthi <aditya.awasthi@pelion.com> - 1.0.0
 - Initial release.
