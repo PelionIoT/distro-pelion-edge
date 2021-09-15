@@ -11,3 +11,5 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}, pe-utils
 Description: Terminal-client for Pelion Edge
+ Provides remote terminal to access Pelion Edge
+ through browser.
