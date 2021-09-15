@@ -8,6 +8,7 @@ PACKAGES=(
     'pe-nodejs'
     'devicedb'
     'edge-proxy'
+    'pe-terminal'
     'global-node-modules'
     'kubelet'
     'maestro'

@@ -1,0 +1,6 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Upstream-Name: pe-terminal
+Source: https://github.com/PelionIoT/pe-terminal
+
+Files: *
+Copyright: 2021, Aditya Awasthi <aditya.awasthi@pelion.com>

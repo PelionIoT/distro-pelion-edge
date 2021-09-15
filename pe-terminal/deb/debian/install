@@ -1,0 +1,2 @@
+go-workspace/src/github.com/PelionIoT/pe-terminal/pe-terminal usr/bin/
+debian/pe-terminal.conf.json etc/pelion
