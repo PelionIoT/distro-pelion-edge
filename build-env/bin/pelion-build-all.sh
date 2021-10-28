@@ -22,7 +22,6 @@ PACKAGES=(
     'devicedb'
     'edge-proxy'
     'global-node-modules'
-    'kubelet'
     'maestro'
     'maestro-shell'
     'mbed-edge-core'
