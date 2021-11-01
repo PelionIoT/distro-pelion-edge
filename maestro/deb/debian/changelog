@@ -1,4 +1,4 @@
-maestro (2.10.0+1607688609+20caa5d-1) unstable; urgency=medium
+maestro (2.10.0+1617688609+20caa5d-2) unstable; urgency=medium
 
   * Disable maestro control of mDNS
 
