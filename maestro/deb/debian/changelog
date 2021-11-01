@@ -1,10 +1,10 @@
-maestro (3.0.0+1626108101+c4f0790-1) unstable; urgency=medium
+maestro (3.0.0+1635955670+c4f0790-1) unstable; urgency=medium
 
   * Update package version
 
- -- Mo Chen <mo.chen@pelion.com>  Thu, 10 Jun 2021 14:45:08 -0500
+ -- Mo Chen <mo.chen@pelion.com>  Wed, 03 Nov 2021 16:07:50 -0500
 
-maestro (2.10.0+1617688609+20caa5d-2) unstable; urgency=medium
+maestro (2.10.0+1629411300+20caa5d-2) unstable; urgency=medium
 
   * Disable maestro control of mDNS
 
