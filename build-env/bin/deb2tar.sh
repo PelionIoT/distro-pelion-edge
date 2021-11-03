@@ -188,6 +188,19 @@ fetch_deps() {
     xargs apt-get download
 }
 
+filter_packages() {
+    local -a OUT
+
+    local exclude="pe-golang"
+
+    for PKG in "$@"; do
+        if [[ $(echo "$PKG" | grep -E "${exclude}[^\/]*") == "" ]] ; then
+            OUT+=( "$PKG" )
+        fi
+    done
+    echo "${OUT[@]}"
+}
+
 usage=$(cat <<EOF
 ${0##*/} - converts a set of Debian packages into a portable tarball.
 
@@ -241,6 +254,8 @@ workdir=$(mktemp -d)
 moshpit=$workdir/$tarname
 downloads=$workdir/downloads
 pkgs=("$topdir"/build/deploy/deb/"${distro:-focal}"/main/binary-"$DEB_HOST_ARCH"/*.deb)
+
+pkgs=( $(filter_packages "${pkgs[@]}") )
 
 echo "Downloading dependencies..."
 mkdir -p "$moshpit" "$downloads"
