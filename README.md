@@ -529,11 +529,12 @@ maestro.service
 mbed-fcc.service
 pelion-relay-term.service
 wait-for-pelion-identity.service
+fluent-bit.service
 ```
 
 To enable all services, run:
 ```bash
-sudo systemctl enable edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
+sudo systemctl enable edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service fluent-bit.service
 ```
 
 Dependent     services      are     enabled     implicitly.      For     example
