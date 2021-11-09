@@ -1,4 +1,4 @@
-%global goipath github.com/armPelionEdge/maestro
+%global goipath github.com/PelionIoT/maestro
 %global tag     v3.0.0
 %global version v3.0.0
 %gometa
