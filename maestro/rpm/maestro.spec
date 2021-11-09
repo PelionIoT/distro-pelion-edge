@@ -48,7 +48,6 @@ install -vpm 0644 %{_filesdir}/maestro.service  %{buildroot}/%{_unitdir}
 
 %files
 %{_bindir}/*
-/usr/lib/pelion
 %{_unitdir}/maestro.service
 %config %{_sysconfdir}/pelion/pelion-base-config.yaml
 %config %{_sysconfdir}/pelion/relay-term-config.json
