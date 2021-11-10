@@ -68,4 +68,8 @@ jobs:
           echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
       - name: Build
         run: |
+          (while true; do
+              df -h
+              sleep 15
+          done) &
           export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh -a ${{ matrix.arch }} ${{ matrix.distro }} ./build-env/bin/build-all.sh --install --arch=${{ matrix.arch }}
