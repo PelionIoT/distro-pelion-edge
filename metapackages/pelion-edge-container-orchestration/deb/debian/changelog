@@ -1,3 +1,9 @@
+pelion-edge-container-orchestration (2.4.0-1) unstable; urgency=medium
+
+  * Update packages to Pelion Edge 2.4
+
+ -- Nic Costa <nic.costa@pelion.com>  Tue, 16 Nov 2021 18:04:37 +0000
+
 pelion-edge-container-orchestration (2.1.0-8+1623960761+038815c-1) unstable; urgency=medium
 
   * Update package version
