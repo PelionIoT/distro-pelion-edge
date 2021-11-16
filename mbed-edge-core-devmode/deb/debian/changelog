@@ -1,3 +1,9 @@
+mbed-edge-core-devmode (0.16.1-1) stable; urgency=medium
+
+  * Adds Parsec support (disabled)
+
+ -- Nic Costa <nic.costa@gmail.com>  Tue, 16 Nov 2021 21:00:12 +0000
+
 mbed-edge-core-devmode (0.15.0-1) stable; urgency=medium
 
   * Upgrade edge-core to 0.15.0 for GRM feature
