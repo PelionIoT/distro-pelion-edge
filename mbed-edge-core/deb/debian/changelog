@@ -1,3 +1,18 @@
+mbed-edge-core (0.18.0-1) stable; urgency=medium
+
+  * Updated to Pelion Device Management Client (PDMC) library version 4.9.0.
+  * Deprecated crypto_ecdh_key_agreement JSON-RPC API for PSA configuration,
+    due to psa_set_key_enrollment_algorithm() API deprecation in Mbed Crypto.
+  * Updated parsec-se-driver version from 0.4.0 to 0.5.0 (in
+    lib/pal-platform.json).
+  * Updated libcurl version from 7.75 to 7.76 (in lib/pal-platform.json).
+  * Mbed TLS updated from 2.22.0 to version 2.25.0.
+  * Removed the use of mbed-cloud-sdk from edge-tool as the sdk has been
+    deprecated.
+  * Added setup script to edge-tool.
+
+ -- Nic Costa <nic.costa@gmail.com>  Mon, 22 Nov 2021 16:03:18 +0000
+
 mbed-edge-core (0.16.1-1) stable; urgency=medium
 
   * Adds Parsec support (disabled)

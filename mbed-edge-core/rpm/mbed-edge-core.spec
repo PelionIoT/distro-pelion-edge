@@ -1,11 +1,11 @@
 %global forgeurl https://github.com/ARMmbed/mbed-edge
-%global tag     0.16.1
-%global version 0.16.1
+%global tag     0.18.0
+%global version 0.18.0
 %global debug_package %{nil}
 %forgemeta
 
 Name:           mbed-edge-core
-Version:        0.16.1
+Version:        0.18.0
 Release:        1%{?dist}
 Summary:        The core of Device Management Edge
 License:        Apache-2.0
@@ -79,6 +79,8 @@ install -vpm 0755 %{_filesdir}/edge-core.logrotate  %{buildroot}/%{_sysconfdir}/
 %systemd_postun_with_restart edge-core.service
 
 %changelog
+* Mon Nov 15 2021 Nic Costa <nic.costa@pelion.com> - 0.18.0-1
+- Upgraded mbed-edge-core 0.18.0 for Pelion Edge 2.4
 * Mon Nov 15 2021 Nic Costa <nic.costa@pelion.com> - 0.16.1-1
 - Upgraded mbed-edge-core 0.16.0 for Pelion Edge 2.3
 * Mon Nov 15 2021 Nic Costa <nic.costa@pelion.com> - 0.15.0-1
