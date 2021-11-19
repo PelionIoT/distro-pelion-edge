@@ -2,27 +2,6 @@ name: Build
 on: push
 
 jobs:
-  build-docker-images-using-docker-18_09:
-    runs-on: ubuntu-18.04
-    strategy:
-      matrix:
-        distro: [buster, bionic, focal]
-    steps:
-      - name: Downgrade docker to 18.09
-        run: |
-            sudo apt-get remove -y moby-buildx moby-cli moby-engine moby-containerd moby-runc
-            wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.09.9~3-0~ubuntu-bionic_amd64.deb
-            wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_18.09.9~3-0~ubuntu-bionic_amd64.deb
-            wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.2-3_amd64.deb
-            sudo dpkg -i docker-ce_18.09.9~3-0~ubuntu-bionic_amd64.deb docker-ce-cli_18.09.9~3-0~ubuntu-bionic_amd64.deb containerd.io_1.2.2-3_amd64.deb
-      - name: Print downgraded docker version
-        run: |
-          docker --version
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Build docker image
-        run: |
-          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} true
   build-debs:
     runs-on: ubuntu-latest
     strategy:
