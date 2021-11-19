@@ -25,6 +25,7 @@ jobs:
       - name: Build
         run: |
           export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} ./build-env/bin/build-all.sh --install --arch=${{ matrix.arch }}
+          docker system prune
   build-rpms:
     runs-on: ubuntu-latest
     strategy:
