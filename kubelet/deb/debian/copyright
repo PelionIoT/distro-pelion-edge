@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: kubelet
-Source: https://github.com/armPelionEdge/edge-kubelet
+Source: https://github.com/PelionIoT/edge-kubelet
 
 Files: *
 Copyright: 2019-2020, Travis McCollum <Travis.McCollum@arm.com>

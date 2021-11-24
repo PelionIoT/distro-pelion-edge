@@ -11,4 +11,4 @@ Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}, conntrack, docker.io | docker-ce, ebtables, ethtool, iproute2, iptables (>=1.4.21), mount, socat, containernetworking-plugins-c2d, edge-proxy, pe-utils
 Description: talks to kubernetes service
- Repository https://github.com/armPelionEdge/edge-kubelet
+ Repository https://github.com/PelionIoT/edge-kubelet
