@@ -10,4 +10,4 @@ Environment=NODE_PATH=/usr/lib/pelion/devicejs-core-modules/node_modules
 ExecStart=/usr/lib/pelion/bin/node /usr/lib/pelion/wigwag-core-modules/relay-term/src/index.js start /etc/pelion/relay-term-config.json
 
 [Install]
-WantedBy=multi-user.target
+#WantedBy=multi-user.target
