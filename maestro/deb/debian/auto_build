@@ -51,4 +51,4 @@ rm -rf src
 make bindings.a
 
 cd "$MAESTRODIR"/maestro
-go build -buildmode=pie --tags debug "$PACKAGE"/maestro
+GO111MODULE=auto go build -buildmode=pie --tags debug "$PACKAGE"/maestro

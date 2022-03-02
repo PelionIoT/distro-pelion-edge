@@ -20,7 +20,7 @@ GREASEGODIR="$MAESTRODIR"/vendor/github.com/armPelionEdge/greasego
 GREASELIBDIR="$GREASEGODIR"/deps/src/greaseLib
 
 #Import GO project maestro-shell
-go get github.com/armPelionEdge/maestro-shell || true
+GO111MODULE=auto go get github.com/armPelionEdge/maestro-shell || true
 cd "$GOPATH"/src/github.com/armPelionEdge/maestro-shell
 git checkout "$PACKAGE_BRANCH"
 
@@ -28,4 +28,4 @@ git checkout "$PACKAGE_BRANCH"
 ./build-deps.sh
 
 #build the app
-go build -buildmode=pie --tags debug "$PACKAGE"
+GO111MODULE=auto go build -buildmode=pie --tags debug "$PACKAGE"

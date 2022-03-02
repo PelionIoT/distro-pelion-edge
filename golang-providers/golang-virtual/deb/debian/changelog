@@ -1,3 +1,9 @@
+golang-virtual (1.16-1) unstable; urgency=medium
+
+  * Update to golang-1.16
+
+ -- Nicolas Costa <nic.costa@gmail.com>  Wed, 02 Mar 2022 22:29:43 +0000
+
 golang-virtual (1.14-1) unstable; urgency=medium
 
   * Initial release

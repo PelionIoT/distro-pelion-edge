@@ -17,4 +17,4 @@ set -- *
 mkdir -p "$devicedbdir"
 cp -r "$@" "$devicedbdir"/
 
-go build -buildmode=pie "$package"
+GO111MODULE=auto go build -buildmode=pie "$package"

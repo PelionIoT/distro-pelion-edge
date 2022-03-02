@@ -12,7 +12,7 @@ License:        Apache-2.0
 URL:            %{gourl}
 Source0:        %{gosource}
 
-BuildRequires:  golang < 1.16
+BuildRequires:  golang >= 1.16
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
