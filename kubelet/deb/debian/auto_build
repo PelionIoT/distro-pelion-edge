@@ -2,10 +2,9 @@
 
 set -e
 
-export PKG_CONFIG="${DEB_HOST_GNU_TYPE}"-pkg-config
-
-#export CGO_ENABLED=1
 export GOPATH="$(pwd)/go-workspace"
+
+eval "$(debian/goflags.guess $DEB_HOST_ARCH)"
 
 package=k8s.io/kubernetes
 packagedir=$GOPATH/src/$package
@@ -17,23 +16,4 @@ mkdir -p "$packagedir"
 cp -r "$@" "$packagedir"/
 
 cd "$packagedir"
-
-echo "building for $OS_CPU"
-build/run.sh make kubelet KUBE_BUILD_PLATFORMS="$OS_CPU"
-
-from_path=""
-
-if [[ $OS_CPU == "linux/arm" ]]; then
-    from_path="$packagedir/_output/dockerized/bin/linux/arm/kubelet"
-else
-    if [[ $OS_CPU == "linux/arm64" ]]; then
-        from_path="$packagedir/_output/dockerized/bin/linux/arm64/kubelet"
-    else
-        from_path="$packagedir/_output/dockerized/bin/linux/amd64/kubelet"
-    fi
-fi
-
-echo "cp $from_path $origpath/"
-cp "$from_path" "$origpath"/
-
-build/make-clean.sh
+KUBE_VERBOSE=0 GO111MODULE=auto make kubelet KUBE_BUILD_PLATFORMS="${DEB_HOST_ARCH_OS}/${GOARCH}"
