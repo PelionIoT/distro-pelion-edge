@@ -8,24 +8,19 @@ export PKG_CONFIG="${DEB_HOST_GNU_TYPE}"-pkg-config
 
 export CONFIG_OPTIONS="--host=${DEB_HOST_GNU_TYPE}"
 
-export CGO_ENABLED=1
 export GOPATH="`pwd`/go-workspace"
+# fix go's weird habit of checking out code read-only
+export GOFLAGS="${GOFLAGS} -modcacherw"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
-#paths
-PACKAGE=github.com/armPelionEdge/maestro-shell
-MAESTRODIR="$GOPATH"/src/"$PACKAGE"
-GREASEGODIR="$MAESTRODIR"/vendor/github.com/armPelionEdge/greasego
-GREASELIBDIR="$GREASEGODIR"/deps/src/greaseLib
+package=github.com/PelionIoT/maestro-shell
+pkgdir="$GOPATH"/src/"$package"
 
-#Import GO project maestro-shell
-GO111MODULE=auto go get github.com/armPelionEdge/maestro-shell || true
-cd "$GOPATH"/src/github.com/armPelionEdge/maestro-shell
-git checkout "$PACKAGE_BRANCH"
+rm -rf "$GOPATH"
+set -- *
+mkdir -p "$pkgdir"
+cp -r "$@" "$pkgdir"/
 
-#build the deps
-./build-deps.sh
-
-#build the app
-GO111MODULE=auto go build -buildmode=pie --tags debug "$PACKAGE"
+cd "$pkgdir"
+GO111MODULE=auto go build -buildmode=pie "$package"
