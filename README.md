@@ -114,7 +114,7 @@ environment, script will print error:
 ```bash
 $ ./build-env/bin/build-all.sh -d 8
 Unable to load environment: ambiguous environment name, matches:
-centos/8 rhel/8
+rhel/8
 
 ```
 
@@ -509,7 +509,7 @@ repositories](#rhel-Repositories) and [Docker](#docker)).
 
 2. Copy      content       of       `build/deploy/rpm/<distro>/<arch>`       and
 `build/deploy/rpm/<distro>/noarch/` to target system  (where `<arch>` is `amd64`
-or `arm64` and `<distro>` is `rhel8` or `centos8`).
+or `arm64` and `<distro>` is `rhel8` ).
 
 3. To  install use  `yum` command, for  example if all  packages are  in current
 directory run:
