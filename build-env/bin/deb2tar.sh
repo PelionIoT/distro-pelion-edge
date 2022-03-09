@@ -165,6 +165,7 @@ fetch_deps() {
         '/^login\b/d'
         '/^passwd\b/d'
         's/^(libldap-common):.*/\1:all/'
+        's/^perl:any/perl/'
     )
 
     local -a append=(
