@@ -10,45 +10,18 @@ export CONFIG_OPTIONS="--host=${DEB_HOST_GNU_TYPE}"
 
 export CGO_ENABLED=1
 export GOPATH="`pwd`/go-workspace"
+# fix go's weird habit of checking out code read-only
+export GOFLAGS="${GOFLAGS} -modcacherw"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
-PACKAGE=github.com/armPelionEdge/maestro
+PACKAGE=github.com/PelionIoT/maestro
 MAESTRODIR="$GOPATH"/src/"$PACKAGE"
-GREASEGODIR="$MAESTRODIR"/vendor/github.com/armPelionEdge/greasego
-GREASELIBDIR="$GREASEGODIR"/deps/src/greaseLib
 
 rm -rf "$GOPATH"
 set -- *
 mkdir -p "$MAESTRODIR"
 cp -r "$@" "$MAESTRODIR"/
 
-mkdir "$GREASEGODIR"/deps/bin
-mkdir "$GREASEGODIR"/deps/lib
-
-cd "$GREASELIBDIR"/deps
-./install-deps.sh
-
-cd "$GREASELIBDIR"
-make libgrease.a-server
-make libgrease.so.1
-make grease_echo
-make standalone_test_logsink
-
-# migrate all of the greaselib dependencies up to the folder Go will use
-cp -r deps/build/lib/* "$GREASEGODIR"/deps/lib
-cp -r deps/build/include/* "$GREASEGODIR"/deps/include
-cp deps/libuv-v1.10.1/include/uv* "$GREASEGODIR"/deps/include
-cp libgrease.so.1 "$GREASEGODIR"/deps/lib
-cp *.h "$GREASEGODIR"/deps/include
-
-cd "$GREASEGODIR"/deps/lib
-ln -sf libgrease.so.1 libgrease.so
-
-cd "$GREASEGODIR"
-DEBUG=1 ./build.sh preprocess_only
-rm -rf src
-make bindings.a
-
 cd "$MAESTRODIR"/maestro
-GO111MODULE=auto go build -buildmode=pie --tags debug "$PACKAGE"/maestro
+GO111MODULE=auto go build -buildmode=pie "$PACKAGE"/maestro

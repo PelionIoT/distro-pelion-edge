@@ -1,8 +1,15 @@
+maestro (3.0.0-1) unstable; urgency=medium
+
+  * Removes support for devicedb
+  * Fixes several CVEs
+
+ -- Nic Costa <nic.costa@gmail.com>  Mon, 14 Mar 2022 02:51:27 +0000
+
 maestro (2.10.0+1607688609+20caa5d-1) unstable; urgency=medium
 
   * Disable maestro control of mDNS
 
- -- Michael Ray <michael.ray@pelion.com> Thu, 19 Aug 2021 17:15:00 -0500
+ -- Michael Ray <michael.ray@pelion.com>  Thu, 19 Aug 2021 17:15:00 -0500
 
 maestro (2.10.0+1607688609+20caa5d-1) unstable; urgency=medium
 
