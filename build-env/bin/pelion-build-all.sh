@@ -20,7 +20,6 @@ DEPENDS=(
 PACKAGES=(
     'pe-nodejs'
     'edge-proxy'
-    'global-node-modules'
     'kubelet'
     'maestro'
     'mbed-edge-core'
