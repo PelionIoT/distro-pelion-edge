@@ -10,6 +10,8 @@ export CONFIG_OPTIONS="--host=${DEB_HOST_GNU_TYPE}"
 
 export CGO_ENABLED=1
 export GOPATH="`pwd`/go-workspace"
+# fix go's weird habit of checking out code read-only
+export GOFLAGS="${GOFLAGS} -modcacherw"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 

@@ -10,3 +10,6 @@ Package: debhelper
 Pin: release a=bionic-backports
 Pin-Priority: 500
 
+Package: dwz
+Pin: release a=bionic-backports
+Pin-Priority: 500

@@ -114,7 +114,7 @@ environment, script will print error:
 ```bash
 $ ./build-env/bin/build-all.sh -d 8
 Unable to load environment: ambiguous environment name, matches:
-centos/8 rhel/8
+rhel/8
 
 ```
 
@@ -219,7 +219,7 @@ and source stage). Container is removed after each element is done:
 	[docker run --rm] pe-nodejs source
 	# container is automatically removed
 	# create and run temporary container
-	[docker run --rm] fluent-bit source
+	[docker run --rm] edge-proxy source
 	# container is automatically removed
 	...
 	```
@@ -230,7 +230,7 @@ uses it for each element:
 	[check if container exists => create if missing]
 	[if stopped => docker start]
 	[docker exec] pe-nodejs source
-	[docker exec] fluent-bit source
+	[docker exec] edge-proxy source
 	...
 	[docker exec] pe-nodejs build
 	```
@@ -244,7 +244,7 @@ use in script:
 	[docker container create]
 	[docker start]
 	[docker exec] pe-nodejs source
-	[docker exec] fluent-bit source
+	[docker exec] edge-proxy source
 	...
 	[docker exec] pe-nodejs build
 	...
@@ -481,7 +481,7 @@ $ sudo apt install -y ./*.deb
 
 Or, install a single package by specifying its deb file name.
 ```bash
-$ sudo apt install -y ./fluent-bit_<version>_<arch>.deb
+$ sudo apt install -y ./edge-proxy<version>_<arch>.deb
 ```
 
 #### Additional steps for Debian 11 Bullseye
@@ -509,7 +509,7 @@ repositories](#rhel-Repositories) and [Docker](#docker)).
 
 2. Copy      content       of       `build/deploy/rpm/<distro>/<arch>`       and
 `build/deploy/rpm/<distro>/noarch/` to target system  (where `<arch>` is `amd64`
-or `arm64` and `<distro>` is `rhel8` or `centos8`).
+or `arm64` and `<distro>` is `rhel8` ).
 
 3. To  install use  `yum` command, for  example if all  packages are  in current
 directory run:
@@ -534,7 +534,7 @@ fluent-bit.service
 
 To enable all services, run:
 ```bash
-sudo systemctl enable edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service fluent-bit.service
+sudo systemctl enable edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
 ```
 
 Dependent     services      are     enabled     implicitly.      For     example
