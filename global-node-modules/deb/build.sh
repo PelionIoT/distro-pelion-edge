@@ -9,8 +9,8 @@ PELION_PACKAGE_SUPPORTED_ARCH=(amd64 arm64 armhf)
 PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK=pelion_global_node_modules_source_update_cb
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["https://github.com/armPelionEdge/edge-node-modules.git"]="1ea6080fcc17e588c4f53c86a6c2b2bd7df3f05c"
-    ["https://github.com/armPelionEdge/devjs-production-tools.git"]="62b8cdd4b98d3ef843aaf34daf5c4a81234e6788")
+    ["https://github.com/PelionIoT/edge-node-modules.git"]="1ea6080fcc17e588c4f53c86a6c2b2bd7df3f05c"
+    ["https://github.com/PelionIoT/devjs-production-tools.git"]="62b8cdd4b98d3ef843aaf34daf5c4a81234e6788")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 

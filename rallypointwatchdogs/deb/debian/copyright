@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: rallypointwatchdogs
-Source: https://github.com/armPelionEdge/rallypointwatchdogs
+Source: https://github.com/PelionIoT/rallypointwatchdogs
 
 Files: *
 Copyright: 2019, Travis McCollum <Travis.McCollum@arm.com>

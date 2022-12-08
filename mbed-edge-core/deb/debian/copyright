@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: mbed-edge-core
-Source: https://github.com/ARMmbed/mbed-edge
+Source: https://github.com/PelionIoT/mbed-edge
 
 Files: *
 Copyright: 2018-2020 Travis McCollum <travs.mccollum@arm.com>

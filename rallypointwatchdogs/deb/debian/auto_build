@@ -11,7 +11,7 @@ export GOPATH="`pwd`/go-workspace"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
-package=github.com/armPelionEdge/rallypointwatchdogs
+package=github.com/PelionIoT/rallypointwatchdogs
 pkgdir=$GOPATH/src/$package
 
 rm -rf "$GOPATH"

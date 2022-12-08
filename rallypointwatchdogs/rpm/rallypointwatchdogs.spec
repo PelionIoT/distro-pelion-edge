@@ -1,4 +1,4 @@
-%global goipath github.com/armPelionEdge/rallypointwatchdogs
+%global goipath github.com/PelionIoT/rallypointwatchdogs
 %global tag     v1.0.0
 %global version v1.0.0
 %gometa
