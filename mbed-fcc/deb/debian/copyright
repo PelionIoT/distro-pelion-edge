@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: mbed-fcc
-Source: https://github.com/ARMmbed/factory-configurator-client-example
+Source: https://github.com/PelionIoT/factory-configurator-client-example
 
 Files: *
 Copyright: 2017-2020 Travis McCollum <travs.mccollum@arm.com>

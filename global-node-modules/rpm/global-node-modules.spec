@@ -9,10 +9,10 @@ Release:        1%{?dist}
 Summary:        A collection of Node.js modules used by Pelion Edge
 
 License:        Apache-2.0
-URL:            https://github.com/armPelionEdge/edge-node-modules
+URL:            https://github.com/PelionIoT/edge-node-modules
 
 # The source for this package was generated via
-# https://github.com/armPelionEdge/ubuntu-pelion-edge-internal
+# https://github.com/PelionIoT/ubuntu-pelion-edge-internal
 Source0:        edge-node-modules.tar.gz
 
 # TODO: pe-nodejs-dev for build

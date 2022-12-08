@@ -1,4 +1,4 @@
-%global forgeurl https://github.com/armPelionEdge/pe-utils
+%global forgeurl https://github.com/PelionIoT/pe-utils
 %global tag		2.0.7
 %global version 2.0.7
 %forgemeta
