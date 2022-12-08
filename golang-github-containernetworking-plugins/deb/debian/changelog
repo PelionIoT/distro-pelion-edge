@@ -1,3 +1,10 @@
+golang-github-containernetworking-plugins (0.8.5-1) unstable; urgency=medium
+
+  * upgrade containernetworking/plugins to v0.8.5
+  * add a patch to bump golang.org/x/net to fix CVE-2021-33194
+
+ -- Nic Costa <nic.costa@gmail.com>  Thu, 17 Mar 2022 19:56:07 +0000
+
 golang-github-containernetworking-plugins (0.8.4-2) unstable; urgency=medium
 
   * Changed package name from containernetworking-plugins to

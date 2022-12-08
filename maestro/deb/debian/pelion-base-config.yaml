@@ -46,17 +46,8 @@ targets:
       - levels: error
         format_pre: "\u001B[31m" # red
         format_post: "\u001B[39m"
-gateway_capabilities:
-  edge_core_socketpath: "/tmp/edge.sock"
-  lwm2m_objectid: 33457
-  gateway_resources:
-  - name: "urn:fid:pelion.com:log:1.0.0"
-    enable: true
-    config_filepath: "/etc/pelion/pelion-base-config.yaml"
-  - name: "urn:fid:pelion.com:terminal:1.0.0"
-    enable: true
-    config_filepath: "/etc/pelion/relay-term-config.json"
-  - name: "urn:fid:pelion.com:kaas:1.0.0"
-    enable: true
-    config_filepath: "/etc/pelion/kubeconfig"
+static_file_generators:
+  - name: "relayTerm"
+    template_file: "/etc/pelion/template/relayTerm.template.json"
+    output_file: "/etc/pelion/relay-term-config.json"
 config_end: true

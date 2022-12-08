@@ -2,6 +2,10 @@ Package: *
 Pin: release n=buster
 Pin-Priority: 800
 
+Package: dh-golang
+Pin: release n=buster-backports
+Pin-Priority: 900
+
 Package: golang-1.14-go
 Pin: release n=bullseye
 Pin-Priority: 900

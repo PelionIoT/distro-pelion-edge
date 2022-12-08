@@ -2,6 +2,28 @@ name: Build
 on: push
 
 jobs:
+  build-docker-images-using-docker-18_09:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        distro: [buster, bionic, focal]
+    steps:
+      - name: Downgrade docker to 18.09
+        run: |
+            sudo apt-get remove -y moby-buildx moby-cli moby-engine moby-containerd moby-runc
+            wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce_18.09.9~3-0~ubuntu-bionic_amd64.deb
+            wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/docker-ce-cli_18.09.9~3-0~ubuntu-bionic_amd64.deb
+            wget https://download.docker.com/linux/ubuntu/dists/bionic/pool/stable/amd64/containerd.io_1.2.2-3_amd64.deb
+            sudo dpkg -i docker-ce_18.09.9~3-0~ubuntu-bionic_amd64.deb docker-ce-cli_18.09.9~3-0~ubuntu-bionic_amd64.deb containerd.io_1.2.2-3_amd64.deb
+      - name: Print downgraded docker version
+        run: |
+          docker --version
+      - name: Check out code
+        uses: actions/checkout@v2
+      - name: Build docker image
+        run: |
+          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} true
+          docker system prune
   build-debs:
     runs-on: ubuntu-latest
     strategy:
@@ -25,27 +47,3 @@ jobs:
       - name: Build
         run: |
           export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} ./build-env/bin/build-all.sh --install --arch=${{ matrix.arch }}
-          docker system prune
-  build-rpms:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        distro: [centos]
-        arch: [amd64]
-      fail-fast: false
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      - name: Copy mbed_cloud_dev_credentials.c
-        env:
-          MBED_CLOUD_DEV_CREDENTIALS: ${{ secrets.MBED_CLOUD_DEV_CREDENTIALS_C_RYAN }}
-        run: |
-          echo "$MBED_CLOUD_DEV_CREDENTIALS" > mbed_cloud_dev_credentials.c
-      - name: Copy update_default_resources.c
-        env:
-          UPDATE_DEFAULT_RESOURCES: ${{ secrets.UPDATE_DEFAULT_RESOURCES_C_RYAN }}
-        run: |
-          echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
-      - name: Build
-        run: |
-          export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh -a ${{ matrix.arch }} ${{ matrix.distro }} ./build-env/bin/build-all.sh --install --arch=${{ matrix.arch }}

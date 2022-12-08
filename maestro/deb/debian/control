@@ -2,16 +2,14 @@ Source: maestro
 Section: utils
 Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
-Build-Depends: debhelper (>=9), pe-golang:native, python:native (>=2.7),
- autoconf (>=2.69), automake (>=1:1.15), libtool (>=2.4.6),
- libc6, libstdc++6, libunwind-dev, libuv1-dev
+Build-Depends: debhelper (>=9), pe-golang:native, libuv1-dev
 Standards-Version: 3.9.6
 Homepage: https://www.pelion.com
 
 Package: maestro
 Architecture: any
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}, libnss-myhostname, pe-utils, edge-proxy
+Depends: libnss-myhostname, pe-utils, edge-proxy, ${shlibs:Depends}
 Recommends: resolvconf
 Description: system manager (logging, dhcp, cloud connector)
  Maestro is a replacement for a number of typical system utilities and

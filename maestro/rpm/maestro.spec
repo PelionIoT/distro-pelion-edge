@@ -12,7 +12,7 @@ License:       Apache-2.0
 URL:           %{gourl}
 Source0:       %{gosource}
 
-BuildRequires: m4 python27 gcc-c++ golang-bin >= 1.15 libunwind-devel libuv-devel
+BuildRequires: m4 python27 gcc-c++ golang >= 1.16 libunwind-devel
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
