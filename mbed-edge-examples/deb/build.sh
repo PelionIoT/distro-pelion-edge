@@ -8,7 +8,7 @@ PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK=pelion_mbed_edge_examples_source_prep
 PELION_PACKAGE_PRE_BUILD_CALLBACK=configure_python
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["https://github.com/ARMmbed/mbed-edge-examples.git"]="0.10.0")
+    ["https://github.com/ARMmbed/mbed-edge-examples.git"]="0.21.0")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 

@@ -1,2 +1,2 @@
-go-workspace/src/github.com/armPelionEdge/rallypointwatchdogs/rp100/rp100wd.so usr/lib/pelion
-go-workspace/src/github.com/armPelionEdge/rallypointwatchdogs/dummy/dummywd.so usr/lib/pelion
+go-workspace/src/github.com/PelionIoT/rallypointwatchdogs/rp100/rp100wd.so usr/lib/pelion
+go-workspace/src/github.com/PelionIoT/rallypointwatchdogs/dummy/dummywd.so usr/lib/pelion

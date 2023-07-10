@@ -9,8 +9,8 @@ PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK=pelion_mbed_fcc_source_preparation_cb
 PELION_PACKAGE_ORIGIN_SOURCE_UPDATE_CALLBACK=pelion_mbed_fcc_origin_source_update_cb
 
 declare -A PELION_PACKAGE_COMPONENTS=(
-    ["https://github.com/ARMmbed/factory-configurator-client-example.git"]="4.9.0"
-    ["https://github.com/ARMmbed/mbed-cloud-client.git"]="4.9.0")
+    ["https://github.com/ARMmbed/factory-configurator-client-example.git"]="4.13.1"
+    ["https://github.com/ARMmbed/mbed-cloud-client.git"]="4.13.1")
 
 source "$PELION_PACKAGE_DIR"/../../build-env/inc/build-common.sh
 
