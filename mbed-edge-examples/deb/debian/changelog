@@ -1,3 +1,9 @@
+mbed-edge-examples (0.21.0-1) unstable; urgency=medium
+
+  * Update to 0.21.0
+
+ -- Pete Dyer <pete.dyer@izumanetworks.com>  Tue, 05 Sep 2023 00:00:00 -0000
+
 mbed-edge-examples (0.10.0-1) unstable; urgency=medium
 
   * Update package version

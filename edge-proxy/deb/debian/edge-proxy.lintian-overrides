@@ -1,0 +1,3 @@
+new-package-should-close-itp-bug
+binary-without-manpage
+edge-proxy: script-with-language-extension usr/bin/launch-edge-proxy.sh

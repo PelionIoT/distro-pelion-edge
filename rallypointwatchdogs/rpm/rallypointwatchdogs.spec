@@ -32,13 +32,13 @@ cd ../dummy
 go build -buildmode=plugin -o dummywd.so wd.go
 
 %install
-install -vdm 0755   %{buildroot}/%{_libdir}/pelion
-cp rp100/rp100wd.so %{buildroot}/%{_libdir}/pelion
-cp dummy/dummywd.so %{buildroot}/%{_libdir}/pelion
+install -vdm 0755   %{buildroot}/%{_libdir}/edge
+cp rp100/rp100wd.so %{buildroot}/%{_libdir}/edge
+cp dummy/dummywd.so %{buildroot}/%{_libdir}/edge
 
 %files
-%{_libdir}/pelion/rp100wd.so
-%{_libdir}/pelion/dummywd.so
+%{_libdir}/edge/rp100wd.so
+%{_libdir}/edge/dummywd.so
 
 %changelog
 * Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 1.0.0-1

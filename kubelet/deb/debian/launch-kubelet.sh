@@ -2,7 +2,7 @@
 
 DEFAULT_NODE_IP=10.0.0.1
 
-IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
+IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/edge/edge_gw_config/identity.json}
 DEVICE_ID=$(jq -r .deviceID ${IDENTITY_JSON})
 if [ $? -ne 0 ]; then
     echo "Unable to extract device ID from identity.json"
@@ -42,12 +42,12 @@ if ! [ "$(echo -e ${FIRST_BROKEN_VERSION}\\n${IPTVERSION} | sort -V | head -1)" 
 fi 
 
 exec /usr/bin/kubelet \
-    --root-dir=/var/lib/pelion/kubelet \
-    --offline-cache-path=/var/lib/pelion/kubelet/store \
+    --root-dir=/var/lib/edge/kubelet \
+    --offline-cache-path=/var/lib/edge/kubelet/store \
     --fail-swap-on=false \
     --image-pull-progress-deadline=2m \
     --hostname-override=${DEVICE_ID} \
-    --kubeconfig=/etc/pelion/kubeconfig \
+    --kubeconfig=/etc/edge/kubeconfig \
     --cni-bin-dir=/usr/lib/cni \
     --cni-conf-dir=/etc/cni/net.d \
     --network-plugin=cni \

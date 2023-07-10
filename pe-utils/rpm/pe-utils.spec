@@ -23,7 +23,7 @@ Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units
 
-%global pelibdir    /usr/lib/pelion
+%global pelibdir    /usr/lib/edge
 
 %description
 Utilities and light-weight programs for Pelion Edge.

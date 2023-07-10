@@ -14,4 +14,4 @@ export GOPATH="`pwd`/go-workspace"
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
 mkdir -p bin
-go build -o bin/maestro -buildmode=pie --tags debug maestro/main.go
+go build -o bin/edge-resource-manager -buildmode=pie --tags debug edge-resource-manager.go

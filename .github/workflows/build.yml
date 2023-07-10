@@ -3,10 +3,10 @@ on: push
 
 jobs:
   build-docker-images-using-docker-18_09:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
-        distro: [buster, bionic, focal]
+        distro: [focal, jammy]
     steps:
       - name: Downgrade docker to 18.09
         run: |
@@ -19,21 +19,24 @@ jobs:
         run: |
           docker --version
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Build docker image
         run: |
           export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} true
 
   build-debs:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
-        distro: [buster, bullseye, bionic, focal]
+        distro: [bullseye, focal, jammy]
         arch: [amd64, arm64, armhf]
       fail-fast: false
     steps:
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+      - name: Set GitHub access token via git config                            
+        run: |                                                                  
+          git config --global url."https://${{ secrets.ACCESS_TOKEN }}@github".insteadOf "https://github"
       - name: Copy mbed_cloud_dev_credentials.c
         env:
           MBED_CLOUD_DEV_CREDENTIALS: ${{ secrets.MBED_CLOUD_DEV_CREDENTIALS_C_RYAN }}

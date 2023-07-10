@@ -37,28 +37,28 @@ install -vpm 0755 %{gobuilddir}/../kubelet          %{buildroot}/%{_bindir}
 install -vpm 0755 %{_filesdir}/launch-edgenet.sh    %{buildroot}/%{_bindir}
 install -vpm 0755 %{_filesdir}/launch-kubelet.sh    %{buildroot}/%{_bindir}
 
-install -vdm 0755                           %{buildroot}/%{_sysconfdir}/pelion
-install -vpm 0644 %{_filesdir}/kubeconfig   %{buildroot}/%{_sysconfdir}/pelion
+install -vdm 0755                           %{buildroot}/%{_sysconfdir}/edge
+install -vpm 0644 %{_filesdir}/kubeconfig   %{buildroot}/%{_sysconfdir}/edge
 
 install -vdm 0755                           %{buildroot}/%{_sysconfdir}/docker
 install -vpm 0644 %{_filesdir}/daemon.json  %{buildroot}/%{_sysconfdir}/docker
 install -vdm 0755                               %{buildroot}/%{_unitdir}
 install -vpm 0644 %{_filesdir}/kubelet.service  %{buildroot}/%{_unitdir}
 
-install -vdm 0755                               %{buildroot}/var/lib/pelion/kubelet/store
+install -vdm 0755                               %{buildroot}/var/lib/edge/kubelet/store
 
 install -vdm 0755                                   %{buildroot}/%{_sysconfdir}/cni/net.d/
 install -vpm 0644 %{_filesdir}/99-loopback.conf     %{buildroot}/%{_sysconfdir}/cni/net.d/
 
 %files
 %{_bindir}/*
-%config %{_sysconfdir}/pelion/kubeconfig
+%config %{_sysconfdir}/edge/kubeconfig
 %config %{_sysconfdir}/docker/daemon.json
 %{_unitdir}/kubelet.service
 %{_sysconfdir}/cni/net.d/99-loopback.conf
 
 %dir
-/var/lib/pelion/kubelet/store
+/var/lib/edge/kubelet/store
 
 %post
 %systemd_post kubelet.service

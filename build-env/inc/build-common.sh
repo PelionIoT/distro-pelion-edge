@@ -143,7 +143,7 @@ function pelion_metapackage_parse_args() {
                 echo "Usage: $0 [Options]"
                 echo ""
                 echo "Options:"
-                echo " --docker=[dist]     Use docker containers (optional dist eg. bionic, focal...)."
+                echo " --docker=[dist]     Use docker containers (optional dist eg. bionic, focal, jammy...)."
                 echo " --build             Build metapackage."
                 echo " --verify            Verify metapackage conformity to the Debian policy."
                 echo " --install           Install build dependencies."

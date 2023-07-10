@@ -1,0 +1,9 @@
+[Unit]
+Description=Edge-terminal restarter
+
+[Service]
+Type=oneshot
+ExecStart=/bin/systemctl restart pe-terminal.service
+
+[Install]
+WantedBy=multi-user.target

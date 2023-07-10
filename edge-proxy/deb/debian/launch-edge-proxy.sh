@@ -19,7 +19,7 @@
 
 ARGS=
 
-IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
+IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/edge/edge_gw_config/identity.json}
 if [ ! -f ${IDENTITY_JSON} ]; then
     echo "WARNING: ${IDENTITY_JSON} does not exist"
 else
@@ -36,7 +36,7 @@ else
     ARGS="${ARGS} -forwarding-addresses={\"gateways.local\":\"${GATEWAYS_ADDRESS#"https://"}"\"\,\"containers.local\":\"${CONTAINERS_ADDRESS#"https://"}"\"}"
 fi
 
-EDGE_PROXY_URI_RELATIVE_PATH=$(jq -r .edge_proxy_uri_relative_path /etc/pelion/edge-proxy.conf.json)
+EDGE_PROXY_URI_RELATIVE_PATH=$(jq -r .edge_proxy_uri_relative_path /etc/edge/edge-proxy.conf.json)
 
 if ! grep -q "gateways.local" /etc/hosts; then
     echo "127.0.0.1 gateways.local" >> /etc/hosts

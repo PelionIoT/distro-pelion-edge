@@ -30,8 +30,8 @@ Terminal-client for Pelion Edge.
 install -vdm 0755                                    %{buildroot}/%{_bindir}
 install -vpm 0755 %{gobuilddir}/bin/*                %{buildroot}/%{_bindir}/
 
-install -vdm 0755                                    %{buildroot}/%{_sysconfdir}/pelion
-install -vpm 0644 %{_filesdir}/pe-terminal.conf.json %{buildroot}/%{_sysconfdir}/pelion
+install -vdm 0755                                    %{buildroot}/%{_sysconfdir}/edge
+install -vpm 0644 %{_filesdir}/pe-terminal.conf.json %{buildroot}/%{_sysconfdir}/edge
 
 install -vdm 0755                                    %{buildroot}/%{_unitdir}
 install -vpm 0755 %{_filesdir}/pe-terminal.service   %{buildroot}/%{_unitdir}

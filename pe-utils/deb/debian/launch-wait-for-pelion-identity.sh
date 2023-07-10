@@ -17,13 +17,13 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
-IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
+IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/edge/edge_gw_config/identity.json}
 
 IDENTITY_JSON_CREATED=false
 while [ ! -f ${IDENTITY_JSON} ]; do
     IDENTITY_JSON_CREATED=true
     sleep 5
-    /usr/bin/generate-identity.sh 9101 /var/lib/pelion/edge_gw_config
+    /usr/bin/generate-identity.sh 9101 /var/lib/edge/edge_gw_config
 done
 
 if ${IDENTITY_JSON_CREATED}; then

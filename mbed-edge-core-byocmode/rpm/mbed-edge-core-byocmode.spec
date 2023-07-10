@@ -74,7 +74,7 @@ cmake . -DBYOC_MODE=ON -DFIRMWARE_UPDATE=ON \
 %make_build
 
 %install
-install -vdm 0755				                    %{buildroot}/var/lib/pelion/mbed/
+install -vdm 0755				                    %{buildroot}/var/lib/edge/mbed/
 
 install -vdm 0755               %{buildroot}/%{_bindir}
 install -vpm 0755 bin/edge-core %{buildroot}/%{_bindir}
@@ -93,7 +93,7 @@ install -vpm 0755 %{_filesdir}/edge-core.logrotate	%{buildroot}/%{_sysconfdir}/l
 %{_sysconfdir}/logrotate.d/edge-core
 
 %dir
-/var/lib/pelion/mbed/
+/var/lib/edge/mbed/
 
 %post
 %systemd_post edge-core.service

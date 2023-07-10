@@ -5,7 +5,7 @@ After=systemd-networkd-wait-online.service
 [Service]
 Restart=always
 RestartSec=5s
-WorkingDirectory=/var/lib/pelion/mbed
+WorkingDirectory=/var/lib/edge/mbed
 ExecStart=/usr/bin/edge-core --http-port 9101 --cbor-conf /etc/mbed-edge-core/device.cbor
 
 [Install]

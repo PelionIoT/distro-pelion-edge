@@ -1,3 +1,9 @@
+golang-virtual (1.18-1) unstable; urgency=medium
+
+  * Upgrade to golang 1.18
+
+ -- Pete Dyer <pete.dyer@izumanetworks.com>  Thu, 31 Aug 2023 00:00:00 +0000
+
 golang-virtual (1.14-1) unstable; urgency=medium
 
   * Initial release

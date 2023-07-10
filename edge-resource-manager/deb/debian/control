@@ -1,14 +1,14 @@
-Source: maestro
+Source: edge-resource-manager
 Section: utils
 Priority: optional
 Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
-Build-Depends: debhelper (>=9), pe-golang:native, python:native (>=2.7),
+Build-Depends: debhelper (>=9), pe-golang:native,
  autoconf (>=2.69), automake (>=1:1.15), libtool (>=2.4.6),
  libc6, libstdc++6, libunwind-dev, libuv1-dev
 Standards-Version: 3.9.6
-Homepage: https://www.pelion.com
+Homepage: https://www.izumanetworks.com
 
-Package: maestro
+Package: edge-resource-manager
 Architecture: any
 Multi-Arch: foreign
 Depends: ${misc:Depends}, ${shlibs:Depends}, libnss-myhostname, pe-utils, edge-proxy

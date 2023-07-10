@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ----------------------------------------------------------------------------
-MBED_FOLDER=/var/lib/pelion/mbed
+MBED_FOLDER=/var/lib/edge/mbed
 MCC_CONFIG_FOLDER=$MBED_FOLDER/mcc_config
 FCC_MODE=${FCC_MODE:-cbor}
 

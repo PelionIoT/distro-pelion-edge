@@ -2,7 +2,7 @@ kubelet (1.0.0-1) unstable; urgency=medium
 
   * Support for network policies
 
- -- Nic Costa <nic.costa@pelion.com> Wed, 24 Nov 2021 09:58:13 -0600
+ -- Nic Costa <nic.costa@pelion.com>  Wed, 24 Nov 2021 09:58:13 -0600
 
 kubelet (0.9.0+1592942145+83b266ae-1) unstable; urgency=medium
 
@@ -15,3 +15,4 @@ kubelet (0.0.1-1) unstable; urgency=medium
   * Initial release
 
  -- Vasily Smirnov <vasilii.smirnov@globallogic.com>  Wed, 01 Apr 2020 00:00:00 +0300
+

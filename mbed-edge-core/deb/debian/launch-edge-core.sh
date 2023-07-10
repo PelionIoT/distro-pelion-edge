@@ -17,7 +17,7 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
-MCC_CONFIG_FOLDER=/var/lib/pelion/mbed/mcc_config
+MCC_CONFIG_FOLDER=/var/lib/edge/mbed/mcc_config
 
 if [ ! -d ${MCC_CONFIG_FOLDER} ]; then
 	echo "Failure: $MCC_CONFIG_FOLDER does not exist!"

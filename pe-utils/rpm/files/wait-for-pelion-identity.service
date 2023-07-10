@@ -6,7 +6,7 @@ Wants=edge-core.service
 [Service]
 Type=oneshot
 RemainAfterExit=true
-ExecStart=/bin/bash -c "PATH=/usr/lib/pelion/developer_identity:$PATH exec /usr/lib/pelion/launch-wait-for-pelion-identity.sh 9101 /var/lib/pelion/edge_gw_config"
+ExecStart=/bin/bash -c "PATH=/usr/lib/edge/developer_identity:$PATH exec /usr/lib/edge/launch-wait-for-pelion-identity.sh 9101 /var/lib/edge/edge_gw_config"
 
 [Install]
 WantedBy=multi-user.target

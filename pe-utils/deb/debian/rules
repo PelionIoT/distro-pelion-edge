@@ -11,3 +11,8 @@ override_dh_systemd_enable:
 
 override_dh_systemd_start:
 	dh_systemd_start --name=wait-for-pelion-identity wait-for-pelion-identity.service
+
+override_dh_installdeb:
+	dh_installdeb
+	# Use sed to modify script files file during installation
+	sed -i 's/EDGE_DATA/\/var\/lib\/edge/' debian/pe-utils/usr/bin/edge-info

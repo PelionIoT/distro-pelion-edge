@@ -1,5 +1,5 @@
-%global forgeurl https://github.com/ARMmbed/mbed-edge
-%global tag     0.19.1
+%global forgeurl https://github.com/PelionIoT/mbed-edge
+%global tag     0.21.0
 %global version 0.19.1
 %global debug_package %{nil}
 %forgemeta
@@ -48,7 +48,7 @@ cmake . -DFACTORY_MODE=ON -DDEVELOPER_MODE=OFF -DBYOC_MODE=OFF \
 %make_build
 
 %install
-install -vdm 0755                                   %{buildroot}/var/lib/pelion/mbed/
+install -vdm 0755                                   %{buildroot}/var/lib/edge/mbed/
 
 install -vdm 0755                                   %{buildroot}/%{_bindir}
 install -vpm 0755 bin/edge-core                     %{buildroot}/%{_bindir}
@@ -67,7 +67,7 @@ install -vpm 0755 %{_filesdir}/edge-core.logrotate  %{buildroot}/%{_sysconfdir}/
 %{_sysconfdir}/logrotate.d/edge-core
 
 %dir
-/var/lib/pelion/mbed/
+/var/lib/edge/mbed/
 
 %post
 %systemd_post edge-core.service

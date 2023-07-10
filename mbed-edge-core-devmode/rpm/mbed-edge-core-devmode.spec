@@ -49,10 +49,10 @@ cmake . -DDEVELOPER_MODE=ON -DFACTORY_MODE=ON -DBYOC_MODE=OFF \
 %make_build
 
 %install
-install -vdm 0755                                   %{buildroot}/var/lib/pelion/mbed/
+install -vdm 0755                                   %{buildroot}/var/lib/edge/mbed/
 
-install -vdm 0755                                   %{buildroot}/usr/lib/pelion/scripts/
-install -vpm 0755 %{_filesdir}/arm*                 %{buildroot}/usr/lib/pelion/scripts/
+install -vdm 0755                                   %{buildroot}/usr/lib/edge/scripts/
+install -vpm 0755 %{_filesdir}/arm*                 %{buildroot}/usr/lib/edge/scripts/
 
 install -vdm 0755                                   %{buildroot}/%{_bindir}
 install -vpm 0755 bin/edge-core                     %{buildroot}/%{_bindir}
@@ -67,10 +67,10 @@ install -vpm 0755 %{_filesdir}/edge-core.logrotate  %{buildroot}/%{_sysconfdir}/
 %{_bindir}/edge-core
 %{_unitdir}/edge-core.service
 %{_sysconfdir}/logrotate.d/edge-core
-/usr/lib/pelion/scripts/*
+/usr/lib/edge/scripts/*
 
 %dir
-/var/lib/pelion/mbed/
+/var/lib/edge/mbed/
 
 %post
 %systemd_post edge-core.service

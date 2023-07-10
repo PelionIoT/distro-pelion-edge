@@ -1,0 +1,14 @@
+[Unit]
+Description=edge-resource-manager: Adds gateway capability resources.
+Requires=edge-proxy.service
+After=edge-proxy.service
+
+[Service]
+Restart=always
+RestartSec=5s
+ExecStart=/usr/bin/edge-resource-manager -config /etc/edge/izuma-base-config.yaml
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

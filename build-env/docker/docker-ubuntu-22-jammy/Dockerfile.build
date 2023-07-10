@@ -1,0 +1,54 @@
+FROM ubuntu:jammy-20230624
+
+ARG USER_ID
+ARG GROUP_ID
+ARG DOCKER_GROUP_ID
+ARG LOCAL_SRC_PATH=./docker-ubuntu-22-jammy
+
+RUN if [ $GROUP_ID != $DOCKER_GROUP_ID ]; then groupadd -o --gid $GROUP_ID user; fi
+RUN addgroup --gid $DOCKER_GROUP_ID docker
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+RUN usermod -aG sudo user
+RUN if [ $GROUP_ID != $DOCKER_GROUP_ID ]; then usermod -aG docker user; fi
+
+RUN echo "APT::Acquire::Retries \"3\";" > /etc/apt/apt.conf.d/80-retries
+COPY $LOCAL_SRC_PATH/sources.list.jammy /etc/apt/sources.list
+RUN chmod 644 /etc/apt/sources.list
+RUN mkdir -p /opt/apt-repo/pe-dependencies && echo -n| gzip >/opt/apt-repo/pe-dependencies/Packages.gz && find /opt && apt-get update
+
+RUN dpkg --add-architecture arm64
+RUN dpkg --add-architecture armhf
+
+ENV TZ=UCT
+#install tzdata package
+RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install tzdata
+# set your timezone
+RUN ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN dpkg-reconfigure --frontend noninteractive tzdata
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		build-essential \
+		debhelper \
+		ca-certificates \
+		crossbuild-essential-arm64 \
+		crossbuild-essential-armhf \
+		fakeroot \
+		sudo \
+		wget \
+		git \
+		rsync \
+		docker.io \
+                zstd
+
+
+RUN sed -i 's/%sudo	ALL=(ALL:ALL) ALL/%sudo	ALL=(ALL:ALL) NOPASSWD:ALL/' /etc/sudoers
+
+COPY ./common/.bash_aliases /home/user/
+RUN chown $USER_ID:$GROUP_ID /home/user/.bash_aliases
+
+# github.com ssh host key
+COPY ./common/ssh_known_hosts /etc/ssh/ssh_known_hosts
+RUN chmod 644 /etc/ssh/ssh_known_hosts
+
+USER user
+WORKDIR /pelion-build

@@ -44,8 +44,8 @@
 /* uncomment this if you want port 443 */
 //#define MBED_CLOUD_CLIENT_CUSTOM_URI_PORT 443
 
-#define PLATFORM_VERSION_HASH_FILE "/etc/pelion/platform_version"
-#define PLATFORM_VERSION_FILE "/etc/pelion/readable_version"
+#define PLATFORM_VERSION_HASH_FILE "/etc/edge/platform_version"
+#define PLATFORM_VERSION_FILE "/etc/edge/readable_version"
 
 #endif /* MBED_CLIENT_USER_CONFIG_H */
 

@@ -1,0 +1,9 @@
+[Unit]
+Description=Monitor the changes to pe-terminal.conf.json file and restart pe-terminal
+
+[Path]
+PathChanged=/etc/edge/pe-terminal.conf.json
+Unit=pe-terminal-watcher.service
+
+[Install]
+WantedBy=multi-user.target

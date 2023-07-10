@@ -1,6 +1,6 @@
 #!/bin/sh
 
-IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/pelion/edge_gw_config/identity.json}
+IDENTITY_JSON=${IDENTITY_JSON:-/var/lib/edge/edge_gw_config/identity.json}
 DEVICE_ID=$(jq -r .deviceID ${IDENTITY_JSON})
 if [ $? -ne 0 ]; then
     echo "Unable to extract device ID from identity.json"
@@ -23,12 +23,12 @@ else
 fi
 
 exec /usr/bin/kubelet \
-    --root-dir=/var/lib/pelion/kubelet \
-    --offline-cache-path=/var/lib/pelion/kubelet/store \
+    --root-dir=/var/lib/edge/kubelet \
+    --offline-cache-path=/var/lib/edge/kubelet/store \
     --fail-swap-on=false \
     --image-pull-progress-deadline=2m \
     --hostname-override=${DEVICE_ID} \
-    --kubeconfig=/etc/pelion/kubeconfig \
+    --kubeconfig=/etc/edge/kubeconfig \
     --cni-bin-dir=/usr/libexec/cni \
     --cni-conf-dir=/etc/cni/net.d \
     --network-plugin=cni \

@@ -1,3 +1,9 @@
+mbed-edge-core-byocmode (0.21.0-1) unstable; urgency=medium
+
+  * Initial release of BYOC version of edge-core
+
+ -- Pete Dyer <pete.dyer@izumanetworks.com>  Tue, 05 Sep 2023 00:00:00 -0000
+
 mbed-edge-core-byocmode (0.18.0-1) unstable; urgency=medium
 
   * Initial release of BYOC version of edge-core

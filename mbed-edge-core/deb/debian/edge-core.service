@@ -5,7 +5,7 @@ After=network-online.target
 [Service]
 Restart=always
 RestartSec=5s
-WorkingDirectory=/var/lib/pelion/mbed
+WorkingDirectory=/var/lib/edge/mbed
 ExecStart=/usr/bin/launch-edge-core.sh
 
 [Install]

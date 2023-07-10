@@ -41,8 +41,8 @@
 #define MBED_CLIENT_TCP_KEEPALIVE_INTERVAL 60
 #define MBED_CLIENT_TCP_KEEPALIVE_TIME 60
 
-#define PLATFORM_VERSION_HASH_FILE "/etc/pelion/platform_version"
-#define PLATFORM_VERSION_FILE "/etc/pelion/readable_version"
+#define PLATFORM_VERSION_HASH_FILE "/etc/edge/platform_version"
+#define PLATFORM_VERSION_FILE "/etc/edge/readable_version"
 
 #endif /* MBED_CLIENT_USER_CONFIG_H */
 
