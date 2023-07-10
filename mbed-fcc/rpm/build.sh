@@ -1,9 +1,9 @@
 #!/bin/bash
 
 override_download() {
-    download "https://github.com/ARMmbed/factory-configurator-client-example" \
+    download "https://github.com/PelionIoT/factory-configurator-client-example" \
              "4.6.0"
-    download "https://github.com/ARMmbed/mbed-cloud-client" \
+    download "https://github.com/PelionIoT/mbed-cloud-client" \
              "4.6.0"
 }
 

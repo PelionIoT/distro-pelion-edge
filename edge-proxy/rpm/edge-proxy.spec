@@ -1,6 +1,6 @@
 %global goipath github.com/PelionIoT/edge-proxy
-%global tag     v1.0.0
-%global version v1.0.0
+%global tag     v1.1.0
+%global version v1.1.0
 %gometa
 
 Name:           edge-proxy
