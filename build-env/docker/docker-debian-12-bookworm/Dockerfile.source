@@ -1,0 +1,21 @@
+ARG PREFIX
+FROM ${PREFIX}pelion-bookworm-build
+
+USER root
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		apt-rdepends
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		git
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		lintian
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		python3
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		quilt
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		ssh
+RUN apt-get update && apt-get install -y --no-install-recommends \
+		vim
+
+USER user
