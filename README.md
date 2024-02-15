@@ -1,3 +1,5 @@
+# DONT MERGE THIS CHANGE
+
 # Table of contents
 * [Build scripts for Pelion Edge](#build-scripts-for-pelion-edge)
   * [Quickstart](#quickstart)
