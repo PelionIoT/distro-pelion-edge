@@ -15,5 +15,13 @@ export GOFLAGS="${GOFLAGS} -modcacherw"
 
 eval `debian/goflags.guess ${DEB_HOST_ARCH}`
 
-mkdir -p bin
-go build -o bin/maestro -buildmode=pie --tags debug maestro/main.go
+PACKAGE=github.com/PelionIoT/maestro
+MAESTRODIR="$GOPATH"/src/"$PACKAGE"
+
+rm -rf "$GOPATH"
+set -- *
+mkdir -p "$MAESTRODIR"
+cp -r "$@" "$MAESTRODIR"/
+
+cd "$MAESTRODIR"/maestro
+GO111MODULE=auto go build -buildmode=pie "$PACKAGE"/maestro
