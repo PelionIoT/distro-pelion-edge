@@ -3,7 +3,7 @@
 # Internal variables
 PELION_PACKAGE_NAME="pe-golang-bin"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
-PELION_PACKAGE_TARBALL=go1.16.15.linux-amd64.tar.gz
+PELION_PACKAGE_TARBALL=go1.18.10.linux-amd64.tar.gz
 
 source "$PELION_PACKAGE_DIR"/../../../build-env/inc/build-common.sh
 

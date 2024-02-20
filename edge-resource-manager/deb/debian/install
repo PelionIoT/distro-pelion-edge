@@ -1,0 +1,3 @@
+debian/izuma-base-config.yaml etc/edge
+
+bin/edge-resource-manager usr/bin

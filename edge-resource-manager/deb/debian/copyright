@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: maestro
-Source: https://github.com/PelionIoT/maestro
+Upstream-Name: edge-resource-manager
+Source: https://github.com/PelionIoTedge-resource-manager
 
 Files: *
 Copyright: 2019, Travis McCollum <Travis.McCollum@arm.com>
