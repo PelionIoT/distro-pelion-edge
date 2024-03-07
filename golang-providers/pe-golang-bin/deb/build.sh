@@ -3,7 +3,7 @@
 # Internal variables
 PELION_PACKAGE_NAME="pe-golang-bin"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
-PELION_PACKAGE_TARBALL=go1.16.15.linux-amd64.tar.gz
+PELION_PACKAGE_TARBALL=go1.18.10.linux-amd64.tar.gz
 
 source "$PELION_PACKAGE_DIR"/../../../build-env/inc/build-common.sh
 
@@ -21,15 +21,7 @@ function golang_unpack {
     echo "Unpacking Go"
     rm -rf "$PELION_TMP_BUILD_DIR"
     mkdir -p "${PACKAGE_TMP_FOLDER}"
-    tar xf ${PACKAGE_COMPONENT_SOURCE_DIR}/${PELION_PACKAGE_TARBALL} --strip-components=1 -C "${PACKAGE_TMP_FOLDER}"
-
-    echo "Setting up Go Bootstrap Toolchain"
-    # https://go.dev/doc/install/source
-    # The "Bootstrap Toolchain" is just a copy of the go package we just downloaded.  We use the unpatched
-    # version of golang to compile the patched version of golang which we use to compile the rest of Pelion.
-    # This is our GOROOT_BOOTSTRAP.
-    mkdir -p "${PACKAGE_TMP_FOLDER}/bootstrap"
-    tar xf ${PACKAGE_COMPONENT_SOURCE_DIR}/${PELION_PACKAGE_TARBALL} --strip-components=1 -C "${PACKAGE_TMP_FOLDER}/bootstrap"
+    tar xf ${PACKAGE_COMPONENT_SOURCE_DIR}/${PELION_PACKAGE_TARBALL} -C "${PACKAGE_TMP_FOLDER}"
 }
 
 PELION_PACKAGE_SOURCE_PREPARATION_CALLBACK=golang_download
