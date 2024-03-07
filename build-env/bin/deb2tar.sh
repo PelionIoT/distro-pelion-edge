@@ -133,11 +133,10 @@ fetch_deps() {
     local -A deps
 
     local -a rewrite=(
-        '/^pe-nodejs/d'
         '/^pe-utils/d'
         '/^edge-proxy/d'
         '/^mbed-edge-core-devmode/d'
-        '/^maestro/d'
+        '/^edge-resource-manager/d'
         '/^containernetworking-plugins/d'
         '/^debconf/d'
         '/^dpkg/d'
@@ -165,7 +164,6 @@ fetch_deps() {
         '/^login\b/d'
         '/^passwd\b/d'
         's/^(libldap-common):.*/\1:all/'
-        's/^perl:any/perl/'
     )
 
     local -a append=(
@@ -196,7 +194,7 @@ Usage: ${0##*/} [-h|--help] [-a ARCH|--arch ARCH|-d DISTRO|--distro DISTRO]
  -h, --help
   Display this help message.
  -a ARCH, --arch ARCH       Set the host architecture of the tarball.
- -d DISTRO, --distro DISTRO Set Linux distro (eg. focal, buster...)
+ -d DISTRO, --distro DISTRO Set Linux distro (eg. jammy, focal, buster...)
 EOF
 )
 
