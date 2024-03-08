@@ -46,8 +46,6 @@ override_dh_makeshlibs:
 	dh_makeshlibs -Xtestdata -Xtest
 
 override_dh_auto_build-arch:
-	echo "+CVE-2021-29923" >> VERSION
-
 	# See: https://go.dev/doc/install/source
 	export GOROOT_BOOTSTRAP="$(CURDIR)/bootstrap" \
 	&& cd $(CURDIR)/src \

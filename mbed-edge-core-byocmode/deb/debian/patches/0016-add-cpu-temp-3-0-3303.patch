@@ -1,7 +1,7 @@
-From fac60a32a0b3f1f76b1bc636f8f4564096d61281 Mon Sep 17 00:00:00 2001
+From e5a987fbe9a65ce478a3d0d4d1cae7219b94249e Mon Sep 17 00:00:00 2001
 From: Nic Costa <nic.costa@gmail.com>
 Date: Wed, 10 Mar 2021 15:09:28 -0600
-Subject: [PATCH 10/14] add cpu temp /3/0/3303
+Subject: [PATCH 06/13] add cpu temp /3/0/3303
 
 ---
  edge-client/gateway_stats.c | 44 +++++++++++++++++++++++++++++++++++++
@@ -89,5 +89,5 @@ index 026e1b2..5ca2e33 100644
      gsr_create_resource(GATEWAY_STATS_OBJ_ID,
                          0,
 -- 
-2.30.1 (Apple Git-130)
+2.33.1
 
