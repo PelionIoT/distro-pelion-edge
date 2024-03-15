@@ -1,2 +1,4 @@
 new-package-should-close-itp-bug
 binary-without-manpage
+
+kubelet: script-with-language-extension usr/bin/launch-edgenet.sh

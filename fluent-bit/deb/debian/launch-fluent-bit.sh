@@ -17,4 +17,4 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 
-exec /usr/bin/fluent-bit -c /etc/pelion/fluent-bit.conf
+exec /usr/bin/fluent-bit -c /etc/edge/fluent-bit.conf

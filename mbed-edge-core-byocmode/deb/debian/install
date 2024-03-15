@@ -1,2 +1,2 @@
 build/bin/edge-core usr/bin
-../../../../mbed-edge-core-byocmode/deb/debian/files/arm_update*.sh usr/lib/pelion/scripts
+../../../../mbed-edge-core-byocmode/deb/debian/files/arm_update*.sh usr/lib/edge/scripts

@@ -1,5 +1,5 @@
 build/bin/fluent-bit usr/bin
 debian/launch-fluent-bit.sh usr/bin
-debian/fluent-bit.conf etc/pelion
-conf/parsers.conf etc/pelion
+debian/fluent-bit.conf etc/edge
+conf/parsers.conf etc/edge
 

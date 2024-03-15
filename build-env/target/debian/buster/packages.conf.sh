@@ -2,7 +2,6 @@ source $ENV_TARGET_ROOT/common/debian_packages.conf.sh
 
 DEPENDS=(
     'golang-providers/pe-golang-bin'
-    'pe-nodejs'
 )
 
 ENV_OS_NAME=buster

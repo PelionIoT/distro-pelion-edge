@@ -5,4 +5,4 @@ build/bin/mqttpt-example usr/bin
 mqttpt-example/mqttgw_sim/mqtt_ep.sh usr/bin
 mqttpt-example/mqttgw_sim/mqtt_gw.sh usr/bin
 
-debian/blept-devices.json  etc/pelion
+debian/blept-devices.json  etc/edge
