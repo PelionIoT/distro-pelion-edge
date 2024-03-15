@@ -7,7 +7,7 @@ Standards-Version: 4.5.0.3
 
 Package: golang-virtual
 Architecture: all
-Depends: golang-1.18-go
+Depends: golang-1.20-go
 Provides: pe-golang
 Conflicts: pe-golang-bin
 Description: Go compiler required for Pelion Edge compilation.

@@ -4,7 +4,7 @@
 PELION_PACKAGE_NAME="golang-virtual"
 PELION_PACKAGE_DIR=$(cd "`dirname \"$0\"`" && pwd)
 
-GOLANG_VERSION=1.18
+GOLANG_VERSION=1.20
 
 source "$PELION_PACKAGE_DIR"/../../../build-env/inc/build-common.sh
 
