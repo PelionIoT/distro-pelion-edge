@@ -1,6 +1,5 @@
 0001-Add-PAL-Proxy-module-using-HTTP.patch
 0011-Add-network-proxy-support.patch
-0013-add-API-to-set-a-resource-value-without-forced-text-.patch
 0014-add-stubs-for-gateway-statistics-resources.patch
 0015-add-cpu-usage-3-0-3320.patch
 0016-add-cpu-temp-3-0-3303.patch

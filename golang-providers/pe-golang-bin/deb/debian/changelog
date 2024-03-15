@@ -1,3 +1,9 @@
+pe-golang-bin (1.19.13-1) unstable; urgency=medium
+
+  * Update to golang-1.19.13
+
+ -- Pete Dyer <pete.dyer@izumanetworks.com>  Fri, 08 Mar 2024 09:44:07 +0000
+
 pe-golang-bin (1.16.15-1+CVE-2021-29923) unstable; urgency=medium
 
   * Update to golang-1.16.15
