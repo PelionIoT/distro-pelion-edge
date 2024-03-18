@@ -137,7 +137,7 @@ fetch_deps() {
         '/^pe-utils/d'
         '/^edge-proxy/d'
         '/^mbed-edge-core-devmode/d'
-        '/^maestro/d'
+        '/^edge-resource-manager/d'
         '/^containernetworking-plugins/d'
         '/^debconf/d'
         '/^dpkg/d'

@@ -1,0 +1,17 @@
+var_defs:
+  - key: "TMP_DIR"
+    value: "/tmp"
+edge_capabilities:
+  edge_core_socketpath: "/tmp/edge.sock"
+  lwm2m_objectid: 33457
+  edge_resources:
+  - name: "urn:fid:pelion.com:log:1.0.0"
+    enable: true
+    config_filepath: "/etc/edge/fluent-bit.conf"
+  - name: "urn:fid:pelion.com:terminal:1.0.0"
+    enable: true
+    config_filepath: "/etc/edge/pe-terminal.conf.json"
+  - name: "urn:fid:pelion.com:kaas:1.0.0"
+    enable: true
+    config_filepath: "/etc/edge/kubeconfig"
+config_end: true

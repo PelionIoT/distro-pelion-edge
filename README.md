@@ -55,8 +55,8 @@ be launched manually, for example as an interactive session, or the scripts will
 run docker automatically if the argument `--docker` is provided.
 
 It  is recommended  to use  docker  since it  will provide  a clean  environment
-without interference with local user settings  (for example, with user nodejs or
-python environments) and does not require setting up local packages repository.
+without interference with local user settings  (for example, with user python
+environments) and does not require setting up local packages repository.
 
 Also, the build will need `sudo` privileges to install standard Ubuntu packages.
 
@@ -216,7 +216,7 @@ When `build-all.sh` is run:
 and source stage). Container is removed after each element is done:
 	```
 	# create and run temporary container
-	[docker run --rm] pe-nodejs source
+	[docker run --rm] pe-utils source
 	# container is automatically removed
 	# create and run temporary container
 	[docker run --rm] edge-proxy source
@@ -229,10 +229,10 @@ uses it for each element:
 	```
 	[check if container exists => create if missing]
 	[if stopped => docker start]
-	[docker exec] pe-nodejs source
+	[docker exec] pe-utils source
 	[docker exec] edge-proxy source
 	...
-	[docker exec] pe-nodejs build
+	[docker exec] pe-utils build
 	```
 
 - with  `-c=clean` removes existing container  and creates new one  before first
@@ -243,10 +243,10 @@ use in script:
 	# create new container
 	[docker container create]
 	[docker start]
-	[docker exec] pe-nodejs source
+	[docker exec] pe-utils source
 	[docker exec] edge-proxy source
 	...
-	[docker exec] pe-nodejs build
+	[docker exec] pe-utils build
 	...
 	```
 
@@ -273,16 +273,19 @@ or
 The build scripts provide help information, for example:
 
 ```
-$ maestro/deb/build.sh --help
-Usage: maestro/deb/build.sh [Options]
+$ pe-utils/deb/build.sh --help
+Usage: pe-utils/deb/build.sh [Options]
 
 Options:
- --docker=<dist>     Use docker containers (dist can be focal, bionic, buster...).
+ --docker            Use docker containers.
  --source            Generate source package.
  --build             Build binary from source generated with --source option.
  --verify            Verify package conformity to the Debian policy.
  --install           Install build dependencies.
  --arch=<arch>       Set target architecture.
+ --print-target      Print target package file path and exit
+ --print-package-name Print package name (eg. devicejs) and exit
+ --print-package-version Print package version (eg. devicejs) and exit
  --help,-h           Print this message.
 
  If none of '--source', '--build' or '--verify' options are specified,
@@ -292,8 +295,9 @@ Available architectures:
   amd64
   arm64
   armhf
+  armel
 
-Default mode: maestro/deb/build.sh --arch=amd64 --source --build --verify
+Default mode: pe-utils/deb/build.sh --arch=amd64 --source --build --verify
 ```
 
 These scripts can be used to generate both source and binary packages.
@@ -306,8 +310,8 @@ run in appropriate containers automatically (using source of build images):
 The build scripts for RPM-based distributions are similar to Debian's:
 
 ```
-$ ./maestro/rpm/build.sh --help
-build.sh - builds maestro RPM package
+$ pe-utils/rpm/build.sh --help
+build.sh - builds pe-utils RPM package
 
 Usage: build.sh [-h|--help] [--install]
  -h, --help                 display this help message.
@@ -525,22 +529,22 @@ cannot be installed simultaneously.
 edge-core.service
 edge-proxy.service
 kubelet.service
-maestro.service
+edge-resource-manager.service
 mbed-fcc.service
-pelion-relay-term.service
+pe-terminal.service
 wait-for-pelion-identity.service
 fluent-bit.service
 ```
 
 To enable all services, run:
 ```bash
-sudo systemctl enable edge-core.service edge-proxy.service kubelet.service maestro.service mbed-fcc.service pelion-relay-term.service wait-for-pelion-identity.service
+sudo systemctl enable edge-core.service edge-proxy.service kubelet.service edge-resorce-manager.service mbed-fcc.service pe-terminal.service wait-for-pelion-identity.service
 ```
 
 Dependent     services      are     enabled     implicitly.      For     example
-`wait-for-pelion-identity.service`   is   enabled  when   `maestro.service`   is
+`wait-for-pelion-identity.service`   is   enabled  when   `edge-resource-manager.service`   is
 enabled; `edge-core.service` is  enabled when `wait-for-pelion-identity.service`
-is    enabled     so    enabling    `maestro.service`    will     also    enable
+is    enabled     so    enabling    `edge-resource-manager.service`    will     also    enable
 `wait-for-pelion-identity.service` and `edge-core.service`.
 
 

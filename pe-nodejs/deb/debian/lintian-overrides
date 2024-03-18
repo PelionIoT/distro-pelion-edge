@@ -1,5 +1,0 @@
-pe-nodejs: embedded-library usr/lib/pelion/bin/node: *
-pe-nodejs: hardening-no-relro usr/lib/pelion/bin/node
-pe-nodejs: hardening-no-pie usr/lib/pelion/bin/node
-pe-nodejs: missing-dep-for-interpreter node *
-

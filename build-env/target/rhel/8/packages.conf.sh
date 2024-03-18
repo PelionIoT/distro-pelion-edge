@@ -1,16 +1,10 @@
 # build dependencies
 # variables are evaluated in selected environment (eg. docker)
-DEPENDS=(
-    'pe-nodejs'
-)
 
 PACKAGES=(
-    'pe-nodejs'
     'edge-proxy'
-    'global-node-modules'
     'golang-github-containernetworking-plugins'
     'kubelet'
-    'maestro'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
     'mbed-edge-core-byocmode'
