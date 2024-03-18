@@ -1,9 +1,9 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: global-node-modules
-Source: https://github.com/PelionIoT/edge-node-modules
+Upstream-Name: edge-resource-manager
+Source: https://github.com/PelionIoTedge-resource-manager
 
 Files: *
-Copyright: 2019-2020 Travis McCollum <travs.mccollum@arm.com>
+Copyright: 2024, Pete Dyer <pete.dyer@izumanetworks.com>
 License: Apache-2.0
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
