@@ -1,5 +1,7 @@
 name: Build
-on: push
+on: 
+  push:
+  workflow_dispatch:
 
 jobs:
   build-debs:
@@ -12,9 +14,10 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      - name: Set GitHub access token via git config
-        run: |
-          git config --global url."https://${{ secrets.ACCESS_TOKEN }}@github".insteadOf "https://github"
+      - name: Set access token for internal repo access
+        uses: PelionIoT/actions/.github/actions/git-config@main
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
       - name: Copy mbed_cloud_dev_credentials.c
         env:
           MBED_CLOUD_DEV_CREDENTIALS: ${{ secrets.MBED_CLOUD_DEV_CREDENTIALS_C_RYAN }}
@@ -28,4 +31,7 @@ jobs:
       - name: Build
         run: |
           export DOCKER_OPTS='-i'; ./build-env/bin/docker-run-env.sh ${{ matrix.distro }} ./build-env/bin/build-all.sh --install --arch=${{ matrix.arch }}
-          docker system prune
+          docker system prune -f
+      - name: Cleanup .gitconfig
+        if: always()
+        run: rm -f ~/.gitconfig
