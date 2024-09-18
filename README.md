@@ -538,7 +538,7 @@ fluent-bit.service
 
 To enable all services, run:
 ```bash
-sudo systemctl enable edge-core.service edge-proxy.service kubelet.service edge-resorce-manager.service mbed-fcc.service pe-terminal.service wait-for-pelion-identity.service
+sudo systemctl enable edge-core.service edge-proxy.service kubelet.service edge-resource-manager.service mbed-fcc.service pe-terminal.service wait-for-pelion-identity.service
 ```
 
 Dependent     services      are     enabled     implicitly.      For     example
