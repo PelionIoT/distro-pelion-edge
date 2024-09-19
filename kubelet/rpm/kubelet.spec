@@ -1,4 +1,4 @@
-%global goipath github.com/armPelionEdge/edge-kubelet
+%global goipath github.com/PelionIoT/edge-kubelet
 %global tag     v1.0.0
 %global version v1.0.0
 %gometa

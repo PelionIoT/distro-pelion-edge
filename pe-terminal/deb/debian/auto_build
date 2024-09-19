@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+export CC=${DEB_HOST_GNU_TYPE}-gcc
+export CXX=${DEB_HOST_GNU_TYPE}-g++
+export PKG_CONFIG=${DEB_HOST_GNU_TYPE}-pkg-config
+export GOPATH=`pwd`/go-workspace
+# fix go's weird habit of checking out code read-only
+export GOFLAGS="${GOFLAGS} -modcacherw"
+
+eval `debian/goflags.guess ${DEB_HOST_ARCH}`
+
+package=github.com/PelionIoT/pe-terminal
+pkgdir="$GOPATH"/src/"$package"
+
+rm -rf "$GOPATH"
+set -- *
+mkdir -p "$pkgdir"
+cp -r "$@" "$pkgdir"/
+
+cd "$pkgdir"
+go build -buildmode=pie "$package"
+

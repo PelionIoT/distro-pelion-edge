@@ -1,11 +1,11 @@
-%global forgeurl https://github.com/ARMmbed/mbed-edge
-%global tag     0.13.0
-%global version 0.13.0
+%global forgeurl https://github.com/PelionIoT/mbed-edge
+%global tag     0.18.0
+%global version 0.18.0
 %global debug_package %{nil}
 %forgemeta
 
 Name:           mbed-edge-core
-Version:        0.13.0
+Version:        0.18.0
 Release:        1%{?dist}
 Summary:        The core of Device Management Edge
 License:        Apache-2.0
@@ -39,22 +39,26 @@ with and without Device Management connectivity.
 %setup -q %{forgesetupargs}
 
 %build
-cmake . -DFACTORY_MODE=ON -DFIRMWARE_UPDATE=ON \
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+cmake . -DFACTORY_MODE=ON -DDEVELOPER_MODE=OFF -DBYOC_MODE=OFF \
+        -DFOTA_ENABLE=OFF -DFIRMWARE_UPDATE=ON \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DMBED_CLOUD_DEV_UPDATE_ID=ON \
+        -DMBED_CLOUD_CLIENT_CURL_DYNAMIC_LINK=OFF \
+	-DPARSEC_TPM_SE_SUPPORT=OFF
 %make_build
 
 %install
-install -vdm 0755				                    %{buildroot}/var/lib/pelion/mbed/
+install -vdm 0755                                   %{buildroot}/var/lib/pelion/mbed/
 
-install -vdm 0755               %{buildroot}/%{_bindir}
-install -vpm 0755 bin/edge-core %{buildroot}/%{_bindir}
+install -vdm 0755                                   %{buildroot}/%{_bindir}
+install -vpm 0755 bin/edge-core                     %{buildroot}/%{_bindir}
 install -vpm 0755 %{_filesdir}/launch-edge-core.sh  %{buildroot}/%{_bindir}
 
-install -vdm 0755				                    %{buildroot}/%{_unitdir}
+install -vdm 0755                                   %{buildroot}/%{_unitdir}
 install -vpm 0755 %{_filesdir}/edge-core.service    %{buildroot}/%{_unitdir}
 
-install -vdm 0755 %{buildroot}/%{_sysconfdir}/logrotate.d
-install -vpm 0755 %{_filesdir}/edge-core.logrotate	%{buildroot}/%{_sysconfdir}/logrotate.d/edge-core
+install -vdm 0755                                   %{buildroot}/%{_sysconfdir}/logrotate.d
+install -vpm 0755 %{_filesdir}/edge-core.logrotate  %{buildroot}/%{_sysconfdir}/logrotate.d/edge-core
 
 %files
 %{_bindir}/edge-core
@@ -75,6 +79,12 @@ install -vpm 0755 %{_filesdir}/edge-core.logrotate	%{buildroot}/%{_sysconfdir}/l
 %systemd_postun_with_restart edge-core.service
 
 %changelog
+* Mon Nov 15 2021 Nic Costa <nic.costa@pelion.com> - 0.18.0-1
+- Upgraded mbed-edge-core 0.18.0 for Pelion Edge 2.4
+* Mon Nov 15 2021 Nic Costa <nic.costa@pelion.com> - 0.16.1-1
+- Upgraded mbed-edge-core 0.16.0 for Pelion Edge 2.3
+* Mon Nov 15 2021 Nic Costa <nic.costa@pelion.com> - 0.15.0-1
+- Upgraded mbed-edge-core 0.15.0 for Pelion Edge 2.2
 * Wed Jun 9 2021 Michael Ray <michael.ray@pelion.com> - 0.13.0-1
 - Locked down version of all packages
 * Mon May 18 2020 Vasily Smirnov <vasilii.smirnov@globallogic.com> - 0.0.1-1

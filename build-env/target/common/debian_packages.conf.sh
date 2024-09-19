@@ -1,18 +1,16 @@
 # build dependencies
 DEPENDS=(
     'golang-providers/golang-virtual'
-    'pe-nodejs'
 )
 
 PACKAGES=(
-    'pe-nodejs'
     'edge-proxy'
-    'global-node-modules'
+    'pe-terminal'
     'kubelet'
-    'maestro'
-    'maestro-shell'
+    'edge-resource-manager'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
+    'mbed-edge-core-byocmode'
     'golang-github-containernetworking-plugins'
     'mbed-edge-examples'
     'mbed-fcc'

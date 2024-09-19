@@ -1,3 +1,4 @@
 identity-tools/generate-identity.sh usr/bin
 identity-tools/developer_identity usr/bin
+edge-info/edge-info usr/bin
 debian/launch-wait-for-pelion-identity.sh usr/bin

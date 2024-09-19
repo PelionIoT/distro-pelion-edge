@@ -8,10 +8,10 @@ Release:        1%{?dist}
 Summary:        A factory configurator client example
 
 License:        Apache-2.0
-URL:            https://github.com/ARMmbed/factory-configurator-client-example
+URL:            https://github.com/PelionIoT/factory-configurator-client-example
 
 # The source for this package was generated via
-# https://github.com/armPelionEdge/ubuntu-pelion-edge-internal
+# https://github.com/PelionIoT/ubuntu-pelion-edge-internal
 Source0:        mbed-fcc.tar.gz
 Patch0:         0002-Modified-FCCE-to-take-in-CBOR-file-to-generate-the-s.patch
 

@@ -1,4 +1,4 @@
-%global forgeurl https://github.com/ARMmbed/mbed-edge-examples
+%global forgeurl https://github.com/PelionIoT/mbed-edge-examples
 %global tag     0.10.0
 %global version 0.10.0
 %forgemeta

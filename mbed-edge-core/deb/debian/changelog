@@ -1,3 +1,45 @@
+mbed-edge-core (0.21.0-1) stable; urgency=medium
+
+  * Updated to edge-core version 0.21.0
+
+ -- Pete Dyer <pete.dyer@izumanetworks.com>  Fri, 08 Mar 2024 15:47:00 +0000
+
+mbed-edge-core (0.18.0-1) stable; urgency=medium
+
+  * Updated to Pelion Device Management Client (PDMC) library version 4.9.0.
+  * Deprecated crypto_ecdh_key_agreement JSON-RPC API for PSA configuration,
+    due to psa_set_key_enrollment_algorithm() API deprecation in Mbed Crypto.
+  * Updated parsec-se-driver version from 0.4.0 to 0.5.0 (in
+    lib/pal-platform.json).
+  * Updated libcurl version from 7.75 to 7.76 (in lib/pal-platform.json).
+  * Mbed TLS updated from 2.22.0 to version 2.25.0.
+  * Removed the use of mbed-cloud-sdk from edge-tool as the sdk has been
+    deprecated.
+  * Added setup script to edge-tool.
+
+ -- Nic Costa <nic.costa@gmail.com>  Mon, 22 Nov 2021 16:03:18 +0000
+
+mbed-edge-core (0.16.1-1) stable; urgency=medium
+
+  * Adds Parsec support (disabled)
+
+ -- Nic Costa <nic.costa@gmail.com>  Tue, 16 Nov 2021 21:00:12 +0000
+
+mbed-edge-core (0.15.0-1) stable; urgency=medium
+
+  * Upgrade edge-core to 0.15.0 for GRM feature
+
+  * Adds GRM feature which allows a client to add new LwM2M resources
+    to gateway device.
+
+  * Added the CMake flags related to new FOTA library to indicate that
+    new FOTA framework library is not compilied in Edge Core.
+
+  * All patches were either updated for 0.15.0 to adjust to new APIs
+    or were removed because the patch content was upstreamed.
+
+ -- Nic Costa <nic.costa@gmail.com>  Mon, 15 Nov 2021 21:45:32 +0000
+
 mbed-edge-core (0.13.0-1) stable; urgency=medium
 
   * Set the package version to 0.13.0-1

@@ -1,0 +1,9 @@
+0001-Add-PAL-Proxy-module-using-HTTP.patch
+0005-Read-platform-version-files-into-LWM2M-resources.patch
+0011-Add-network-proxy-support.patch
+0014-add-stubs-for-gateway-statistics-resources.patch
+0015-add-cpu-usage-3-0-3320.patch
+0016-add-cpu-temp-3-0-3303.patch
+0017-add-RAM-total-3-0-3322-and-RAM-free-3-0-3321.patch
+0018-add-disk-free-3-0-3323-and-disk-total-3-0-3324.patch
+

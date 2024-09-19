@@ -1,0 +1,21 @@
+Source: edge-resource-manager
+Section: utils
+Priority: optional
+Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+Build-Depends: debhelper (>=9), pe-golang:native,
+ autoconf (>=2.69), automake (>=1:1.15), libtool (>=2.4.6),
+ libc6, libstdc++6, libunwind-dev, libuv1-dev
+Standards-Version: 3.9.6
+Homepage: https://www.izumanetworks.com
+
+Package: edge-resource-manager
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, libnss-myhostname, pe-utils, edge-proxy
+Recommends: resolvconf
+Description: system manager (logging, dhcp, cloud connector)
+ Maestro is a replacement for a number of typical system utilities and
+ management programs, while providing cloud-connected systems management.
+ Maestro is designed specifically for cloud-connected embedded Linux computers,
+ with somewhat limited RAM and disk space, where file systems are often flash -
+ and would prefer less writing over time.

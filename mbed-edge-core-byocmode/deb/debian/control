@@ -1,0 +1,28 @@
+Source: mbed-edge-core-byocmode
+Section: net
+Priority: optional
+Maintainer: Olha Kulyk <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9.20160709), cmake (>=3.5), doxygen, graphviz, libc6-dev, libstdc++6, libmosquitto-dev, mosquitto-clients
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: mbed-edge-core-byocmode
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: mbed-edge-core, mbed-edge-core-devmode
+Replaces: mbed-edge-core, mbed-edge-core-devmode
+Description: pelion LWM2M path and registration
+ Device Management Edge (from now on, just Edge) is a product that enables you
+ to connect a variety of devices to Device Management. Examples of such devices
+ are:
+  1. Existing legacy devices that use a protocol, such as BACNet, Modbus and
+     Zigbee.
+  2. Non-IP based devices, such as Bluetooth LE.
+  3. Devices with a limited memory footprint that cannot host a full Device
+     Management Client.
+ Edge lets you connect all these devices to Device Management, so you can
+ manage them and their resources remotely and locally. The Edge Protocol
+ Translator API is protocol agnostic, so anything your gateway connects with
+ can be connected to Edge. Use the Edge Management API to create local
+ management applications that can manage connected devices with and without
+ Device Management connectivity.

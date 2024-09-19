@@ -13,19 +13,16 @@ source "${ROOT_DIR}"/build-env/docker/common/create-repo-lib.sh
 # variables are evaluated in selected environment (eg. docker)
 DEPENDS=(
     '${GO_COMPILER_PACKAGE-golang-providers/golang-virtual}'
-    'pe-nodejs'
 )
 
 # TODO: do not duplicate for amd64 only build
 PACKAGES=(
-    'pe-nodejs'
     'edge-proxy'
-    'global-node-modules'
     'kubelet'
-    'maestro'
-    'maestro-shell'
+    'edge-resource-manager'
     'mbed-edge-core'
     'mbed-edge-core-devmode'
+    'mbed-edge-core-byocmode'
     'golang-github-containernetworking-plugins'
     'mbed-edge-examples'
     'mbed-fcc'
@@ -222,16 +219,7 @@ if $PELION_PACKAGE_SOURCE; then
     echo ">> Source creation started"
     for p in "${PACKAGES[@]}"; do
         echo "Generating source package of '$p'"
-        if [ "$p" == "pe-nodejs" ]; then
-            # pe-nodejs is just a debian package of pre-built # source.
-            # We need to pass the arch here so we know what binary tarball
-            # architecture to download.
-            for arch in "${PELION_ARCHS[@]}"; do
-                "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --arch="$arch" --source
-            done
-        else
-            "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source
-        fi
+        "$SCRIPT_DIR"/../../"$p"/deb/build.sh $PELION_BUILD_OPT --source
     done
     echo ">> Source creation finished"
 fi

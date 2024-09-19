@@ -1,4 +1,0 @@
-debian/pelion-base-config.yaml etc/pelion
-debian/template                etc/pelion
-
-go-workspace/src/github.com/PelionIoT/maestro/maestro/maestro usr/bin
