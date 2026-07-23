@@ -29,11 +29,19 @@ else
     fi
 
     EDGE_K8S_ADDRESS=$(jq -r .edgek8sServicesAddress ${IDENTITY_JSON})
-    ARGS="${ARGS} -proxy-uri=${EDGE_K8S_ADDRESS}"
-
     MYRIPLANE_ADDRESS=$(jq -r .myriplaneServicesAddress ${IDENTITY_JSON})
+
+    # Prefer the myriplane (stargate) address as the proxy target; fall back to
+    # the edge k8s address when myriplane isn't present in identity.json.
+    if [ -n "$MYRIPLANE_ADDRESS" ] && [ "$MYRIPLANE_ADDRESS" != "null" ]; then
+        PROXY_URI=$MYRIPLANE_ADDRESS
+    else
+        PROXY_URI=$EDGE_K8S_ADDRESS
+    fi
+    ARGS="${ARGS} -proxy-uri=${PROXY_URI}"
+
     # -server-name is the SNI hostname only: strip the scheme and any port.
-    SERVER_NAME=${MYRIPLANE_ADDRESS#"https://"}
+    SERVER_NAME=${PROXY_URI#"https://"}
     SERVER_NAME=${SERVER_NAME%%:*}
     ARGS="${ARGS} -server-name=${SERVER_NAME}"
 
