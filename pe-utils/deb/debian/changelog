@@ -1,3 +1,10 @@
+pe-utils (2.3.9-1) stable; urgency=medium
+
+  * Update to use pe-utils 2.3.9 (create-dev-identity: honor izuma.io
+    special case for myriplane address)
+
+ -- Izuma Networks <maintainer@izumanetworks.com>  Thu, 23 Jul 2026 00:00:00 +0000
+
 pe-utils (2.3.8-1) stable; urgency=medium
 
   * Update to use pe-utils 2.3.8
