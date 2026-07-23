@@ -2,6 +2,7 @@ pe-utils (2.3.8-1) stable; urgency=medium
 
   * Update to use pe-utils 2.3.8
   * create-dev-identity: add myriplaneServicesAddress to identity.json
+  * Drop mbed-edge-core dependency (edge-core is deployed separately)
 
  -- Izuma Networks <maintainer@izumanetworks.com>  Thu, 23 Jul 2026 00:00:00 +0000
 
