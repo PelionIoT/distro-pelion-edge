@@ -11,6 +11,14 @@ on:
           - bullseye
           - focal
         default: bullseye
+      packages:
+        description: >-
+          Space/comma separated packages to build, e.g.
+          "edge-proxy pe-utils". Leave empty to build everything. Accepts
+          metapackages/<name> and golang-providers/<name> too.
+        type: string
+        required: false
+        default: ''
       prefix:
         description: >-
           Path prefix inside the bucket. Empty publishes to the canonical
@@ -65,11 +73,64 @@ jobs:
           fi
           echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
 
-      - name: Build
+      - name: Validate package selection
+        env:
+          PACKAGES_INPUT: ${{ inputs.packages }}
         run: |
+          set -euo pipefail
+          [ -n "$PACKAGES_INPUT" ] || exit 0
+
+          # A partial build only populates binary-<arch>/ with the packages
+          # selected, but deb2tar globs that directory to assemble a whole
+          # rootfs - the tarball would look valid and silently miss components.
+          if [ "${{ inputs.upload_tarball }}" = "true" ]; then
+            echo "upload_tarball cannot be combined with a package selection:" >&2
+            echo "the tarball is assembled from every built .deb and would be incomplete." >&2
+            exit 1
+          fi
+
+          invalid=()
+          for pkg in $(printf '%s' "$PACKAGES_INPUT" | tr ',' ' '); do
+            [ -f "$pkg/deb/build.sh" ] || invalid+=( "$pkg" )
+          done
+
+          if [ ${#invalid[@]} -gt 0 ]; then
+            echo "Unknown package(s): ${invalid[*]}" >&2
+            echo "" >&2
+            echo "Available:" >&2
+            find . -path '*/deb/build.sh' -not -path './build/*' 2>/dev/null \
+              | sed 's|^\./||;s|/deb/build.sh$||' | sort -u | sed 's/^/  /' >&2
+            exit 1
+          fi
+
+      - name: Build
+        env:
+          PACKAGES_INPUT: ${{ inputs.packages }}
+        run: |
+          set -euo pipefail
           export DOCKER_OPTS='-i'
-          ./build-env/bin/docker-run-env.sh "$DISTRO" \
-            ./build-env/bin/build-all.sh --install --arch="$ARCH"
+          run_env() { ./build-env/bin/docker-run-env.sh "$DISTRO" "$@"; }
+
+          if [ -z "$PACKAGES_INPUT" ]; then
+            run_env ./build-env/bin/build-all.sh --install --arch="$ARCH"
+          else
+            # Go packages resolve golang-virtual from the local apt repo, so the
+            # dependency stage has to run even for a single-package build.
+            echo "::group::Dependencies"
+            run_env ./build-env/bin/build-all.sh --install --arch="$ARCH" --deps
+            echo "::endgroup::"
+
+            for pkg in $(printf '%s' "$PACKAGES_INPUT" | tr ',' ' '); do
+              echo "::group::Build $pkg"
+              case "$pkg" in
+                # Metapackages are Architecture: all and take no --arch.
+                metapackages/*) run_env "./$pkg/deb/build.sh" --install ;;
+                *)              run_env "./$pkg/deb/build.sh" --install --arch="$ARCH" ;;
+              esac
+              echo "::endgroup::"
+            done
+          fi
+
           docker system prune -f
 
       - name: Cleanup .gitconfig
