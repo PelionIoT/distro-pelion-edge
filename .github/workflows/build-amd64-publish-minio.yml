@@ -1,0 +1,298 @@
+name: Build amd64 debs and publish to MinIO
+
+# Manual only: pick the branch/tag from the "Run workflow" ref dropdown.
+on:
+  workflow_dispatch:
+    inputs:
+      distro:
+        description: 'Distro codename to build for'
+        type: choice
+        options:
+          - bullseye
+          - focal
+        default: bullseye
+      package:
+        description: 'Package to build ("all" builds everything)'
+        type: choice
+        default: all
+        options:
+          - all
+          - edge-proxy
+          - pe-terminal
+          - kubelet
+          - edge-resource-manager
+          - mbed-edge-core
+          - mbed-edge-core-devmode
+          - mbed-edge-core-byocmode
+          - golang-github-containernetworking-plugins
+          - mbed-edge-examples
+          - mbed-fcc
+          - pe-utils
+          - fluent-bit
+          - metapackages/pelion-edge
+          - metapackages/pelion-edge-base
+          - metapackages/pelion-edge-container-orchestration
+          - metapackages/pelion-edge-protocol-engine
+      packages:
+        description: >-
+          Several packages, space/comma separated, e.g. "edge-proxy
+          pe-utils". Overrides the dropdown when set. Accepts anything with
+          a <name>/deb/build.sh, including golang-providers/<name>.
+        type: string
+        required: false
+        default: ''
+      prefix:
+        description: >-
+          Path prefix inside the bucket. Empty publishes to the canonical
+          deb/<distro>/main/ layout; set something like "staging" to park a
+          branch build somewhere harmless.
+        type: string
+        required: false
+        default: ''
+      upload_tarball:
+        description: 'Also upload the pelion-edge tarball (under tar/)'
+        type: boolean
+        default: false
+      dry_run:
+        description: 'Build and list what would be uploaded, but do not upload'
+        type: boolean
+        default: false
+
+jobs:
+  build-and-publish:
+    # MinIO lives on a private address, so this needs a runner that can reach
+    # it. Override with the BUILD_RUNNER repo variable (e.g. self-hosted).
+    runs-on: ${{ vars.BUILD_RUNNER || 'ubuntu-22.04' }}
+    env:
+      DISTRO: ${{ inputs.distro }}
+      ARCH: amd64
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set access token for internal repo access
+        uses: PelionIoT/actions/.github/actions/git-config@main
+        with:
+          github_token: ${{ secrets.ACCESS_TOKEN }}
+
+      - name: Copy mbed_cloud_dev_credentials.c
+        env:
+          MBED_CLOUD_DEV_CREDENTIALS: ${{ secrets.MBED_CLOUD_DEV_CREDENTIALS_STAGING_IZUMA_BOT }}
+        run: |
+          if [ -z "$MBED_CLOUD_DEV_CREDENTIALS" ]; then
+            echo "MBED_CLOUD_DEV_CREDENTIALS_STAGING_IZUMA_BOT is empty or unset" >&2
+            exit 1
+          fi
+          echo "$MBED_CLOUD_DEV_CREDENTIALS" > mbed_cloud_dev_credentials.c
+
+      - name: Copy update_default_resources.c
+        env:
+          UPDATE_DEFAULT_RESOURCES: ${{ secrets.UPDATE_DEFAULT_RESOURCES_STAGING_IZUMA_BOT }}
+        run: |
+          if [ -z "$UPDATE_DEFAULT_RESOURCES" ]; then
+            echo "UPDATE_DEFAULT_RESOURCES_STAGING_IZUMA_BOT is empty or unset" >&2
+            exit 1
+          fi
+          echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
+
+      # The dropdown is single-select, so the free-text field takes precedence
+      # when someone needs to build several packages in one run.
+      - name: Resolve package selection
+        id: selection
+        env:
+          PACKAGE_CHOICE: ${{ inputs.package }}
+          PACKAGES_INPUT: ${{ inputs.packages }}
+        run: |
+          set -euo pipefail
+          selection="$PACKAGES_INPUT"
+          if [ -z "$selection" ] && [ "$PACKAGE_CHOICE" != "all" ]; then
+            selection="$PACKAGE_CHOICE"
+          fi
+
+          if [ -n "$PACKAGES_INPUT" ] && [ "$PACKAGE_CHOICE" != "all" ]; then
+            echo "::notice::Both inputs set; building '$PACKAGES_INPUT' and ignoring the '$PACKAGE_CHOICE' dropdown selection."
+          fi
+
+          if [ -z "$selection" ]; then
+            echo "Building all packages"
+          else
+            echo "Building: $selection"
+          fi
+          echo "packages=$selection" >> "$GITHUB_OUTPUT"
+
+      - name: Validate package selection
+        env:
+          PACKAGES_INPUT: ${{ steps.selection.outputs.packages }}
+        run: |
+          set -euo pipefail
+          [ -n "$PACKAGES_INPUT" ] || exit 0
+
+          # A partial build only populates binary-<arch>/ with the packages
+          # selected, but deb2tar globs that directory to assemble a whole
+          # rootfs - the tarball would look valid and silently miss components.
+          if [ "${{ inputs.upload_tarball }}" = "true" ]; then
+            echo "upload_tarball cannot be combined with a package selection:" >&2
+            echo "the tarball is assembled from every built .deb and would be incomplete." >&2
+            exit 1
+          fi
+
+          invalid=()
+          for pkg in $(printf '%s' "$PACKAGES_INPUT" | tr ',' ' '); do
+            [ -f "$pkg/deb/build.sh" ] || invalid+=( "$pkg" )
+          done
+
+          if [ ${#invalid[@]} -gt 0 ]; then
+            echo "Unknown package(s): ${invalid[*]}" >&2
+            echo "" >&2
+            echo "Available:" >&2
+            find . -path '*/deb/build.sh' -not -path './build/*' 2>/dev/null \
+              | sed 's|^\./||;s|/deb/build.sh$||' | sort -u | sed 's/^/  /' >&2
+            exit 1
+          fi
+
+      - name: Build
+        env:
+          PACKAGES_INPUT: ${{ steps.selection.outputs.packages }}
+        run: |
+          set -euo pipefail
+          export DOCKER_OPTS='-i'
+          run_env() { ./build-env/bin/docker-run-env.sh "$DISTRO" "$@"; }
+
+          if [ -z "$PACKAGES_INPUT" ]; then
+            run_env ./build-env/bin/build-all.sh --install --arch="$ARCH"
+          else
+            # Go packages resolve the golang provider (pe-golang-bin on
+            # bullseye, golang-virtual on focal) from the local apt repo, so the
+            # dependency stage has to run even for a single-package build.
+            echo "::group::Dependencies"
+            run_env ./build-env/bin/build-all.sh --install --arch="$ARCH" --deps
+            echo "::endgroup::"
+
+            for pkg in $(printf '%s' "$PACKAGES_INPUT" | tr ',' ' '); do
+              echo "::group::Build $pkg"
+              case "$pkg" in
+                # Metapackages are Architecture: all and take no --arch.
+                metapackages/*) run_env "./$pkg/deb/build.sh" --install ;;
+                *)              run_env "./$pkg/deb/build.sh" --install --arch="$ARCH" ;;
+              esac
+              echo "::endgroup::"
+            done
+          fi
+
+          docker system prune -f
+
+      - name: Cleanup .gitconfig
+        if: always()
+        run: rm -f ~/.gitconfig
+
+      # The build runs inside containers as a different uid; make the outputs
+      # readable by the runner user before we stage them.
+      - name: Fix ownership of build outputs
+        run: sudo chown -R "$(id -u):$(id -g)" build
+
+      # The MinIO layout mirrors build/deploy/deb/<distro>/main/ exactly
+      # (binary-amd64/, binary-all/, source/, including the .lintian reports),
+      # so we publish that directory as-is.
+      - name: Inspect build output
+        id: stage
+        run: |
+          set -euo pipefail
+          deb_dir="build/deploy/deb/$DISTRO/main"
+
+          if [ ! -d "$deb_dir" ]; then
+            echo "Expected build output at $deb_dir, but it does not exist" >&2
+            ls -R build/deploy 2>/dev/null || true
+            exit 1
+          fi
+
+          shopt -s nullglob
+          debs=( "$deb_dir/binary-$ARCH"/*.deb "$deb_dir/binary-all"/*.deb )
+          if [ ${#debs[@]} -eq 0 ]; then
+            echo "No .deb files found under $deb_dir" >&2
+            exit 1
+          fi
+          echo "Built ${#debs[@]} package(s):"
+          printf '  %s\n' "${debs[@]}"
+
+          echo "deb_dir=$deb_dir" >> "$GITHUB_OUTPUT"
+
+      - name: Upload artifacts to the workflow run
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.distro }}-amd64-debs
+          path: build/deploy/deb/${{ inputs.distro }}/main/
+          if-no-files-found: error
+
+      - name: Install MinIO client
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/bin"
+          curl -fsSL https://dl.min.io/client/mc/release/linux-amd64/mc \
+            -o "$RUNNER_TEMP/bin/mc"
+          chmod +x "$RUNNER_TEMP/bin/mc"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+          "$RUNNER_TEMP/bin/mc" --version
+
+      - name: Publish to MinIO
+        env:
+          MINIO_ENDPOINT: ${{ vars.MINIO_ENDPOINT }}
+          MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
+          MINIO_SECRET_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+          BUCKET: ${{ vars.MINIO_BUCKET }}
+          PREFIX: ${{ inputs.prefix }}
+          DEB_DIR: ${{ steps.stage.outputs.deb_dir }}
+          DRY_RUN: ${{ inputs.dry_run }}
+        run: |
+          set -euo pipefail
+
+          for v in MINIO_ENDPOINT MINIO_ACCESS_KEY MINIO_SECRET_KEY BUCKET; do
+            if [ -z "${!v}" ]; then
+              echo "$v is not set (configure it in the repo's Actions settings)" >&2
+              exit 1
+            fi
+          done
+
+          dest="minio/$BUCKET"
+          if [ -n "$PREFIX" ]; then
+            dest="$dest/${PREFIX%/}"
+          fi
+          dest="$dest/deb/$DISTRO/main"
+
+          mc alias set minio "$MINIO_ENDPOINT" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
+
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "Dry run - would upload $DEB_DIR/ to $dest/"
+            ( cd "$DEB_DIR" && find . -type f | sort | sed 's|^\./|  |' )
+            exit 0
+          fi
+
+          # Additive copy: existing objects for other versions are untouched,
+          # objects with the same name are replaced.
+          mc cp --recursive "$DEB_DIR/" "$dest/"
+
+          if [ "${{ inputs.upload_tarball }}" = "true" ]; then
+            tarball="build/deploy/tar/pelion-edge-$DISTRO-$ARCH.tar.gz"
+            if [ -f "$tarball" ]; then
+              tar_dest="minio/$BUCKET"
+              if [ -n "$PREFIX" ]; then
+                tar_dest="$tar_dest/${PREFIX%/}"
+              fi
+              mc cp "$tarball" "$tar_dest/tar/"
+            else
+              echo "::warning::No tarball found at $tarball"
+            fi
+          fi
+
+          {
+            echo "### Published to MinIO"
+            echo ""
+            echo "\`$dest/\` (from \`${GITHUB_REF_NAME}\` @ \`${GITHUB_SHA:0:8}\`)"
+            echo ""
+            echo '```'
+            mc ls --recursive "$dest/"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove MinIO credentials
+        if: always()
+        run: mc alias remove minio || true
