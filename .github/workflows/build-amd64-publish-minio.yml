@@ -11,11 +11,33 @@ on:
           - bullseye
           - focal
         default: bullseye
+      package:
+        description: 'Package to build ("all" builds everything)'
+        type: choice
+        default: all
+        options:
+          - all
+          - edge-proxy
+          - pe-terminal
+          - kubelet
+          - edge-resource-manager
+          - mbed-edge-core
+          - mbed-edge-core-devmode
+          - mbed-edge-core-byocmode
+          - golang-github-containernetworking-plugins
+          - mbed-edge-examples
+          - mbed-fcc
+          - pe-utils
+          - fluent-bit
+          - metapackages/pelion-edge
+          - metapackages/pelion-edge-base
+          - metapackages/pelion-edge-container-orchestration
+          - metapackages/pelion-edge-protocol-engine
       packages:
         description: >-
-          Space/comma separated packages to build, e.g.
-          "edge-proxy pe-utils". Leave empty to build everything. Accepts
-          metapackages/<name> and golang-providers/<name> too.
+          Several packages, space/comma separated, e.g. "edge-proxy
+          pe-utils". Overrides the dropdown when set. Accepts anything with
+          a <name>/deb/build.sh, including golang-providers/<name>.
         type: string
         required: false
         default: ''
@@ -73,9 +95,34 @@ jobs:
           fi
           echo "$UPDATE_DEFAULT_RESOURCES" > update_default_resources.c
 
+      # The dropdown is single-select, so the free-text field takes precedence
+      # when someone needs to build several packages in one run.
+      - name: Resolve package selection
+        id: selection
+        env:
+          PACKAGE_CHOICE: ${{ inputs.package }}
+          PACKAGES_INPUT: ${{ inputs.packages }}
+        run: |
+          set -euo pipefail
+          selection="$PACKAGES_INPUT"
+          if [ -z "$selection" ] && [ "$PACKAGE_CHOICE" != "all" ]; then
+            selection="$PACKAGE_CHOICE"
+          fi
+
+          if [ -n "$PACKAGES_INPUT" ] && [ "$PACKAGE_CHOICE" != "all" ]; then
+            echo "::notice::Both inputs set; building '$PACKAGES_INPUT' and ignoring the '$PACKAGE_CHOICE' dropdown selection."
+          fi
+
+          if [ -z "$selection" ]; then
+            echo "Building all packages"
+          else
+            echo "Building: $selection"
+          fi
+          echo "packages=$selection" >> "$GITHUB_OUTPUT"
+
       - name: Validate package selection
         env:
-          PACKAGES_INPUT: ${{ inputs.packages }}
+          PACKAGES_INPUT: ${{ steps.selection.outputs.packages }}
         run: |
           set -euo pipefail
           [ -n "$PACKAGES_INPUT" ] || exit 0
@@ -105,7 +152,7 @@ jobs:
 
       - name: Build
         env:
-          PACKAGES_INPUT: ${{ inputs.packages }}
+          PACKAGES_INPUT: ${{ steps.selection.outputs.packages }}
         run: |
           set -euo pipefail
           export DOCKER_OPTS='-i'
@@ -114,7 +161,8 @@ jobs:
           if [ -z "$PACKAGES_INPUT" ]; then
             run_env ./build-env/bin/build-all.sh --install --arch="$ARCH"
           else
-            # Go packages resolve golang-virtual from the local apt repo, so the
+            # Go packages resolve the golang provider (pe-golang-bin on
+            # bullseye, golang-virtual on focal) from the local apt repo, so the
             # dependency stage has to run even for a single-package build.
             echo "::group::Dependencies"
             run_env ./build-env/bin/build-all.sh --install --arch="$ARCH" --deps
