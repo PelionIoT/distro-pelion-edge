@@ -1,0 +1,10 @@
+[Unit]
+Description=Edge Proxy
+
+[Service]
+Restart=always
+RestartSec=5s
+ExecStart=/usr/bin/launch-edge-proxy.sh
+
+[Install]
+WantedBy=multi-user.target

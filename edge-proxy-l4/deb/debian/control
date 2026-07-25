@@ -1,0 +1,22 @@
+Source: edge-proxy-l4
+Section: utils
+Priority: optional
+Maintainer: Vasily Smirnov <vasilii.smirnov@globallogic.com>
+Build-Depends: debhelper (>=9), pe-golang:native, libc6
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: edge-proxy-l4
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, pe-utils
+Provides: edge-proxy
+Conflicts: edge-proxy
+Replaces: edge-proxy
+Description: Layer 4 HTTP proxy for Pelion Edge
+ Provides a proxy for Pelion Edge components that routes traffic
+ through Edge Core.
+ .
+ This is the layer 4 variant used by stargate. It proxies to the
+ myriplane service address with the reverse tunnel disabled, and
+ replaces the edge-proxy package. Install edge-proxy instead for KaaS.

@@ -1,0 +1,12 @@
+edge-proxy-l4 (1.5.0-1) stable; urgency=medium
+
+  * Initial release, split from edge-proxy so the KaaS package stays on
+    v1.3.0 while stargate moves to the layer 4 proxy
+  * Uses edge-proxy v1.5.0 (L4 TLS proxy h2 ALPN, -server-name,
+    -disable-reverse-tunnel)
+  * Run edge-proxy as a layer 4 outbound proxy only against the cloud
+    endpoint, with the reverse tunnel disabled
+  * Prefer the myriplane service address for -proxy-uri, falling back to
+    the edge k8s address when it is absent from identity.json
+
+ -- Izuma Networks <maintainer@izumanetworks.com>  Sat, 25 Jul 2026 00:00:00 +0000

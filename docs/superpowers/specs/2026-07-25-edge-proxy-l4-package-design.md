@@ -85,10 +85,33 @@ break if it were renamed:
 debhelper installs `debian/<package>.service` as `<package>.service`, so a file
 named `edge-proxy.service` inside a package named `edge-proxy-l4` would be
 ignored, and one named `edge-proxy-l4.service` would install a unit nothing
-requires. Use debhelper's `<package>.<name>.service` form instead:
+requires. Use debhelper's `<package>.<name>.service` form:
 
 ```
 debian/edge-proxy-l4.edge-proxy.service  ->  /lib/systemd/system/edge-proxy.service
+```
+
+**The filename alone is not enough.** debhelper only considers a
+`<package>.<name>.<type>` file when a matching `--name` is passed; without it
+the file is silently ignored and no unit is installed at all. Verified
+empirically: with the file in place and no `--name`, the built package contains
+no `.service` file whatsoever.
+
+This package is compat 9 and uses `dh $@ --with systemd`, so the helpers in the
+binary sequence are `dh_installinit` (already overridden in `rules`),
+`dh_systemd_enable` and `dh_systemd_start` — *not* `dh_installsystemd`. All
+three need `--name=edge-proxy`:
+
+```make
+override_dh_installinit:
+	dh_installinit -pedge-proxy-l4 --name=edge-proxy --noscripts
+	dh_installinit --remaining
+
+override_dh_systemd_enable:
+	dh_systemd_enable --name=edge-proxy
+
+override_dh_systemd_start:
+	dh_systemd_start --name=edge-proxy
 ```
 
 ### File-by-file
@@ -127,6 +150,24 @@ filter is a prefix match that already covers `edge-proxy-l4`.
 
 The RPM side (`edge-proxy/rpm/`) is out of scope; only the Debian package is
 duplicated.
+
+### The swap is one-directional
+
+Only `edge-proxy-l4` declares `Conflicts`/`Replaces`, because `edge-proxy` is
+deliberately left byte-identical to `master`. The consequence, verified
+empirically:
+
+- `edge-proxy` -> `edge-proxy-l4` works directly. dpkg reports "will remove
+  edge-proxy in favour of edge-proxy-l4" and completes.
+- `edge-proxy-l4` -> `edge-proxy` fails on a file overwrite conflict over
+  `/usr/bin/edge-proxy`. Going back requires removing `edge-proxy-l4` first:
+  `apt remove edge-proxy-l4 && apt install edge-proxy`.
+
+This is accepted rather than fixed. Making it symmetric would mean adding
+`Conflicts: edge-proxy-l4` / `Replaces: edge-proxy-l4` to `edge-proxy`, which
+would modify the KaaS package and forfeit the "unaffected by construction"
+guarantee. If bidirectional swaps become a practical need, that one-line
+change plus a revision bump is the remedy.
 
 ## What does not change
 

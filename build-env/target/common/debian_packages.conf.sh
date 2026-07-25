@@ -5,6 +5,7 @@ DEPENDS=(
 
 PACKAGES=(
     'edge-proxy'
+    'edge-proxy-l4'
     'pe-terminal'
     'kubelet'
     'edge-resource-manager'
