@@ -29,6 +29,7 @@ on:
           - mbed-edge-examples
           - mbed-fcc
           - pe-utils
+          - pe-utils-stargate
           - fluent-bit
           - metapackages/pelion-edge
           - metapackages/pelion-edge-base

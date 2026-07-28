@@ -18,5 +18,5 @@ Description: Layer 4 HTTP proxy for Pelion Edge
  through Edge Core.
  .
  This is the layer 4 variant used by stargate. It proxies to the
- myriplane service address with the reverse tunnel disabled, and
+ stargate service address with the reverse tunnel disabled, and
  replaces the edge-proxy package. Install edge-proxy instead for KaaS.

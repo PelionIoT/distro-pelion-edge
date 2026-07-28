@@ -1,0 +1,15 @@
+pe-utils-stargate (2.3.9-1) stable; urgency=medium
+
+  * Initial release, split from pe-utils so the KaaS package keeps its
+    edge-core dependency while stargate runs edge-core in a container
+  * Uses pe-utils 2.3.9 (create-dev-identity: honor izuma.io special case
+    for the stargate address)
+  * Drop the mbed-edge-core dependency, since edge-core is deployed
+    separately rather than as a host package
+  * wait-for-pelion-identity.service: drop Requires/After edge-core.service
+    so it starts when edge-core runs outside systemd
+  * identity.json now uses stargateServicesAddress; the previous
+    myriplaneServicesAddress name is no longer read. Upstream pe-utils
+    create-dev-identity and cloud provisioning must emit the new key.
+
+ -- Izuma Networks <maintainer@izumanetworks.com>  Mon, 27 Jul 2026 00:00:00 +0000

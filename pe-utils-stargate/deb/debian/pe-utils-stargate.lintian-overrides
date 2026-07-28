@@ -1,0 +1,8 @@
+new-package-should-close-itp-bug
+binary-without-manpage
+
+script-with-language-extension
+systemd-service-file-refers-to-unusual-wantedby-target
+
+embedded-javascript-library
+pe-utils: subdir-in-usr-bin usr/bin/developer_identity/

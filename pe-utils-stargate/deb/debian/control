@@ -1,0 +1,22 @@
+Source: pe-utils-stargate
+Section: javascript
+Priority: optional
+Maintainer: Olha Kulyk  <olha.kulyk@globallogic.com>
+Build-Depends: debhelper (>=9)
+Standards-Version: 3.9.6
+Homepage: https://www.pelion.com
+
+Package: pe-utils-stargate
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, bash (>=4.0), curl, jq, openssl
+Provides: pe-utils
+Conflicts: pe-utils
+Replaces: pe-utils
+Description: pelion utilities (stargate)
+ Utilities and a light-weight programs for Pelion Edge.
+ .
+ This is the stargate variant. edge-core runs in a container rather than
+ as a host service, so this package drops the mbed-edge-core dependency
+ and does not order wait-for-pelion-identity.service after
+ edge-core.service. It replaces the pe-utils package. Install pe-utils
+ instead for KaaS.

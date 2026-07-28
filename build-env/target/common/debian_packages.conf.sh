@@ -16,6 +16,7 @@ PACKAGES=(
     'mbed-edge-examples'
     'mbed-fcc'
     'pe-utils'
+    'pe-utils-stargate'
     'fluent-bit'
 )
 
