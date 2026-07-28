@@ -8,8 +8,7 @@ pe-utils-stargate (2.3.9-1) stable; urgency=medium
     separately rather than as a host package
   * wait-for-pelion-identity.service: drop Requires/After edge-core.service
     so it starts when edge-core runs outside systemd
-  * identity.json now uses stargateServicesAddress; the previous
-    myriplaneServicesAddress name is no longer read. Upstream pe-utils
+  * identity.json now uses stargateServicesAddress; Upstream pe-utils
     create-dev-identity and cloud provisioning must emit the new key.
 
  -- Izuma Networks <maintainer@izumanetworks.com>  Mon, 27 Jul 2026 00:00:00 +0000
