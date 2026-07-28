@@ -5,6 +5,7 @@ DEPENDS=(
 
 PACKAGES=(
     'edge-proxy'
+    'edge-proxy-l4'
     'pe-terminal'
     'kubelet'
     'edge-resource-manager'
@@ -15,6 +16,7 @@ PACKAGES=(
     'mbed-edge-examples'
     'mbed-fcc'
     'pe-utils'
+    'pe-utils-stargate'
     'fluent-bit'
 )
 
