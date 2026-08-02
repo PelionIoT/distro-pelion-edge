@@ -236,6 +236,7 @@ jobs:
           "$RUNNER_TEMP/bin/mc" --version
 
       - name: Publish to MinIO
+        id: publish
         env:
           MINIO_ENDPOINT: ${{ vars.MINIO_ENDPOINT }}
           MINIO_ACCESS_KEY: ${{ secrets.MINIO_ACCESS_KEY }}
@@ -259,6 +260,10 @@ jobs:
             dest="$dest/${PREFIX%/}"
           fi
           dest="$dest/deb/$DISTRO/main"
+
+          # Recorded before the dry-run early exit so the Slack notification can
+          # report the destination on every path through this step.
+          echo "dest=${dest#minio/}" >> "$GITHUB_OUTPUT"
 
           mc alias set minio "$MINIO_ENDPOINT" "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY"
 
@@ -298,3 +303,58 @@ jobs:
       - name: Remove MinIO credentials
         if: always()
         run: mc alias remove minio || true
+
+      # Slack notification. Runs on success and failure alike; cancelled runs
+      # are skipped so a deliberately aborted publish does not page the channel.
+      # Requires the SLACK_WEBHOOK_URL repo secret (an Incoming Webhook for
+      # #myriplane-edge-ci-cd-staging).
+      - name: Compose Slack message
+        id: slack
+        if: ${{ !cancelled() }}
+        env:
+          PACKAGES_INPUT: ${{ steps.selection.outputs.packages }}
+          DEST: ${{ steps.publish.outputs.dest }}
+          DRY_RUN: ${{ inputs.dry_run }}
+          UPLOAD_TARBALL: ${{ inputs.upload_tarball }}
+          JOB_STATUS: ${{ job.status }}
+        run: |
+          set -euo pipefail
+
+          packages="${PACKAGES_INPUT:-}"
+          [ -n "$packages" ] || packages="all"
+
+          # Empty when the run failed before reaching the publish step.
+          dest="${DEST:-}"
+          [ -n "$dest" ] || dest="(not reached)"
+
+          title="amd64 debs to MinIO"
+          if [ "$DRY_RUN" = "true" ]; then
+            title="$title (dry run, nothing uploaded)"
+          fi
+
+          run_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+
+          {
+            echo 'text<<SLACK_EOF'
+            echo "*distro-pelion-edge* — $title — *${JOB_STATUS}*"
+            echo "• Distro: \`$DISTRO\`   Arch: \`$ARCH\`"
+            echo "• Packages: \`$packages\`   Tarball: \`$UPLOAD_TARBALL\`"
+            echo "• Destination: \`$dest\`"
+            echo "• Ref: \`$GITHUB_REF_NAME\` @ \`${GITHUB_SHA:0:8}\`   Run by: \`$GITHUB_ACTOR\`"
+            echo "<$run_url|View workflow run>"
+            echo 'SLACK_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      # continue-on-error: a missing or revoked webhook must never turn a
+      # successful publish into a red run.
+      - name: Post status to Slack
+        if: ${{ !cancelled() }}
+        continue-on-error: true
+        uses: act10ns/slack@v2
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#myriplane-edge-ci-cd-staging'
+          message: ${{ steps.slack.outputs.text }}
