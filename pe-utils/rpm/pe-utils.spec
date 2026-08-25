@@ -13,8 +13,10 @@ License:        Apache-2.0
 URL:            %{forgeurl}
 Source0:        %{forgesource}
 
-BuildRequires: pe-nodejs
-Requires:       pe-nodejs
+# pe-nodejs was dropped: no such package exists in this repo or in the
+# package catalog, and the Debian control file for pe-utils does not
+# reference it either. This spec installs only shell scripts and a
+# systemd unit, so there is nothing here that needs Node.js.
 Requires:       curl
 Requires:       jq
 Requires:       openssl

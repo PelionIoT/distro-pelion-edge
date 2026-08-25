@@ -11,6 +11,7 @@
     - [Build single package for Debian and Ubuntu](#build-single-package-for-debian-and-ubuntu)
     - [Build single package for Red Hat and Centos](#build-single-package-for-red-hat-and-centos)
   * [Building all packages](#building-all-packages)
+  * [Building for AlmaLinux 9](#building-for-almalinux-9)
   * [Generating tar archives](#generating-tar-archives)
   * [Build results](#build-results)
   * [Preparing Red Hat system before installation](#preparing-red-hat-system-before-installation)
@@ -37,6 +38,7 @@ These are scripts to build Pelion Edge as deb/rpm packages for the following dis
    * Ubuntu Focal (20.04).
    * Redhat Enterprise Linux 8.
    * CentOS 8.
+   * AlmaLinux 9 (also Rocky Linux 9, RHEL 9, CentOS Stream 9).
 
 The  folder `build-env`  contains helper  or common  scripts. Other  directories
 contain build scripts specific for each package, for Debian-based distributions:
@@ -109,8 +111,9 @@ available environments run:
 ```
 
 The `-d`  accepts also  partial environments  names (`-d  rh`, `-d  rhel/8`, `-d
-rhel-8`,  `-d  rhel`  -  all  are  valid).  When  name  matches  more  than  one
-environment, script will print error:
+rhel-8`,  `-d  rhel`  -  all  are  valid;  likewise  `-d  alma`,  `-d almalinux`,
+`-d almalinux/9`).  When  name  matches  more  than  one  environment,  script
+will print error:
 ```bash
 $ ./build-env/bin/build-all.sh -d 8
 Unable to load environment: ambiguous environment name, matches:
@@ -138,6 +141,13 @@ The `binfmt` has to be executed once after every reboot.
 Build on MacOS is not tested.
 
 ### Red Hat Enterprise Linux (RHEL) subscription
+
+> **This applies to the `rhel/8` target only.** The `almalinux/9` target needs no
+> Red Hat account: AlmaLinux ships the CodeReady Builder content as the free
+> `crb` repository and EPEL 9 is public, so its Dockerfile takes no
+> `RH_USERNAME`/`RH_PASSWORD` build arguments. See
+> [Building for AlmaLinux 9](#building-for-almalinux-9).
+
 RHEL  images  does  not  include  subscription  credentials.  `RH_USERNAME`  and
 `RH_PASSWORD` variables  with your  Red Hat  subscription credentials  should be
 exported as environment variables before running build scripts:
@@ -394,6 +404,65 @@ To  provide  build  dependency  use  `--deps` switch.  This  will  create  build
 dependencies and  put into local repository.  This is enabled by  default if not
 build/source/tar is set.
 
+## Building for AlmaLinux 9
+
+The `almalinux/9` target builds `.el9` RPMs for AlmaLinux 9, Rocky Linux 9, RHEL 9
+and CentOS Stream 9. Unlike `rhel/8` it needs **no Red Hat account**: AlmaLinux
+ships the CodeReady Builder content as the free `crb` repository (disabled by
+default, enabled in the Dockerfile) and EPEL 9 is public.
+
+```bash
+./build-env/bin/build-all.sh --docker=almalinux/9 --arch=amd64 --install --container
+```
+
+Results land in `build/deploy/rpm/almalinux9/`, with binaries under `x86_64/`
+and `noarch/`.
+
+To build a single package:
+
+```bash
+./pe-terminal/rpm/build.sh --docker=almalinux/9 --arch=amd64
+```
+
+### Differences from the rhel/8 target
+
+`pe-terminal` **is** part of this target's package list. It has both a spec and
+an `rpm/build.sh` but is missing from `rhel/8`'s `PACKAGES`, so it never gets
+built there.
+
+`mbed-edge-examples` is **not** built. Its spec has `BuildRequires: python2`, and
+RHEL 9 removed python2 entirely. Porting those build scripts to python3 is an
+upstream code change rather than a packaging one.
+
+Two specs needed changes to build on el9 at all:
+
+* `pe-terminal.spec` pinned `BuildRequires: golang <= 1.15`. RHEL 9 ships Go 1.26,
+  so that bound can never be satisfied. It is now conditional on `%{?rhel} >= 9`,
+  leaving the el8 build untouched.
+* `pe-utils.spec` required `pe-nodejs` at both build and run time. No such package
+  exists in this repository or in the package catalog, and `pe-utils/deb/debian/control`
+  does not reference it either - the spec installs only shell scripts and a systemd
+  unit. The requirement was dropped.
+
+### Note on package versions
+
+The RPM specs lag the Debian packaging. At the time of writing:
+
+| Package | RPM spec | Debian |
+| --- | --- | --- |
+| `pe-utils` | 2.0.7 | 2.3.4 |
+| `edge-proxy` | 1.0.0 | 1.3.0 |
+| `kubelet` | 1.0.0 | 1.1.0 |
+| `pe-terminal` | 1.0.0 | 1.1.0 |
+| CNI c2d plugin | 0.8.4 | 0.8.5 |
+
+Bumping the `%global tag`/`Version` fields is a separate exercise - the newer
+upstream tags have not been built against these specs.
+
+Note also that the CNI plugin has a different name in each format:
+`containernetworking-plugins-c2d` as a `.deb`, `containernetworking-plugin-c2d`
+(singular) as an `.rpm`.
+
 ## Generating tar archives
 
 A tar archive can  be created from a binary release for  Debian and Ubuntu only.
@@ -431,7 +500,8 @@ in subdirectories per architecture:
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
 
-*Red Hat* and *Centos* packages are created in `build/deploy/rpm/<DISTRO>`:
+*Red Hat*, *Centos* and *AlmaLinux* packages are created in
+`build/deploy/rpm/<DISTRO>` (`<DISTRO>` is `rhel8` or `almalinux9`):
 * source packages are on top of this directory
 * `noarch`, `x86_64` and `aarch64` directories contains final packages
 
