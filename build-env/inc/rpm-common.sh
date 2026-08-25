@@ -124,12 +124,31 @@ function install_deps() {
 # Creates a source archive from a downloaded repository. If the
 # download rule was overriden, this one should probably be too.
 # Overridable.
+# Pack the checked-out sources into the archive the spec asks for.
+#
+# The name cannot be derived from the tag alone. The forge macros in RHEL 9
+# strip a leading "v" from %{tag} when composing %{archivename} (tag v1.0.0 ->
+# edge-proxy-1.0.0.tar.gz), while the RHEL 8 ones keep it. Read Source0 out of
+# the generated spec instead of guessing, and fall back to the historical
+# name when it cannot be parsed.
 conjure_sources() {
     local name="${1-$tarname}"
     local ver="${2-$tarver}"
+    local archive dir
+
+    archive=$(rpmspec -P "$builddir/$specfile" 2>/dev/null \
+        | awk '/^Source0:[[:space:]]/ { n = split($2, p, "/"); print p[n]; exit }')
+
+    if [ -n "$archive" ]; then
+        dir="${archive%.tar.gz}"
+        [ "$dir" = "$archive" ] && dir="${archive%.*}"
+    else
+        archive="$name-$ver.tar.gz"
+        dir="$name-$ver"
+    fi
+
     cd "$cachedir/$name"
-    tar --xform "s#^\./#$name-$ver/#" \
-         -cf "$builddir/$name-$ver.tar.gz" .
+    tar --xform "s#^\./#$dir/#" -cf "$builddir/$archive" .
 }
 
 # Copy files/* to builddir
@@ -177,8 +196,10 @@ deploy() {
 all() {
     dispatch download
     $opt_install && dispatch install_deps
-    dispatch conjure_sources
+    # conjure_spec_files runs before conjure_sources: the latter reads the
+    # generated spec to learn which archive name the forge macros expect.
     dispatch conjure_spec_files
+    dispatch conjure_sources
     dispatch conjure_files
     dispatch conjure_patches
     dispatch assemble $rpmbuild_args
@@ -310,6 +331,12 @@ if [ -v arg_docker ];then
         run_command_build $buildscript ${args[@]}
     done
 else
+    # Go creates its module cache read-only (0444 files inside 0555 dirs), and
+    # %gobuild puts it under the build tree. A plain rm -rf of a previous build
+    # then fails on those directories and, under set -e, aborts the whole run.
+    if [ -d "$builddir" ]; then
+        chmod -R u+w "$builddir" 2>/dev/null || true
+    fi
     rm -rf "$builddir"
     mkdir -p "$cachedir"
     mkdir -p "$builddir"

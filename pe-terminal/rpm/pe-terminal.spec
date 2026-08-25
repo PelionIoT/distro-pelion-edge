@@ -12,7 +12,13 @@ License:        Apache-2.0
 URL:            %{gourl}
 Source0:        %{gosource}
 
+# RHEL 9 ships Go 1.26, so the original upper bound can never be met there.
+# Left untouched for el8 so that build is unaffected.
+%if 0%{?rhel} >= 9
+BuildRequires:  golang >= 1.16
+%else
 BuildRequires:  golang <= 1.15
+%endif
 Requires(post): systemd-units
 Requires(preun): systemd-units
 Requires(postun): systemd-units

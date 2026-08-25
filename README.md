@@ -11,6 +11,7 @@
     - [Build single package for Debian and Ubuntu](#build-single-package-for-debian-and-ubuntu)
     - [Build single package for Red Hat and Centos](#build-single-package-for-red-hat-and-centos)
   * [Building all packages](#building-all-packages)
+  * [Building for AlmaLinux 9](#building-for-almalinux-9)
   * [Generating tar archives](#generating-tar-archives)
   * [Build results](#build-results)
   * [Preparing Red Hat system before installation](#preparing-red-hat-system-before-installation)
@@ -37,6 +38,7 @@ These are scripts to build Pelion Edge as deb/rpm packages for the following dis
    * Ubuntu Focal (20.04).
    * Redhat Enterprise Linux 8.
    * CentOS 8.
+   * AlmaLinux 9 (also Rocky Linux 9, RHEL 9, CentOS Stream 9).
 
 The  folder `build-env`  contains helper  or common  scripts. Other  directories
 contain build scripts specific for each package, for Debian-based distributions:
@@ -109,8 +111,9 @@ available environments run:
 ```
 
 The `-d`  accepts also  partial environments  names (`-d  rh`, `-d  rhel/8`, `-d
-rhel-8`,  `-d  rhel`  -  all  are  valid).  When  name  matches  more  than  one
-environment, script will print error:
+rhel-8`,  `-d  rhel`  -  all  are  valid;  likewise  `-d  alma`,  `-d almalinux`,
+`-d almalinux/9`).  When  name  matches  more  than  one  environment,  script
+will print error:
 ```bash
 $ ./build-env/bin/build-all.sh -d 8
 Unable to load environment: ambiguous environment name, matches:
@@ -138,6 +141,13 @@ The `binfmt` has to be executed once after every reboot.
 Build on MacOS is not tested.
 
 ### Red Hat Enterprise Linux (RHEL) subscription
+
+> **This applies to the `rhel/8` target only.** The `almalinux/9` target needs no
+> Red Hat account: AlmaLinux ships the CodeReady Builder content as the free
+> `crb` repository and EPEL 9 is public, so its Dockerfile takes no
+> `RH_USERNAME`/`RH_PASSWORD` build arguments. See
+> [Building for AlmaLinux 9](#building-for-almalinux-9).
+
 RHEL  images  does  not  include  subscription  credentials.  `RH_USERNAME`  and
 `RH_PASSWORD` variables  with your  Red Hat  subscription credentials  should be
 exported as environment variables before running build scripts:
@@ -394,6 +404,119 @@ To  provide  build  dependency  use  `--deps` switch.  This  will  create  build
 dependencies and  put into local repository.  This is enabled by  default if not
 build/source/tar is set.
 
+## Building for AlmaLinux 9
+
+The `almalinux/9` target builds `.el9` RPMs for AlmaLinux 9, Rocky Linux 9, RHEL 9
+and CentOS Stream 9. Unlike `rhel/8` it needs **no Red Hat account**: AlmaLinux
+ships the CodeReady Builder content as the free `crb` repository (disabled by
+default, enabled in the Dockerfile) and EPEL 9 is public, so the image takes no
+`RH_USERNAME`/`RH_PASSWORD` build arguments.
+
+```bash
+./build-env/bin/build-all.sh --docker=almalinux/9 --arch=amd64 --install --container
+```
+
+Results land in `build/deploy/rpm/almalinux9/`, with binaries under `x86_64/`
+and `noarch/` and the source RPMs at the top of that directory.
+
+To build a single package:
+
+```bash
+./pe-terminal/rpm/build.sh --docker=almalinux/9 --arch=amd64
+```
+
+Note that `.el8` packages are **not** a substitute for these. RHEL 9 moved from
+OpenSSL 1.1.1 to 3.0 and from glibc 2.28 to 2.34, and `mbed-edge-core` links
+OpenSSL.
+
+### What this target builds
+
+Verified on AlmaLinux 9.8, kernel 5.14.0-687.39.1.el9_8.x86_64:
+
+| Package | Result |
+| --- | --- |
+| `edge-proxy` | `edge-proxy-1.0.0-1.el9.x86_64.rpm` |
+| `kubelet` | `kubelet-1.0.0-1.el9.x86_64.rpm` |
+| `pe-terminal` | `pe-terminal-1.0.0-1.el9.x86_64.rpm` |
+| `pe-utils` | `pe-utils-2.0.7-1.el9.x86_64.rpm` |
+| `golang-github-containernetworking-plugins` | `containernetworking-plugin-c2d-0.8.4-1.el9.noarch.rpm` |
+
+`edge-proxy` and `pe-utils` were installed on that host and exercised against a
+connected `edge-core`: `pe-utils` generated a valid `identity.json`, and
+`edge-proxy` came up, reached `edge-core` over its protocol-translator socket and
+established its reverse tunnel to `gateways.us-east-1.mbedcloud.com`.
+
+### What this target does not build, and why
+
+`build-all.sh` stops at the first failure, so packages that cannot build on el9
+are left out of `PACKAGES` to keep a full run green. Re-add one once its blocker
+is resolved.
+
+* **`mbed-edge-core`, `mbed-edge-core-devmode`, `mbed-edge-core-byocmode`** -
+  glibc 2.34 defines `PTHREAD_STACK_MIN` as `__sysconf (__SC_THREAD_STACK_MIN_VALUE)`
+  instead of a compile-time constant. mbed-cloud-client's
+  `mbed-client-pal/Configs/pal_config/Linux/Linux_default.h` uses it inside `#if`
+  directives, so the preprocessor fails with
+  `error: missing binary operator before token "("`. el8 ships glibc 2.28 where it
+  is a constant, which is why the `rhel/8` target is unaffected. Fixing this needs
+  an upstream change to mbed-cloud-client, or a patch carried in the spec.
+  `mbed-edge-core-devmode` additionally needs the gitignored
+  `mbed_cloud_dev_credentials.c` described in the [Quickstart](#quickstart).
+* **`mbed-fcc`** - CMake 3.31 on el9 does not generate the target the spec builds:
+  `make: *** No rule to make target 'factory-configurator-client-example.elf'`.
+  Configure succeeds; only the build rule is missing.
+* **`mbed-edge-examples`** - `BuildRequires: python2`, which RHEL 9 removed
+  entirely. Porting its build scripts to python3 is an upstream change.
+
+Edge Core is distributed as a container image, so a host that only needs to *run*
+Edge Core is not blocked by the three `mbed-edge-core` packages above.
+
+### Differences from the rhel/8 target
+
+`pe-terminal` **is** part of this target's package list. It has both a spec and an
+`rpm/build.sh` but is missing from `rhel/8`'s `PACKAGES`, so it never gets built
+there.
+
+Three things had to be fixed before anything would build on el9. All were found by
+running the build, not by inspection:
+
+* `pe-terminal.spec` pinned `BuildRequires: golang <= 1.15`. RHEL 9 ships Go 1.26,
+  so that bound can never be satisfied. It is now conditional on `%{?rhel} >= 9`,
+  leaving the el8 build untouched.
+* `pe-utils.spec` required `pe-nodejs` to build and to run, and
+  `pe-utils/rpm/build.sh` ran `npm install` on the source tree. No `pe-nodejs`
+  package exists in this repository or in the package catalog, the pe-utils repo
+  has no `package.json` at the packaged tag, and the spec installs only shell
+  scripts, a data directory and a systemd unit - no Node artifacts are packaged.
+  Both the requirement and the `npm install` were removed.
+* `build-env/inc/rpm-common.sh` named the source tarball from `%{tag}`, but the
+  forge macros in RHEL 9 strip a leading `v` when composing `%{archivename}`
+  while the RHEL 8 ones keep it. rpmbuild therefore looked for
+  `edge-proxy-1.0.0.tar.gz` while `conjure_sources` had written
+  `edge-proxy-v1.0.0.tar.gz`. It now reads `Source0` out of the generated spec,
+  which is correct on both. It also restores write permission before removing a
+  previous build tree, because Go creates its module cache read-only and
+  `rm -rf` would otherwise abort the run under `set -e`.
+
+### Note on package versions
+
+The RPM specs lag the Debian packaging. At the time of writing:
+
+| Package | RPM spec | Debian |
+| --- | --- | --- |
+| `pe-utils` | 2.0.7 | 2.3.4 |
+| `edge-proxy` | 1.0.0 | 1.3.0 |
+| `kubelet` | 1.0.0 | 1.1.0 |
+| `pe-terminal` | 1.0.0 | 1.1.0 |
+| CNI c2d plugin | 0.8.4 | 0.8.5 |
+
+Bumping the `%global tag`/`Version` fields is a separate exercise - the newer
+upstream tags have not been built against these specs.
+
+Note also that the CNI plugin has a different name in each format:
+`containernetworking-plugins-c2d` as a `.deb`, `containernetworking-plugin-c2d`
+(singular) as an `.rpm`.
+
 ## Generating tar archives
 
 A tar archive can  be created from a binary release for  Debian and Ubuntu only.
@@ -431,7 +554,8 @@ in subdirectories per architecture:
 
 Tarballs can be found in `build/deploy/tar`, one archive per architecture.
 
-*Red Hat* and *Centos* packages are created in `build/deploy/rpm/<DISTRO>`:
+*Red Hat*, *Centos* and *AlmaLinux* packages are created in
+`build/deploy/rpm/<DISTRO>` (`<DISTRO>` is `rhel8` or `almalinux9`):
 * source packages are on top of this directory
 * `noarch`, `x86_64` and `aarch64` directories contains final packages
 
