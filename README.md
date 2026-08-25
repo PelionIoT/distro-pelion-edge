@@ -409,14 +409,15 @@ build/source/tar is set.
 The `almalinux/9` target builds `.el9` RPMs for AlmaLinux 9, Rocky Linux 9, RHEL 9
 and CentOS Stream 9. Unlike `rhel/8` it needs **no Red Hat account**: AlmaLinux
 ships the CodeReady Builder content as the free `crb` repository (disabled by
-default, enabled in the Dockerfile) and EPEL 9 is public.
+default, enabled in the Dockerfile) and EPEL 9 is public, so the image takes no
+`RH_USERNAME`/`RH_PASSWORD` build arguments.
 
 ```bash
 ./build-env/bin/build-all.sh --docker=almalinux/9 --arch=amd64 --install --container
 ```
 
 Results land in `build/deploy/rpm/almalinux9/`, with binaries under `x86_64/`
-and `noarch/`.
+and `noarch/` and the source RPMs at the top of that directory.
 
 To build a single package:
 
@@ -424,25 +425,78 @@ To build a single package:
 ./pe-terminal/rpm/build.sh --docker=almalinux/9 --arch=amd64
 ```
 
+Note that `.el8` packages are **not** a substitute for these. RHEL 9 moved from
+OpenSSL 1.1.1 to 3.0 and from glibc 2.28 to 2.34, and `mbed-edge-core` links
+OpenSSL.
+
+### What this target builds
+
+Verified on AlmaLinux 9.8, kernel 5.14.0-687.39.1.el9_8.x86_64:
+
+| Package | Result |
+| --- | --- |
+| `edge-proxy` | `edge-proxy-1.0.0-1.el9.x86_64.rpm` |
+| `kubelet` | `kubelet-1.0.0-1.el9.x86_64.rpm` |
+| `pe-terminal` | `pe-terminal-1.0.0-1.el9.x86_64.rpm` |
+| `pe-utils` | `pe-utils-2.0.7-1.el9.x86_64.rpm` |
+| `golang-github-containernetworking-plugins` | `containernetworking-plugin-c2d-0.8.4-1.el9.noarch.rpm` |
+
+`edge-proxy` and `pe-utils` were installed on that host and exercised against a
+connected `edge-core`: `pe-utils` generated a valid `identity.json`, and
+`edge-proxy` came up, reached `edge-core` over its protocol-translator socket and
+established its reverse tunnel to `gateways.us-east-1.mbedcloud.com`.
+
+### What this target does not build, and why
+
+`build-all.sh` stops at the first failure, so packages that cannot build on el9
+are left out of `PACKAGES` to keep a full run green. Re-add one once its blocker
+is resolved.
+
+* **`mbed-edge-core`, `mbed-edge-core-devmode`, `mbed-edge-core-byocmode`** -
+  glibc 2.34 defines `PTHREAD_STACK_MIN` as `__sysconf (__SC_THREAD_STACK_MIN_VALUE)`
+  instead of a compile-time constant. mbed-cloud-client's
+  `mbed-client-pal/Configs/pal_config/Linux/Linux_default.h` uses it inside `#if`
+  directives, so the preprocessor fails with
+  `error: missing binary operator before token "("`. el8 ships glibc 2.28 where it
+  is a constant, which is why the `rhel/8` target is unaffected. Fixing this needs
+  an upstream change to mbed-cloud-client, or a patch carried in the spec.
+  `mbed-edge-core-devmode` additionally needs the gitignored
+  `mbed_cloud_dev_credentials.c` described in the [Quickstart](#quickstart).
+* **`mbed-fcc`** - CMake 3.31 on el9 does not generate the target the spec builds:
+  `make: *** No rule to make target 'factory-configurator-client-example.elf'`.
+  Configure succeeds; only the build rule is missing.
+* **`mbed-edge-examples`** - `BuildRequires: python2`, which RHEL 9 removed
+  entirely. Porting its build scripts to python3 is an upstream change.
+
+Edge Core is distributed as a container image, so a host that only needs to *run*
+Edge Core is not blocked by the three `mbed-edge-core` packages above.
+
 ### Differences from the rhel/8 target
 
-`pe-terminal` **is** part of this target's package list. It has both a spec and
-an `rpm/build.sh` but is missing from `rhel/8`'s `PACKAGES`, so it never gets
-built there.
+`pe-terminal` **is** part of this target's package list. It has both a spec and an
+`rpm/build.sh` but is missing from `rhel/8`'s `PACKAGES`, so it never gets built
+there.
 
-`mbed-edge-examples` is **not** built. Its spec has `BuildRequires: python2`, and
-RHEL 9 removed python2 entirely. Porting those build scripts to python3 is an
-upstream code change rather than a packaging one.
-
-Two specs needed changes to build on el9 at all:
+Three things had to be fixed before anything would build on el9. All were found by
+running the build, not by inspection:
 
 * `pe-terminal.spec` pinned `BuildRequires: golang <= 1.15`. RHEL 9 ships Go 1.26,
   so that bound can never be satisfied. It is now conditional on `%{?rhel} >= 9`,
   leaving the el8 build untouched.
-* `pe-utils.spec` required `pe-nodejs` at both build and run time. No such package
-  exists in this repository or in the package catalog, and `pe-utils/deb/debian/control`
-  does not reference it either - the spec installs only shell scripts and a systemd
-  unit. The requirement was dropped.
+* `pe-utils.spec` required `pe-nodejs` to build and to run, and
+  `pe-utils/rpm/build.sh` ran `npm install` on the source tree. No `pe-nodejs`
+  package exists in this repository or in the package catalog, the pe-utils repo
+  has no `package.json` at the packaged tag, and the spec installs only shell
+  scripts, a data directory and a systemd unit - no Node artifacts are packaged.
+  Both the requirement and the `npm install` were removed.
+* `build-env/inc/rpm-common.sh` named the source tarball from `%{tag}`, but the
+  forge macros in RHEL 9 strip a leading `v` when composing `%{archivename}`
+  while the RHEL 8 ones keep it. rpmbuild therefore looked for
+  `edge-proxy-1.0.0.tar.gz` while `conjure_sources` had written
+  `edge-proxy-v1.0.0.tar.gz`. It now reads `Source0` out of the generated spec,
+  which is correct on both. It also restores write permission before removing a
+  previous build tree, because Go creates its module cache read-only and
+  `rm -rf` would otherwise abort the run under `set -e`.
 
 ### Note on package versions
 

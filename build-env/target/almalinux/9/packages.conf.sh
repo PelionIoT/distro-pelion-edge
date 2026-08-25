@@ -15,18 +15,32 @@ PACKAGES=(
     'edge-proxy'
     'golang-github-containernetworking-plugins'
     'kubelet'
-    'mbed-edge-core'
-    'mbed-edge-core-devmode'
-    'mbed-edge-core-byocmode'
-    'mbed-fcc'
     'pe-terminal'
     'pe-utils'
 )
 
-# Not built for el9:
-#   mbed-edge-examples - BuildRequires python2, which RHEL 9 removed entirely.
-#                        Porting its build scripts to python3 is an upstream
-#                        change, not a packaging one.
+# Deliberately not built for el9. build-all.sh stops at the first failure, so
+# these stay out of PACKAGES to keep a full run green; re-add one once its
+# blocker below is fixed upstream. Each was tried on AlmaLinux 9.8 first.
+#
+#   mbed-edge-core          glibc 2.34 defines PTHREAD_STACK_MIN as
+#   mbed-edge-core-devmode  __sysconf(...) rather than a constant, and
+#   mbed-edge-core-byocmode mbed-cloud-client's mbed-client-pal
+#                           Configs/pal_config/Linux/Linux_default.h uses it
+#                           inside #if, so cpp fails with "missing binary
+#                           operator before token \"(\"". el8 has glibc 2.28
+#                           where it is a constant. Needs an upstream fix or a
+#                           patch in the spec.
+#                           devmode additionally needs the gitignored
+#                           mbed_cloud_dev_credentials.c (see Quickstart).
+#
+#   mbed-fcc                CMake 3.31 on el9 does not generate the target the
+#                           spec builds: "No rule to make target
+#                           'factory-configurator-client-example.elf'".
+#                           Configure succeeds; only the build rule is missing.
+#
+#   mbed-edge-examples      BuildRequires python2, which RHEL 9 removed
+#                           entirely. Porting to python3 is an upstream change.
 
 DISTNAME=almalinux9
 
